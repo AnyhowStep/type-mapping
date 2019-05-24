@@ -1,0 +1,177 @@
+[
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[unknown]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 481
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[unknown]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 547
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 613
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 679
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[boolean]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 745
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 811
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | boolean]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 877
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 975
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 1089
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 1218
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1355
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1519
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | boolean]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1636
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1789
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1900
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2026
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2160
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[number]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2321
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[string | boolean]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2435
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[Date]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2586
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[Date]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2698
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[Date]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2825
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[Date]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2960
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[Date]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 3122
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type '[Date]'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 3237
+  }
+]

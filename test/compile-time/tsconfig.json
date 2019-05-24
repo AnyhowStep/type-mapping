@@ -1,0 +1,15 @@
+{
+    "extends" : "../../tsconfig-base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+
+        "target": "es6"
+    },
+    "include" : [
+        "./runner.ts",
+        "./accept-actual.ts",
+        "./accept-one.ts",
+        "./interactive.ts",
+        "./util.ts"
+    ]
+}

@@ -1,0 +1,235 @@
+[
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'string'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 548
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'number'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 613
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'boolean'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 678
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | number'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'number'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 743
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | boolean'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'true'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 808
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'string'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 905
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | number'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'number'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 1018
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'string'.",
+    "code": 2322,
+    "category": 1,
+    "length": 6,
+    "start": 1146
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | number'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'number'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1282
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'number'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1445
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | boolean'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'true'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1561
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'string'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1713
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | number'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'number'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1823
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'string'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 1948
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | number'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'number'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2081
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'number'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2241
+  },
+  {
+    "messageText": {
+      "messageText": "Type 'unknown' is not assignable to type 'string | boolean'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'unknown' is not assignable to type 'true'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2354
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'Date'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2504
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'Date'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2615
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'Date'.",
+    "code": 2322,
+    "category": 1,
+    "length": 7,
+    "start": 2741
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'Date'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 2875
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'Date'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 3036
+  },
+  {
+    "messageText": "Type 'unknown' is not assignable to type 'Date'.",
+    "code": 2322,
+    "category": 1,
+    "length": 8,
+    "start": 3150
+  }
+]
