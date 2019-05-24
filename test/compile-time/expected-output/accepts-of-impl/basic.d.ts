@@ -1,5 +1,5 @@
-import * as tm from "../../../../src";
-import { AcceptsOfImpl } from "../../../../src/accepts-of-impl";
+import * as tm from "../../../../dist";
+import { AcceptsOfImpl } from "../../../../dist/accepts-of-impl";
 declare type mixed_0 = tm.TypeMapDelegate<any, never>;
 declare type mixed_1 = tm.TypeMapDelegate<unknown, never>;
 declare type mixed_2 = tm.TypeMapDelegate<string, never>;

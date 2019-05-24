@@ -1,4 +1,4 @@
-import * as tm from "../../../../src";
+import * as tm from "../../../../dist";
 
 type mixed_0 = tm.TypeMapDelegate<any, never>;
 type mixed_1 = tm.TypeMapDelegate<unknown, never>;

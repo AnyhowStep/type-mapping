@@ -1,4 +1,4 @@
-import * as tm from "../../../../src";
+import * as tm from "../../../../dist";
 
 declare function resultOf<F extends tm.AnyTypeMapDelegate> (f : F) : tm.ResultOf<F>;
 

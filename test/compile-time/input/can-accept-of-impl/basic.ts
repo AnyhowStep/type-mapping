@@ -1,5 +1,5 @@
-import * as tm from "../../../../src";
-import {CanAcceptOfImpl} from "../../../../src/can-accept-of-impl";
+import * as tm from "../../../../dist";
+import {CanAcceptOfImpl} from "../../../../dist/can-accept-of-impl";
 
 declare function canAcceptOf<F extends tm.AnyTypeMapDelegate> (f : F) : CanAcceptOfImpl<F>;
 
