@@ -1,4 +1,4 @@
-import * as tm from "../../../../dist";
+import * as tm from "../../../../../../dist";
 
 declare function expectedInputOfImpl<F extends tm.AnyMapper> (f : F) : tm.ExpectedInputOfImpl<F>;
 

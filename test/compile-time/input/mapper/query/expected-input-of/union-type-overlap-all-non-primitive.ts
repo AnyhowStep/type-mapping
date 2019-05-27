@@ -1,6 +1,6 @@
-import * as tm from "../../../../dist";
+import * as tm from "../../../../../../dist";
 
-declare function acceptsOf<F extends tm.AnyMapper> (f : F) : tm.ExpectedInputOf<F>;
+declare function expectedInputOf<F extends tm.AnyMapper> (f : F) : tm.ExpectedInputOf<F>;
 
 const acceptsFunctionOrDate = (_name : string, _mixed : Function|Date) => {
     return undefined;
@@ -10,4 +10,4 @@ const acceptsFunctionOrBuffer = (_name : string, _mixed : Function|Buffer) => {
 };
 declare const unionType : typeof acceptsFunctionOrDate | typeof acceptsFunctionOrBuffer;
 
-export const expectUnion = acceptsOf(unionType);
+export const expectUnion = expectedInputOf(unionType);

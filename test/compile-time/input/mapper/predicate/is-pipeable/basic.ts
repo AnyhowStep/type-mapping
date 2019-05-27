@@ -1,4 +1,4 @@
-import * as tm from "../../../../dist";
+import * as tm from "../../../../../../dist";
 
 declare function isPipeable<
     A extends tm.AnyMapper,
