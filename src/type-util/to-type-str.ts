@@ -1,0 +1,55 @@
+import {LiteralType} from "../primitive";
+import {isBigInt} from "./is-bigint";
+
+/**
+    Intended to work better than `String(mixed)`.
+*/
+export function toLiteralStr (mixed : LiteralType) {
+    //We do not mind === here.
+    if (mixed === null) {
+        return "null";
+    //We do not mind === here.
+    } else if (mixed === undefined) {
+        return "undefined";
+    } else if (isBigInt(typeof mixed)) {
+        return mixed.toString() + "n";
+    } else {
+        return mixed.toString();
+    }
+}
+export function toLiteralUnionStr (arr : any[]) : string {
+    return arr
+        .map(toLiteralStr)
+        .join("|");
+}
+
+/**
+    Intended to work better than `typeof mixed`.
+*/
+export function toTypeStr (mixed : unknown) : string {
+    //We do not mind === here.
+    if (mixed === null) {
+        return "null";
+    }
+    //We do not mind === here.
+    if (mixed === undefined) {
+        return "undefined"
+    }
+    const str = (typeof mixed);
+    if (str !== "object") {
+        return str;
+    }
+    const prototype = Object.getPrototypeOf(mixed);
+    if (prototype == undefined) {
+        return "[Unknown Type]";
+    }
+    const constructor = prototype.constructor;
+    if (constructor == undefined) {
+        return "[Unknown Prototype]";
+    }
+    const name = constructor.name;
+    if (typeof name == "string") {
+        return name;
+    }
+    return "[Unknown Name]";
+}

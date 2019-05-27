@@ -1,6 +1,6 @@
 import * as tm from "../../../../dist";
 
-declare function acceptsOf<F extends tm.AnyTypeMapDelegate> (f : F) : tm.AcceptsOf<F>;
+declare function acceptsOf<F extends tm.AnyMapper> (f : F) : tm.ExpectedInputOf<F>;
 
 const acceptsNumberOrFunction = (_name : string, _mixed : number|Function) => {
     return undefined;

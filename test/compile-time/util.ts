@@ -10,7 +10,7 @@ export const actualOutputRoot = __dirname + "/actual-output";
 export const expectedOutputRoot = __dirname + "/expected-output";
 
 
-export function getAllFilesAndDirectories (rootDir : string, result : { path : string, isDir : boolean }[] = [], relativeDir : string|undefined = undefined) : { path : string, isDir : boolean }[] {
+export function getAllFilesAndDirectories (rootDir : string, result : { path : string, isDir : boolean}[] = [], relativeDir : string|undefined = undefined) : { path : string, isDir : boolean}[] {
     const currentDir = (relativeDir == undefined) ?
         rootDir :
         rootDir + "/" + relativeDir;
@@ -209,15 +209,15 @@ export function runTest () {
     }[] = [];
 
     function diffFiles (actualPath : string, expectedPath : string) {
-        if (!fs.existsSync(actualPath)) {
-            return [];
-        }
+        const actualData = fs.existsSync(actualPath) ?
+            fs.readFileSync(actualPath).toString() :
+            "";
         const expectedData = fs.existsSync(expectedPath) ?
             fs.readFileSync(expectedPath).toString() :
             "";
         return diff.diffLines(
             expectedData,
-            fs.readFileSync(actualPath).toString(),
+            actualData,
             {
                 ignoreCase : false,
                 newlineIsToken : true,

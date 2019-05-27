@@ -1,5 +1,5 @@
-export declare const test_0: [unknown];
-export declare const test_1: [unknown];
+export declare const test_0: [never];
+export declare const test_1: [never];
 export declare const test_2: [string];
 export declare const test_3: [number];
 export declare const test_4: [boolean];

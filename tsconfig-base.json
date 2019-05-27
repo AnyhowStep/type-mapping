@@ -5,7 +5,7 @@
         "declaration": true,
         "diagnostics": true,
 
-        "experimentalDecorators": true,
+        "experimentalDecorators": false,
 
         "allowJs": false,
 
