@@ -1,7 +1,7 @@
 import {MappableInputOf, ExpectedInputOf} from "../query";
 import {AnySafeMapper} from "../safe-mapper";
 import {Optional} from "../optional";
-import { isUndefinedMappable } from "./missing-value";
+import {isUndefinedMappable} from "./missing-value";
 
 export type IsOptional<F extends AnySafeMapper> = (
     F extends Optional ?

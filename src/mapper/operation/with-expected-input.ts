@@ -6,6 +6,7 @@ import {
     OutputOf,
     HandledInputOf,
 } from "../query";
+import {ExtractOptionalOrUnknown} from "./extract-optional-or-unknown";
 
 /**
     Lets you modify the `ExpectedInput<>` of a `Mapper<>`.
@@ -33,6 +34,7 @@ export function withExpectedInput<F extends AnyMapper>(
         & Mapper<HandledInputOf<F>, OutputOf<F>>
         & ExpectedInput<AcceptT>
         & MappableInput<MappableInputOf<F>>
+        & ExtractOptionalOrUnknown<F>
     )
 ) {
     return () => {

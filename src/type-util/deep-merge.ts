@@ -1,6 +1,6 @@
 import {toTypeStr} from "./to-type-str";
 import {strictEqual} from "./strict-equal";
-import { isPrimitive } from "util";
+import {isPrimitive} from "util";
 
 function deepMergeImpl (a : any, b : any) : unknown {
     if (strictEqual(a, b)) {
