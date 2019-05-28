@@ -1,0 +1,11 @@
+import * as tm from "../../../../../../dist";
+export declare const expectNumber_mapNumberOrUndefined: tm.MappableInput<number | undefined>;
+export declare const expectUndefined_mapNumberOrUndefined: tm.MappableInput<number | undefined>;
+export declare const optional_expectNumber_mapNumberOrUndefined: tm.MappableInput<number | undefined>;
+export declare const optional_expectUndefined_mapNumberOrUndefined: tm.MappableInput<number | undefined>;
+export declare const expectNumber_mapNumberOrUndefined2: tm.MappableInput<number | undefined>;
+export declare const expectUndefined_mapNumberOrUndefined2: tm.MappableInput<number | undefined>;
+export declare const optional_expectNumber_mapNumberOrUndefined2: tm.MappableInput<number | undefined>;
+export declare const optional_expectUndefined_mapNumberOrUndefined2: tm.MappableInput<number | undefined>;
+export declare const number_noMappableInputSet: unknown;
+export declare const number_notUndefined: tm.MappableInput<number>;
