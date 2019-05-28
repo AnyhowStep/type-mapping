@@ -15,12 +15,15 @@
   },
   "author": "anyhowstep",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnyhowStep/type-mapping"
+  },
   "devDependencies": {
+    "@types/diff": "^4.0.2",
+    "diff": "^4.0.1",
     "ts-node": "^8.1.0",
     "typescript": "^3.5.0-dev.20190523"
   },
-  "dependencies": {
-    "@types/diff": "^4.0.2",
-    "diff": "^4.0.1"
-  }
+  "dependencies": {}
 }

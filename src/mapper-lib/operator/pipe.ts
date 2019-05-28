@@ -1,14 +1,18 @@
 import {AnyMapper} from "../../mapper";
 import {SafeMapper, AnySafeMapper} from "../../mapper";
 import {OutputOf} from "../../mapper";
-import {ExtractMappableInputOrUnknown} from "../../mapper";
 import {ExtractExpectedInputOrUnknown} from "../../mapper";
 import {ExpectedInputOf} from "../../mapper";
 import {Primitive} from "../../primitive";
 import {ExpectedInput} from "../../mapper";
 import {AssertPipeable} from "../../mapper";
+import {MappableInput} from "../../mapper/mappable-input";
+import {MappableInputOf} from "../../mapper/query";
 
 function pipeImpl<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown> {
+    if (arr.length == 0) {
+        throw new Error(`Cannot pipe zero mappers`);
+    }
     return (name : string, mixed : unknown) : unknown => {
         for (let i=0; i<arr.length; ++i) {
             const d = arr[i];
@@ -18,15 +22,23 @@ function pipeImpl<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown
     };
 }
 
-export function pipe<
-    F0 extends AnySafeMapper
-> (
-    f0 : F0
-) : (
-    & SafeMapper<OutputOf<F0>>
-    & ExtractMappableInputOrUnknown<F0>
-    & ExtractExpectedInputOrUnknown<F0>
+export type PipeMapper<
+    SrcF extends AnySafeMapper,
+    DstF extends AnyMapper
+> = (
+    & SafeMapper<OutputOf<DstF>>
+    & MappableInput<MappableInputOf<SrcF>>
+    & (
+        ExpectedInputOf<DstF> extends ExpectedInputOf<SrcF> ?
+        (
+            Exclude<ExpectedInputOf<SrcF>, Primitive> extends Exclude<ExpectedInputOf<DstF>, Primitive> ?
+            ExpectedInput<ExpectedInputOf<DstF>> :
+            ExtractExpectedInputOrUnknown<SrcF>
+        ) :
+        ExtractExpectedInputOrUnknown<SrcF>
+    )
 );
+
 export function pipe<
     F0 extends AnySafeMapper,
     F1 extends AnyMapper
@@ -34,17 +46,7 @@ export function pipe<
     f0 : F0,
     f1 : AssertPipeable<F0, F1>
 ) : (
-    & SafeMapper<OutputOf<F1>>
-    & ExtractMappableInputOrUnknown<F0>
-    & (
-        ExpectedInputOf<F1> extends ExpectedInputOf<F0> ?
-        (
-            Exclude<ExpectedInputOf<F0>, Primitive> extends Exclude<ExpectedInputOf<F1>, Primitive> ?
-            ExpectedInput<ExpectedInputOf<F1>> :
-            ExtractExpectedInputOrUnknown<F0>
-        ) :
-        ExtractExpectedInputOrUnknown<F0>
-    )
+    PipeMapper<F0, F1>
 );
 export function pipe<
     F0 extends AnySafeMapper,
@@ -55,17 +57,7 @@ export function pipe<
     f1 : AssertPipeable<F0, F1>,
     f2 : AssertPipeable<F1, F2>
 ) : (
-    & SafeMapper<OutputOf<F2>>
-    & ExtractMappableInputOrUnknown<F0>
-    & (
-        ExpectedInputOf<F2> extends ExpectedInputOf<F0> ?
-        (
-            Exclude<ExpectedInputOf<F0>, Primitive> extends Exclude<ExpectedInputOf<F2>, Primitive> ?
-            ExpectedInput<ExpectedInputOf<F2>> :
-            ExtractExpectedInputOrUnknown<F0>
-        ) :
-        ExtractExpectedInputOrUnknown<F0>
-    )
+    PipeMapper<F0, F2>
 );
 export function pipe<
     F0 extends AnySafeMapper,
@@ -78,17 +70,7 @@ export function pipe<
     f2 : AssertPipeable<F1, F2>,
     f3 : AssertPipeable<F2, F3>
 ) : (
-    & SafeMapper<OutputOf<F3>>
-    & ExtractMappableInputOrUnknown<F0>
-    & (
-        ExpectedInputOf<F3> extends ExpectedInputOf<F0> ?
-        (
-            Exclude<ExpectedInputOf<F0>, Primitive> extends Exclude<ExpectedInputOf<F3>, Primitive> ?
-            ExpectedInput<ExpectedInputOf<F3>> :
-            ExtractExpectedInputOrUnknown<F0>
-        ) :
-        ExtractExpectedInputOrUnknown<F0>
-    )
+    PipeMapper<F0, F3>
 );
 export function pipe<
     F0 extends AnySafeMapper,
@@ -103,17 +85,7 @@ export function pipe<
     f3 : AssertPipeable<F2, F3>,
     f4 : AssertPipeable<F3, F4>
 ) : (
-    & SafeMapper<OutputOf<F4>>
-    & ExtractMappableInputOrUnknown<F0>
-    & (
-        ExpectedInputOf<F4> extends ExpectedInputOf<F0> ?
-        (
-            Exclude<ExpectedInputOf<F0>, Primitive> extends Exclude<ExpectedInputOf<F4>, Primitive> ?
-            ExpectedInput<ExpectedInputOf<F4>> :
-            ExtractExpectedInputOrUnknown<F0>
-        ) :
-        ExtractExpectedInputOrUnknown<F0>
-    )
+    PipeMapper<F0, F4>
 );
 //Not the best...
 //export function pipe<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown>;

@@ -34,12 +34,12 @@ export function orNull<F extends AnySafeMapper> (f : F) : OrNullMapper<F> {
         f
     );
 }
-export type MaybeMapper<F extends AnySafeMapper> = (
+export type OrMaybeMapper<F extends AnySafeMapper> = (
     & SafeMapper<OutputOf<F>|null|undefined>
     & ExpectedInput<ExpectedInputOf<F>|null|undefined>
     & MappableInput<MappableInputOf<F>|null|undefined>
 );
-export function orMaybe<F extends AnySafeMapper> (f : F) : MaybeMapper<F> {
+export function orMaybe<F extends AnySafeMapper> (f : F) : OrMaybeMapper<F> {
     return or(
         literal(undefined, null),
         f
