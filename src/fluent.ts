@@ -62,7 +62,7 @@ export interface IFluentMapper<OutputT> extends SafeMapper<OutputT> {
     );
 
     //Uncomment this block to warm yourself up during winter
-    //*
+    /*
     derive2<
         SrcKeyT extends string,
         DstKeyT extends string
