@@ -359,12 +359,12 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
 }
 /*
 import {stringToUnsignedInteger, inclusiveRange} from "./mapper-lib";
-export const n = stringToUnsignedInteger();
-export const x = fluentMapper(n);
+const n = stringToUnsignedInteger();
+const x = fluentMapper(n);
 x.__optional
 x.__expectedInput
 x.__mappableInput
-export const y = x
+const y = x
     .pipe(
         inclusiveRange({
             min : 3.141,
@@ -372,6 +372,7 @@ export const y = x
         })
     )
     .derive("x", "y");
-export const opt = x.optional()
+const opt = x.optional()
     .withName("qwerty");
+//const x2 = x.withExpectedInput<any>();
 //*/

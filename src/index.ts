@@ -1,3 +1,4 @@
+/// <reference path="function.d.ts" />
 import * as EnumUtil from "./enum-util";
 export {EnumUtil};
 import * as ErrorUtil from "./error-util";

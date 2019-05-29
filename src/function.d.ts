@@ -1,3 +1,3 @@
 interface Function {
-    readonly name : string,
+    readonly name? : string,
 }

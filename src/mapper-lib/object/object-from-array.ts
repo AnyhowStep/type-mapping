@@ -1,0 +1,193 @@
+import { AnySafeMapper, SafeMapper } from "../../mapper/safe-mapper";
+import { Name } from "../../mapper/name";
+import { OutputOf, ExpectedInputOfImpl, MappableInputOfImpl, getNameOrEmptyString} from "../../mapper/query";
+import { ExpectedInput } from "../../mapper/expected-input";
+import { IsExpectedInputOptional, IsOptional } from "../../mapper/predicate";
+import { MappableInput } from "../../mapper/mappable-input";
+import { or } from "../operator";
+import { objectFromMap } from "./object-from-map";
+
+type ExtractLiteralName<F extends AnySafeMapper & Name<string>> = (
+    F extends any ?
+    (
+        string extends F["name"] ?
+        never :
+        F["name"]
+    ) :
+    never
+);
+
+export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]> = (
+    & SafeMapper<
+        & {
+            [name in ExtractLiteralName<ArrT[number]>] : (
+                OutputOf<
+                    Extract<ArrT[number], { name : name }>
+                >
+            )
+        }
+        & (
+            string extends ArrT[number]["name"] ?
+            {
+                [name : string] : (
+                    | OutputOf<
+                        Exclude<ArrT[number], { name : ExtractLiteralName<ArrT[number]> }>
+                    >
+                    | undefined
+                )
+            } :
+            unknown
+        )
+    >
+    & ExpectedInput<
+        & {
+            [name in {
+                [k in ExtractLiteralName<ArrT[number]>] : (
+                    IsExpectedInputOptional<Extract<ArrT[number], { name : k }>> extends true ?
+                    never :
+                    k
+                )
+            }[ExtractLiteralName<ArrT[number]>]] : (
+                ExpectedInputOfImpl<
+                    Extract<ArrT[number], { name : name }>
+                >[0]
+            )
+        }
+        & {
+            [name in {
+                [k in ExtractLiteralName<ArrT[number]>] : (
+                    IsExpectedInputOptional<Extract<ArrT[number], { name : k }>> extends true ?
+                    k :
+                    never
+                )
+            }[ExtractLiteralName<ArrT[number]>]]? : (
+                ExpectedInputOfImpl<
+                    Extract<ArrT[number], { name : name }>
+                >[0]
+            )
+        }
+        & (
+            string extends ArrT[number]["name"] ?
+            {
+                [name : string] : (
+                    | ExpectedInputOfImpl<
+                        Exclude<ArrT[number], { name : ExtractLiteralName<ArrT[number]> }>
+                    >[0]
+                    | undefined
+                )
+            } :
+            unknown
+        )
+    >
+    & MappableInput<
+        & {
+            [name in {
+                [k in ExtractLiteralName<ArrT[number]>] : (
+                    IsOptional<Extract<ArrT[number], { name : k }>> extends true ?
+                    never :
+                    k
+                )
+            }[ExtractLiteralName<ArrT[number]>]] : (
+                MappableInputOfImpl<
+                    Extract<ArrT[number], { name : name }>
+                >[0]
+            )
+        }
+        & {
+            [name in {
+                [k in ExtractLiteralName<ArrT[number]>] : (
+                    IsOptional<Extract<ArrT[number], { name : k }>> extends true ?
+                    k :
+                    never
+                )
+            }[ExtractLiteralName<ArrT[number]>]]? : (
+                MappableInputOfImpl<
+                    Extract<ArrT[number], { name : name }>
+                >[0]
+            )
+        }
+        & (
+            string extends ArrT[number]["name"] ?
+            {
+                [name : string] : (
+                    | MappableInputOfImpl<
+                        Exclude<ArrT[number], { name : ExtractLiteralName<ArrT[number]> }>
+                    >[0]
+                    | undefined
+                )
+            } :
+            unknown
+        )
+    >
+);
+/**
+    This,
+    ```ts
+    objectFromArray(
+        withName(unsignedInteger(), "foo"),
+        withName(string(), "foo")
+    );
+    ```
+
+    Is the same as,
+    ```ts
+    objectFromArray(
+        withName(or(
+            unsignedInteger(),
+            string()
+        ), "foo")
+    );
+    ```
+*/
+export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
+    ObjectFromArrayMapper<ArrT>
+) {
+    const groupedByName : { [k : string] : AnySafeMapper[]|undefined } = {};
+    for (const f of arr) {
+        const name = getNameOrEmptyString(f);
+        let mappers = groupedByName[name];
+        if (mappers == undefined) {
+            mappers = [];
+            groupedByName[name] = mappers;
+        }
+        mappers.push(f);
+    }
+    const map : { [k : string] : AnySafeMapper } = {};
+    for (const k in groupedByName) {
+        const mappers = groupedByName[k];
+        if (mappers == undefined) {
+            continue;
+        }
+        map[k] = (mappers.length == 1) ?
+            mappers[0] :
+            or(...mappers);
+    }
+    return objectFromMap(map) as any;
+}
+/*
+import { unsignedInteger } from "../number";
+import { fluentMapper } from "../../fluent";
+import { string } from "../string";
+import { boolean, stringToBoolean } from "../boolean";
+const x = objectFromArray(
+    fluentMapper(string()),
+    fluentMapper(boolean()),
+    fluentMapper(unsignedInteger())
+        .withName("test"),
+    fluentMapper(boolean())
+        .withName("test"),
+    fluentMapper(boolean())
+        .orUndefined()
+        .withName("shouldNotBeOptional"),
+    fluentMapper(stringToBoolean())
+        .optional()
+        .withExpectedInput<string|undefined>()
+        .withName("shouldBeOptional"),
+)
+x.__expectedInput
+x.__mappableInput
+
+const out = x("", "")
+out.test = 1;
+const blah = out["blah"];
+//*/
