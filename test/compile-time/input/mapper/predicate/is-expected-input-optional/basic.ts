@@ -4,11 +4,11 @@ declare function isOptional<F extends tm.AnySafeMapper> (f : F) : tm.IsOptional<
 declare function isExpectedInputOptional<F extends tm.AnySafeMapper> (f : F) : tm.IsExpectedInputOptional<F>
 
 export const doesNotExtendOptional = isExpectedInputOptional(tm.undefined());
-export const extendsOptional_containsUndefined = isExpectedInputOptional(tm.optional(tm.naturalNumber()));
+export const extendsOptional_containsUndefined = isExpectedInputOptional(tm.optional(tm.unsignedInteger()));
 export const extendsOptional_isNotUndefined = isExpectedInputOptional(
     tm.notUndefined(
         tm.optional(
-            tm.naturalNumber()
+            tm.unsignedInteger()
         )
     )
 );
@@ -23,7 +23,7 @@ export const unionOneOptionalOneNot = isExpectedInputOptional(unionOneOptionalOn
 
 const isOptionalButExpectedInputDoesNotContainUndefinedFoo = (
     tm.withExpectedInput(
-        tm.optional(tm.naturalNumber())
+        tm.optional(tm.unsignedInteger())
     )<number>()
 );
 export const isOptionalButExpectedInputDoesNotContainUndefined = isOptional(

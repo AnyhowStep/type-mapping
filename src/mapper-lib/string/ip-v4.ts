@@ -1,5 +1,5 @@
 import {pipe} from "../operator";
-import {stringToNaturalNumber, ltEq} from "../number";
+import {stringToUnsignedInteger, ltEq} from "../number";
 import {string} from "./string";
 import {SafeMapper} from "../../mapper";
 
@@ -21,7 +21,7 @@ import {SafeMapper} from "../../mapper";
 export function ipV4OctetString () : SafeMapper<string> {
     return pipe(
         string(),
-        stringToNaturalNumber(),
+        stringToUnsignedInteger(),
         ltEq(255),
         (_name : string, octet : number) : string => {
             return octet.toString();

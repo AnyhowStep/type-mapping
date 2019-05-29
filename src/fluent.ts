@@ -5,6 +5,15 @@ import {
     AnyMapper,
     AssertPipeable,
     MappableInputOf,
+    ExpectedInputOf,
+    WithExpectedInput,
+    withExpectedInput,
+    getNameOrEmptyString,
+    WithName,
+    withName,
+    NameOf,
+    OptionalFlagOf,
+    getOptionalFlagOrFalse,
 } from "./mapper";
 import {
     OrUndefinedMapper,
@@ -36,18 +45,55 @@ import {
     derive,
     RenameMapper,
     rename,
+    ArrayLikeMapper,
+    ArrayMapper,
+    ArrayLikeToArrayMapper,
+    StringIndexerMapper,
+    UnsafeStringIndexerMapper,
+    arrayLike,
+    array,
+    arrayLikeToArray,
+    unsafeStringIndexer,
+    stringIndexer,
 } from "./mapper-lib";
 import {LiteralType} from "./primitive";
+import {setFunctionName} from "./type-util";
 
-export type FluentMapper<F extends AnySafeMapper> = (
-    & IFluentMapper<OutputOf<F>>
-    & F
-    //& ExtractExpectedInputOrUnknown<F>
-    //& ExtractMappableInputOrUnknown<F>
-    //& ExtractOptionalOrUnknown<F>
-);
-export interface IFluentMapper<OutputT> extends SafeMapper<OutputT> {
+export interface FluentMapper<F extends AnySafeMapper> {
+    (name : string, mixed : unknown) : OutputOf<F>;
 
+    __expectedInput? : [ExpectedInputOf<F>];
+    __mappableInput? : [MappableInputOf<F>];
+    __optional : OptionalFlagOf<F>;
+    name : NameOf<F>,
+
+    //== mapper/operation ==
+
+    withExpectedInput<AcceptT extends MappableInputOf<F>> () : (
+        FluentMapper<
+            WithExpectedInput<F, AcceptT>
+        >
+    );
+
+    //== field ==
+
+    withName<
+        NameT extends string
+    > (
+        name : NameT
+    ) : (
+        FluentMapper<WithName<F, NameT>>
+    );
+
+    //== array-like ==
+
+    arrayLike () : FluentMapper<ArrayLikeMapper<F>>;
+
+    //== array ==
+
+    array () : FluentMapper<ArrayMapper<F>>;
+
+    arrayLikeToArray () : FluentMapper<ArrayLikeToArrayMapper<F>>;
 
     //== object ==
 
@@ -58,33 +104,9 @@ export interface IFluentMapper<OutputT> extends SafeMapper<OutputT> {
         srcKey : SrcKeyT,
         dstKey : DstKeyT
     ) : (
-        FluentMapper<DeriveMapper<SrcKeyT, DstKeyT, this>>
+        FluentMapper<DeriveMapper<SrcKeyT, DstKeyT, F>>
     );
 
-    //Uncomment this block to warm yourself up during winter
-    /*
-    derive2<
-        SrcKeyT extends string,
-        DstKeyT extends string
-    > (
-        srcKey : SrcKeyT,
-        dstKey : DstKeyT
-    ) : (
-        FluentMapper<DeriveMapper<SrcKeyT, DstKeyT, this>>
-    );
-    derive3<
-        SrcKeyT extends string,
-        DstKeyT extends string
-    > (
-        srcKey : SrcKeyT,
-        dstKey : DstKeyT
-    ) : (
-        FluentMapper<DeriveMapper<SrcKeyT, DstKeyT, this>>
-    );
-    //*/
-
-    //Uncomment this block to make compile-times jump from 2s to 90s
-    /*
     rename<
         SrcKeyT extends string,
         DstKeyT extends string
@@ -92,45 +114,48 @@ export interface IFluentMapper<OutputT> extends SafeMapper<OutputT> {
         srcKey : SrcKeyT,
         dstKey : DstKeyT
     ) : (
-        FluentMapper<RenameMapper<SrcKeyT, DstKeyT, this>>
+        FluentMapper<RenameMapper<SrcKeyT, DstKeyT, F>>
     );
-    //*/
+
+    unsafeStringIndexer () : FluentMapper<UnsafeStringIndexerMapper<F>>;
+
+    stringIndexer () : FluentMapper<StringIndexerMapper<F>>;
 
     //== operator ==
 
     cast<DstF extends AnySafeMapper> (
-        castDelegate : CastDelegate<OutputOf<this>, MappableInputOf<DstF>>,
+        castDelegate : CastDelegate<OutputOf<F>, MappableInputOf<DstF>>,
         dstDelegate : DstF
     ) : (
-        FluentMapper<CastMapper<this, DstF>>
-    )
+        FluentMapper<CastMapper<F, DstF>>
+    );
 
     deepMerge<ArrT extends SafeMapper<object>[]> (this : SafeMapper<object>, ...arr : ArrT) : (
         FluentMapper<
             DeepMergeMapper<
-                Parameters<(head : Extract<this, SafeMapper<object>>, ...tail : ArrT) => unknown>
+                Parameters<(head : Extract<F, SafeMapper<object>>, ...tail : ArrT) => unknown>
             >
         >
     );
 
     excludeLiteral<ArrT extends LiteralType[]> (...arr : ArrT) : (
-        FluentMapper<ExcludeLiteralMapper<this, ArrT>>
+        FluentMapper<ExcludeLiteralMapper<F, ArrT>>
     );
 
-    orUndefined () : FluentMapper<OrUndefinedMapper<this>>;
-    orNull () : FluentMapper<OrNullMapper<this>>;
-    orMaybe () : FluentMapper<OrMaybeMapper<this>>;
+    orUndefined () : FluentMapper<OrUndefinedMapper<F>>;
+    orNull () : FluentMapper<OrNullMapper<F>>;
+    orMaybe () : FluentMapper<OrMaybeMapper<F>>;
 
-    notUndefined () : FluentMapper<NotUndefinedMapper<this>>;
-    notNull () : FluentMapper<NotNullMapper<this>>;
-    notMaybe () : FluentMapper<NotMaybeMapper<this>>;
+    notUndefined () : FluentMapper<NotUndefinedMapper<F>>;
+    notNull () : FluentMapper<NotNullMapper<F>>;
+    notMaybe () : FluentMapper<NotMaybeMapper<F>>;
 
-    optional () : FluentMapper<OptionalMapper<this>>;
+    optional () : FluentMapper<OptionalMapper<F>>;
 
     or<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
         FluentMapper<
             OrMapper<
-                Parameters<(head : this, ...tail : ArrT) => unknown>
+                Parameters<(head : F, ...tail : ArrT) => unknown>
             >
         >
     );
@@ -138,29 +163,29 @@ export interface IFluentMapper<OutputT> extends SafeMapper<OutputT> {
     pipe<
         F1 extends AnyMapper
     > (
-        f1 : AssertPipeable<this, F1>
+        f1 : AssertPipeable<F, F1>
     ) : (
-        FluentMapper<PipeMapper<this, F1>>
+        FluentMapper<PipeMapper<F, F1>>
     );
     pipe<
         F1 extends AnyMapper,
         F2 extends AnyMapper
     > (
-        f1 : AssertPipeable<this, F1>,
+        f1 : AssertPipeable<F, F1>,
         f2 : AssertPipeable<F1, F2>
     ) : (
-        FluentMapper<PipeMapper<this, F2>>
+        FluentMapper<PipeMapper<F, F2>>
     );
     pipe<
         F1 extends AnyMapper,
         F2 extends AnyMapper,
         F3 extends AnyMapper
     > (
-        f1 : AssertPipeable<this, F1>,
+        f1 : AssertPipeable<F, F1>,
         f2 : AssertPipeable<F1, F2>,
         f3 : AssertPipeable<F2, F3>
     ) : (
-        FluentMapper<PipeMapper<this, F3>>
+        FluentMapper<PipeMapper<F, F3>>
     );
     pipe<
         F1 extends AnyMapper,
@@ -168,87 +193,63 @@ export interface IFluentMapper<OutputT> extends SafeMapper<OutputT> {
         F3 extends AnyMapper,
         F4 extends AnyMapper
     > (
-        f1 : AssertPipeable<this, F1>,
+        f1 : AssertPipeable<F, F1>,
         f2 : AssertPipeable<F1, F2>,
         f3 : AssertPipeable<F2, F3>,
         f4 : AssertPipeable<F3, F4>
     ) : (
-        FluentMapper<PipeMapper<this, F4>>
+        FluentMapper<PipeMapper<F, F4>>
     );
+
+    unsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<SafeMapper<unknown>>;
 }
 
-/**
-    MODIFIES THE FUNCTION `f`!
-    DOES NOT RETURN A NEW FUNCTION.
-*/
 export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> {
-    const result : FluentMapper<F> = f as any;
+    const result = function (name : string, mixed : unknown) : OutputOf<F> {
+        return f(name, mixed);
+    };
+    result.__optional = getOptionalFlagOrFalse(f);
+    result.name = getNameOrEmptyString(f);
+    setFunctionName(result, result.name);
 
-    result.cast = <DstF extends AnySafeMapper> (
-        castDelegate : CastDelegate<OutputOf<typeof result>, MappableInputOf<DstF>>,
-        dstDelegate : DstF
+    //== mapper/operation
+
+    result.withExpectedInput = <AcceptT extends MappableInputOf<F>> () : (
+        FluentMapper<
+            WithExpectedInput<F, AcceptT>
+        >
+    ) => {
+        return fluentMapper(withExpectedInput(f)<AcceptT>());
+    };
+
+    result.withName = <
+        NameT extends string
+    > (
+        name : NameT
     ) : (
-        FluentMapper<CastMapper<typeof result, DstF>>
+        FluentMapper<WithName<F, NameT>>
     ) => {
-        return fluentMapper(cast(result, castDelegate, dstDelegate));
+        return fluentMapper(withName(f, name));
     };
 
-    result.deepMerge = function<ArrT extends SafeMapper<object>[]> (this : SafeMapper<object>, ...arr : ArrT) : (
-        FluentMapper<
-            DeepMergeMapper<
-                Parameters<(head : Extract<typeof result, SafeMapper<object>>, ...tail : ArrT) => unknown>
-            >
-        >
-    ) {
-        return fluentMapper(deepMerge(
-            result,
-            ...arr
-        ));
+    //== array-like ==
+
+    result.arrayLike = () : FluentMapper<ArrayLikeMapper<F>> => {
+        return fluentMapper(arrayLike(f));
     };
 
-    result.excludeLiteral = <ArrT extends LiteralType[]> (...arr : ArrT) : (
-        FluentMapper<ExcludeLiteralMapper<typeof result, ArrT>>
-    ) => {
-        return fluentMapper(excludeLiteral(result, ...arr));
+    //== array ==
+
+    result.array = () : FluentMapper<ArrayMapper<F>> => {
+        return fluentMapper(array(f));
     };
 
-    result.orUndefined = () : FluentMapper<OrUndefinedMapper<typeof result>> => {
-        return fluentMapper(orUndefined(result));
-    };
-    result.orNull = () : FluentMapper<OrNullMapper<typeof result>> => {
-        return fluentMapper(orNull(result));
-    };
-    result.orMaybe = () : FluentMapper<OrMaybeMapper<typeof result>> => {
-        return fluentMapper(orMaybe(result));
+    result.arrayLikeToArray = () : FluentMapper<ArrayLikeToArrayMapper<F>> => {
+        return fluentMapper(arrayLikeToArray(f));
     };
 
-    result.notUndefined = () : FluentMapper<NotUndefinedMapper<typeof result>> => {
-        return fluentMapper(notUndefined(result));
-    };
-    result.notNull = () : FluentMapper<NotNullMapper<typeof result>> => {
-        return fluentMapper(notNull(result));
-    };
-    result.notMaybe = () : FluentMapper<NotMaybeMapper<typeof result>> => {
-        return fluentMapper(notMaybe(result));
-    };
 
-    result.optional = () : FluentMapper<OptionalMapper<typeof result>> => {
-        return fluentMapper(optional(result));
-    };
-
-    result.or = <ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
-        FluentMapper<
-            OrMapper<
-                Parameters<(head : typeof result, ...tail : ArrT) => unknown>
-            >
-        >
-    ) => {
-        return fluentMapper(or(result, ...arr));
-    };
-
-    result.pipe = (<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown> => {
-        return fluentMapper(unsafePipe(result, ...arr));
-    }) as any;
+    // == object
 
     result.derive = <
         SrcKeyT extends string,
@@ -257,28 +258,113 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         srcKey : SrcKeyT,
         dstKey : DstKeyT
     ) : (
-        FluentMapper<DeriveMapper<SrcKeyT, DstKeyT, typeof result>>
+        FluentMapper<DeriveMapper<SrcKeyT, DstKeyT, F>>
     ) => {
-        return fluentMapper(derive(srcKey, dstKey, result));
+        return fluentMapper(derive(srcKey, dstKey, f));
     };
 
-    (result as any).rename = <
+    result.rename = <
         SrcKeyT extends string,
         DstKeyT extends string
     > (
         srcKey : SrcKeyT,
         dstKey : DstKeyT
     ) : (
-        FluentMapper<RenameMapper<SrcKeyT, DstKeyT, typeof result>>
+        FluentMapper<RenameMapper<SrcKeyT, DstKeyT, F>>
     ) => {
-        return fluentMapper(rename(srcKey, dstKey, result));
+        return fluentMapper(rename(srcKey, dstKey, f));
     };
 
+    result.unsafeStringIndexer = () : FluentMapper<UnsafeStringIndexerMapper<F>> => {
+        return fluentMapper(unsafeStringIndexer(f));
+    };
+
+    result.stringIndexer = () : FluentMapper<StringIndexerMapper<F>> => {
+        return fluentMapper(stringIndexer(f));
+    };
+
+    //== operator ==
+
+    result.cast = <DstF extends AnySafeMapper> (
+        castDelegate : CastDelegate<OutputOf<F>, MappableInputOf<DstF>>,
+        dstDelegate : DstF
+    ) : (
+        FluentMapper<CastMapper<F, DstF>>
+    ) => {
+        return fluentMapper(cast(f, castDelegate, dstDelegate));
+    };
+
+    result.deepMerge = function<ArrT extends SafeMapper<object>[]> (this : SafeMapper<object>, ...arr : ArrT) : (
+        FluentMapper<
+            DeepMergeMapper<
+                Parameters<(head : Extract<F, SafeMapper<object>>, ...tail : ArrT) => unknown>
+            >
+        >
+    ) {
+        return fluentMapper(deepMerge(
+            f,
+            ...arr
+        ));
+    };
+
+    result.excludeLiteral = <ArrT extends LiteralType[]> (...arr : ArrT) : (
+        FluentMapper<ExcludeLiteralMapper<F, ArrT>>
+    ) => {
+        return fluentMapper(excludeLiteral(f, ...arr));
+    };
+
+    result.orUndefined = () : FluentMapper<OrUndefinedMapper<F>> => {
+        return fluentMapper(orUndefined(f));
+    };
+    result.orNull = () : FluentMapper<OrNullMapper<F>> => {
+        return fluentMapper(orNull(f));
+    };
+    result.orMaybe = () : FluentMapper<OrMaybeMapper<F>> => {
+        return fluentMapper(orMaybe(f));
+    };
+
+    result.notUndefined = () : FluentMapper<NotUndefinedMapper<F>> => {
+        return fluentMapper(notUndefined(f));
+    };
+    result.notNull = () : FluentMapper<NotNullMapper<F>> => {
+        return fluentMapper(notNull(f));
+    };
+    result.notMaybe = () : FluentMapper<NotMaybeMapper<F>> => {
+        return fluentMapper(notMaybe(f));
+    };
+
+    result.optional = () : FluentMapper<OptionalMapper<F>> => {
+        return fluentMapper(optional(f));
+    };
+
+    result.or = <ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
+        FluentMapper<
+            OrMapper<
+                Parameters<(head : F, ...tail : ArrT) => unknown>
+            >
+        >
+    ) => {
+        return fluentMapper(or(f, ...arr));
+    };
+
+    result.pipe = (<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<SafeMapper<unknown>> => {
+        return fluentMapper(unsafePipe(f, ...arr));
+    }) as any;
+
+    result.unsafePipe = <ArrT extends AnyMapper[]>(...arr : ArrT) : FluentMapper<SafeMapper<unknown>> => {
+        return fluentMapper(unsafePipe(...arr));
+    };
 
     return result;
 }
 /*
-const x = fluentMapper(stringToNaturalNumber())
+import {stringToUnsignedInteger, inclusiveRange} from "./mapper-lib";
+export const n = stringToUnsignedInteger();
+export const x = fluentMapper(n);
+x.__optional
+x.__expectedInput
+x.__mappableInput
+export const y = x
     .pipe(
         inclusiveRange({
             min : 3.141,
@@ -286,5 +372,6 @@ const x = fluentMapper(stringToNaturalNumber())
         })
     )
     .derive("x", "y");
-
-*/
+export const opt = x.optional()
+    .withName("qwerty");
+//*/

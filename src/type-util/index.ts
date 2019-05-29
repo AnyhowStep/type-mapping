@@ -3,6 +3,7 @@ export * from "./deep-merge";
 export * from "./is-any";
 export * from "./is-bigint";
 export * from "./is-primitive";
+export * from "./set-function-name";
 export * from "./strict-equal";
 export * from "./to-type-str";
 export * from "./try-get-bigint-factory-function";

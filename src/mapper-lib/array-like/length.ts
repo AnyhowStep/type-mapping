@@ -1,6 +1,6 @@
 import {pipe} from "../operator";
 import {instanceOfObject} from "../object";
-import {naturalNumber, inclusiveRange} from "../number";
+import {unsignedInteger, inclusiveRange} from "../number";
 import {SafeMapper} from "../../mapper";
 import {cache} from "../operator";
 
@@ -12,7 +12,7 @@ export function length (args : {
         instanceOfObject(),
         cache(
             pipe(
-                naturalNumber(),
+                unsignedInteger(),
                 inclusiveRange(args)
             ),
             (name : string, mixed : Object, lengthDelegate) : { readonly length : number} => {

@@ -23,6 +23,17 @@ export function toLiteralUnionStr (arr : any[]) : string {
         .join("|");
 }
 
+export function getCtorName (ctor : unknown) : string {
+    if (!(ctor instanceof Object)) {
+        return "[Not Ctor]";
+    }
+    const name : unknown = (ctor as any).name;
+    if (typeof name == "string") {
+        return name;
+    }
+    return "[Unknown Name]";
+}
+
 /**
     Intended to work better than `typeof mixed`.
 */
@@ -47,9 +58,5 @@ export function toTypeStr (mixed : unknown) : string {
     if (constructor == undefined) {
         return "[Unknown Prototype]";
     }
-    const name = constructor.name;
-    if (typeof name == "string") {
-        return name;
-    }
-    return "[Unknown Name]";
+    return getCtorName(constructor);
 }

@@ -43,7 +43,7 @@ export function integer () : SafeMapper<number> {
 /**
     Natural number here is defined as an integer >= 0
 */
-export function naturalNumber () : SafeMapper<number> {
+export function unsignedInteger () : SafeMapper<number> {
     return pipe(
         integer(),
         gtEq(0)

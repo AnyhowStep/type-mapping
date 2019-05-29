@@ -25,5 +25,5 @@
     @see HandledInputOf
 */
 export interface MappableInput<T> {
-    __mappableInput? : [T],
+    readonly __mappableInput? : [T],
 }

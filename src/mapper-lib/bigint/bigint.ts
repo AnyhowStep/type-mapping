@@ -15,7 +15,7 @@ export function bigInt () : SafeMapper<bigint> {
 /**
     Natural BigInt here is defined as an integer >= 0
 */
-export function naturalBigInt () : SafeMapper<bigint> {
+export function unsignedBigInt () : SafeMapper<bigint> {
     const bigIntFactory = getBigIntFactoryFunctionOrError();
     return pipe(
         bigInt(),

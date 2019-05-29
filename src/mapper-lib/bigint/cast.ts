@@ -1,8 +1,8 @@
-import {integerFormatString, naturalNumberFormatString} from "../string";
+import {integerFormatString, unsignedIntegerFormatString} from "../string";
 import {cast, or} from "../operator";
-import {bigInt, naturalBigInt} from "./bigint";
+import {bigInt, unsignedBigInt} from "./bigint";
 import {getBigIntFactoryFunctionOrError} from "../../type-util";
-import {integer, naturalNumber} from "../number";
+import {integer, unsignedInteger} from "../number";
 
 /**
     Uses `integerFormatString()` and `BigInt()` internally.
@@ -17,14 +17,14 @@ export function stringToBigInt () {
 }
 
 /**
-    Uses `naturalNumberFormatString()` and `BigInt()` internally.
+    Uses `unsignedIntegerFormatString()` and `BigInt()` internally.
 */
-export function stringToNaturalBigInt () {
+export function stringToUnsignedBigInt () {
     const bigIntFactory = getBigIntFactoryFunctionOrError();
     return cast(
-        naturalNumberFormatString(),
+        unsignedIntegerFormatString(),
         bigIntFactory,
-        naturalBigInt()
+        unsignedBigInt()
     );
 }
 
@@ -37,12 +37,12 @@ export function integerToBigInt () {
     );
 }
 
-export function naturalNumberToNaturalBigInt () {
+export function unsignedIntegerToUnsignedBigInt () {
     const bigIntFactory = getBigIntFactoryFunctionOrError();
     return cast(
-        naturalNumber(),
+        unsignedInteger(),
         bigIntFactory,
-        naturalBigInt()
+        unsignedBigInt()
     );
 }
 
@@ -62,16 +62,16 @@ export function toBigInt () {
 }
 
 /**
-    Uses `naturalNumberFormatString()` and `BigInt()` internally.
+    Uses `unsignedIntegerFormatString()` and `BigInt()` internally.
 */
-export function toNaturalBigInt () {
+export function toUnsignedBigInt () {
     const bigIntFactory = getBigIntFactoryFunctionOrError();
     return cast(
         or(
-            naturalNumberFormatString(),
-            naturalNumber()
+            unsignedIntegerFormatString(),
+            unsignedInteger()
         ),
         bigIntFactory,
-        naturalBigInt()
+        unsignedBigInt()
     );
 }

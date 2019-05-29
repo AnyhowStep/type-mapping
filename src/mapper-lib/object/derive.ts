@@ -21,7 +21,7 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     Example 1,
 
     ```ts
-    const f = tm.derive("x", "y", tm.stringToNaturalNumber())
+    const f = tm.derive("x", "y", tm.stringToUnsignedInteger())
 
     f("obj", { x : "34" })              //Gives us { y : 34 }
     f("obj", { y : "34" })              //Error; expected `x`
@@ -34,7 +34,7 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     Example 2,
 
     ```ts
-    const f = tm.derive("x", "y", tm.optional(tm.stringToNaturalNumber()))
+    const f = tm.derive("x", "y", tm.optional(tm.stringToUnsignedInteger()))
 
     f("obj", { x : "34" })              //Gives us { y : 34 }
     f("obj", { y : "34" })              //Gives us { y : undefined }
@@ -47,7 +47,7 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     Example 3,
 
     ```ts
-    const f = tm.derive("x", "y", tm.orUndefined(tm.stringToNaturalNumber()))
+    const f = tm.derive("x", "y", tm.orUndefined(tm.stringToUnsignedInteger()))
 
     f("obj", { x : "34" })              //Gives us { y : 34 }
     f("obj", { y : "34" })              //Error; expected `x`
@@ -61,9 +61,9 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     //derive<>() can be used while keeping the old field,
     const f = tm.deepMerge(
         tm.object({
-            x : tm.naturalNumberString()
+            x : tm.unsignedIntegerString()
         }),
-        tm.derive("x", "y", tm.stringToNaturalNumber())
+        tm.derive("x", "y", tm.stringToUnsignedInteger())
     );
     ```
 
@@ -126,8 +126,8 @@ export function derive<
     );
 }
 /*
-const a = naturalNumber();
-const b = optional(naturalNumber());
+const a = unsignedInteger();
+const b = optional(unsignedInteger());
 const c = string();
 const d = optional(string());
 

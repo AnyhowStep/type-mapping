@@ -1,4 +1,4 @@
-import {MappableInputOf, ExpectedInputOf} from "../query";
+import {MappableInputOf, ExpectedInputOf, getOptionalFlagOrFalse} from "../query";
 import {AnySafeMapper} from "../safe-mapper";
 import {Optional} from "../optional";
 import {isUndefinedMappable} from "./missing-value";
@@ -27,7 +27,7 @@ export function isOptional (f : unknown) : f is Optional {
     if (typeof f != "function") {
         return false;
     }
-    if ((f as any).__optional !== true) {
+    if (!getOptionalFlagOrFalse(f as any)) {
         return false;
     }
     if (!isUndefinedMappable(f as any)) {

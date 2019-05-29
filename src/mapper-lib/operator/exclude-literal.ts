@@ -38,6 +38,6 @@ export function excludeLiteral<
                 }
             }
             return value as any;
-        })
+        }) as any
     );
 }

@@ -21,7 +21,7 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     Example 1,
 
     ```ts
-    const f = tm.rename("x", "y", tm.stringToNaturalNumber())
+    const f = tm.rename("x", "y", tm.stringToUnsignedInteger())
 
     f("obj", { x : "34" })              //Gives us { y : 34 }
     f("obj", { y : "34" })              //Gives us { y : 34 }
@@ -34,7 +34,7 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     Example 2,
 
     ```ts
-    const f = tm.rename("x", "y", tm.optional(tm.stringToNaturalNumber()))
+    const f = tm.rename("x", "y", tm.optional(tm.stringToUnsignedInteger()))
 
     f("obj", { x : "34" })              //Gives us { y : 34 }
     f("obj", { y : "34" })              //Gives us { y : 34 }
@@ -47,7 +47,7 @@ import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
     Example 3,
 
     ```ts
-    const f = tm.rename("x", "y", tm.orUndefined(tm.stringToNaturalNumber()))
+    const f = tm.rename("x", "y", tm.orUndefined(tm.stringToUnsignedInteger()))
 
     f("obj", { x : "34" })              //Gives us { y : 34 }
     f("obj", { y : "34" })              //Gives us { y : 34 }
@@ -124,8 +124,8 @@ export function rename<
     );
 }
 /*
-const a = naturalNumber();
-const b = optional(naturalNumber());
+const a = unsignedInteger();
+const b = optional(unsignedInteger());
 const c = string();
 const d = optional(string());
 

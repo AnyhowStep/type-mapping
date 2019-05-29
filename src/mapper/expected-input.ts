@@ -22,5 +22,5 @@
 
 */
 export interface ExpectedInput<T> {
-    __expectedInput? : [T],
+    readonly __expectedInput? : [T],
 }

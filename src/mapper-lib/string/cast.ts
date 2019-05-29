@@ -1,6 +1,6 @@
 import {cast} from "../operator";
-import {finiteNumber, integer, naturalNumber} from "../number";
-import {finiteNumberString, integerString, naturalNumberString} from "./number-string";
+import {finiteNumber, integer, unsignedInteger} from "../number";
+import {finiteNumberString, integerString, unsignedIntegerString} from "./number-string";
 import {ExpectedInput} from "../../mapper/expected-input";
 import {MappableInput} from "../../mapper/mappable-input";
 import {SafeMapper} from "../../mapper/safe-mapper";
@@ -22,11 +22,11 @@ export function integerToIntegerString () {
     );
 }
 
-export function naturalNumberToNaturalNumberString () {
+export function unsignedIntegerToUnsignedIntegerString () {
     return cast(
-        naturalNumber(),
+        unsignedInteger(),
         num => num.toString(),
-        naturalNumberString()
+        unsignedIntegerString()
     );
 }
 

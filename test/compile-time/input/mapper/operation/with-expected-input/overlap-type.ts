@@ -1,5 +1,5 @@
 import * as tm from "../../../../../../dist";
 
 export const unrelatedType = tm.withExpectedInput(
-    tm.orUndefined(tm.naturalNumber())
+    tm.orUndefined(tm.unsignedInteger())
 )<undefined|string>();

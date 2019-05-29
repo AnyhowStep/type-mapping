@@ -3,11 +3,11 @@ import * as tm from "../../../../../../dist";
 declare function isOptional<F extends tm.AnySafeMapper> (f : F) : tm.IsOptional<F>
 
 export const doesNotExtendOptional = isOptional(tm.undefined());
-export const extendsOptional_containsUndefined = isOptional(tm.optional(tm.naturalNumber()));
+export const extendsOptional_containsUndefined = isOptional(tm.optional(tm.unsignedInteger()));
 export const extendsOptional_isNotUndefined = isOptional(
     tm.notUndefined(
         tm.optional(
-            tm.naturalNumber()
+            tm.unsignedInteger()
         )
     )
 );

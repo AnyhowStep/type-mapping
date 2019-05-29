@@ -14,5 +14,5 @@
 
 */
 export interface Optional {
-    __optional : true,
+  readonly __optional : true,
 }

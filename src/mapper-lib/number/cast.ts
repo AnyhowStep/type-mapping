@@ -1,6 +1,6 @@
-import {floatingPointFormatString, integerFormatString, naturalNumberFormatString} from "../string";
+import {floatingPointFormatString, integerFormatString, unsignedIntegerFormatString} from "../string";
 import {cast, or, pipe} from "../operator";
-import {finiteNumber, integer, naturalNumber} from "./number";
+import {finiteNumber, integer, unsignedInteger} from "./number";
 import {bigInt} from "../bigint/bigint";
 
 /**
@@ -38,19 +38,19 @@ export function stringToInteger () {
 }
 
 /**
-    Uses `naturalNumberFormatString()` and `parseInt()` internally.
+    Uses `unsignedIntegerFormatString()` and `parseInt()` internally.
 
     ```ts
     const s = "999999999999999999999999999"
     //Output is "1e+27" due to loss in precision
-    stringToNaturalNumber("", s).toString()
+    stringToUnsignedInteger("", s).toString()
     ```
 */
-export function stringToNaturalNumber () {
+export function stringToUnsignedInteger () {
     return cast(
-        naturalNumberFormatString(),
+        unsignedIntegerFormatString(),
         parseInt,
-        naturalNumber()
+        unsignedInteger()
     );
 }
 
@@ -121,12 +121,12 @@ export function toInteger () {
 }
 
 /**
-    Uses `naturalNumberFormatString()` and `parseInt()` internally.
+    Uses `unsignedIntegerFormatString()` and `parseInt()` internally.
 
     ```ts
     const s = "999999999999999999999999999"
     //Output is "1e+27" due to loss in precision
-    toNaturalNumber("", s).toString()
+    toUnsignedInteger("", s).toString()
     ```
 
     -----
@@ -134,13 +134,13 @@ export function toInteger () {
     ```ts
     const b = BigInt("999999999999999999999999999")
     //Output is "1e+27" due to loss in precision
-    toNaturalNumber("", b).toString()
+    toUnsignedInteger("", b).toString()
     ```
 */
-export function toNaturalNumber () {
+export function toUnsignedInteger () {
     return cast(
         or(
-            naturalNumberFormatString(),
+            unsignedIntegerFormatString(),
             pipe(
                 bigInt(),
                 (_name : string, b : bigint) => {
@@ -149,6 +149,6 @@ export function toNaturalNumber () {
             )
         ),
         parseInt,
-        naturalNumber()
+        unsignedInteger()
     );
 }
