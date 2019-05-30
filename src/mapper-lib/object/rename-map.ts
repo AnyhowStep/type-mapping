@@ -12,6 +12,8 @@ import {
 import { IsOptional } from "../../mapper/predicate";
 import { AnySafeMapper } from "../../mapper/safe-mapper";
 import { UnionToIntersection } from "../../type-util";
+import { deepMerge } from "../operator";
+import { rename } from "./rename";
 
 type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
     {
@@ -131,29 +133,21 @@ export type RenameMapMapper<MapT extends FieldMap> = (
             )
         }
     >
-    /*& ExpectedInput<
-        IsExpectedInputOptional<F> extends true ?
-        { [dst in DstKeyT]? : ExpectedInputOf<F> } :
-        { [dst in DstKeyT] : ExpectedInputOf<F> }
-    >
-    & MappableInput<
-        IsOptional<F> extends true ?
-        (
-            | { [src in SrcKeyT]? : MappableInputOf<F> }
-            | { [dst in DstKeyT]? : MappableInputOf<F> }
-        ) :
-        (
-            | { [src in SrcKeyT] : MappableInputOf<F> }
-            | { [dst in DstKeyT] : MappableInputOf<F> }
-        )
-    >*/
 );
 export function renameMap<MapT extends FieldMap> (
-    _map : MapT
+    map : MapT
 ) : (
     RenameMapMapper<MapT>
 ) {
-    return null as any;
+    const arr : SafeMapper<unknown>[] = [];
+    for (let k in map) {
+        if (!map.hasOwnProperty(k)) {
+            continue;
+        }
+        const f = map[k];
+        arr.push(rename(k, f.name, f));
+    }
+    return deepMerge(...arr) as any;
 }
 
 /*

@@ -8,7 +8,7 @@ import {MappableInputOf} from "../../mapper";
 import {mapper} from "../../mapper";
 import {instanceOfObject} from "./instance-of-object";
 import {pipe} from "../operator";
-import {IsExpectedInputOptional} from "../../mapper/predicate";
+import {IsExpectedInputOptional, isOptional} from "../../mapper/predicate";
 
 export type ObjectFromMapMapper<
     MapT extends SafeMapperMap
@@ -81,6 +81,13 @@ export function objectFromMap<
 ) : (
     ObjectFromMapMapper<MapT>
 ) {
+    const optionalDict : { [k : string] : boolean|undefined } = {};
+    for (const k in map) {
+        if (!map.hasOwnProperty(k)) {
+            continue;
+        }
+        optionalDict[k] = isOptional(map[k]);
+    }
     return mapper<ObjectFromMapMapper<MapT>>(pipe(
         instanceOfObject(),
         (name : string, mixed : Object) => {
@@ -89,10 +96,14 @@ export function objectFromMap<
                 if (!map.hasOwnProperty(k)) {
                     continue;
                 }
-                result[k] = map[k](
-                    `${name}.${k}`,
-                    (mixed as any)[k]
-                );
+                if (mixed.hasOwnProperty(k) || optionalDict[k] === true) {
+                    result[k] = map[k](
+                        `${name}.${k}`,
+                        (mixed as any)[k]
+                    );
+                } else {
+                    throw new Error(`${name} must have property ${k}`);
+                }
             }
             return result;
         }
