@@ -22,11 +22,7 @@ export declare const a: tm.Mapper<unknown, {
     foo: number;
     bar: string;
 }> & tm.ExpectedInput<{
-    foo: number;
-    bar: string;
-} & {}> & tm.MappableInput<({
     foo: number & string;
-} & {}) | ({
-    foo: number;
-    bar: string;
-} & {})>;
+} & {}> & tm.MappableInput<{
+    foo: number & string;
+} & {}>;

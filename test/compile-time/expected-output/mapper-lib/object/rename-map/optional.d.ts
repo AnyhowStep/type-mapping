@@ -3,22 +3,30 @@ export declare const a: tm.Mapper<unknown, {
     foo: number | undefined;
     bar: string | undefined;
 }> & tm.ExpectedInput<{
+    bar: string | undefined;
+} & {
+    foo?: number | undefined;
+}> & tm.MappableInput<({
     isNotOptional: string | undefined;
 } & {
     isOptional?: number | undefined;
-}> & tm.MappableInput<{
-    isNotOptional: string | undefined;
+}) | ({
+    bar: string | undefined;
 } & {
-    isOptional?: number | undefined;
-}>;
+    foo?: number | undefined;
+})>;
 export declare const b: tm.Mapper<unknown, {
     foo: number | undefined;
     bar: string | undefined;
 }> & tm.ExpectedInput<{
-    isNotOptional: string | undefined;
-    isOptionalButExpectNumber: number;
-} & {}> & tm.MappableInput<{
+    foo: number;
+    bar: string | undefined;
+} & {}> & tm.MappableInput<({
     isNotOptional: string | undefined;
 } & {
     isOptionalButExpectNumber?: number | undefined;
-}>;
+}) | ({
+    bar: string | undefined;
+} & {
+    foo?: number | undefined;
+})>;

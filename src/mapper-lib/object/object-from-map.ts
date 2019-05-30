@@ -8,7 +8,7 @@ import {MappableInputOf} from "../../mapper";
 import {mapper} from "../../mapper";
 import {instanceOfObject} from "./instance-of-object";
 import {pipe} from "../operator";
-import {IsExpectedInputOptional, isOptional} from "../../mapper/predicate";
+import {IsExpectedInputOptional, isOptional, IsOptional} from "../../mapper/predicate";
 
 export type ObjectFromMapMapper<
     MapT extends SafeMapperMap
@@ -46,7 +46,7 @@ export type ObjectFromMapMapper<
         & {
             [name in {
                 [k in Extract<keyof MapT, string>] : (
-                    undefined extends MappableInputOf<MapT[k]> ?
+                    IsOptional<MapT[k]> extends true ?
                         never :
                         k
                 )
@@ -57,7 +57,7 @@ export type ObjectFromMapMapper<
         & {
             [name in {
                 [k in Extract<keyof MapT, string>] : (
-                    undefined extends MappableInputOf<MapT[k]> ?
+                    IsOptional<MapT[k]> extends true ?
                         k :
                         never
                 )

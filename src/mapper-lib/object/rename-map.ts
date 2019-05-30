@@ -63,75 +63,145 @@ export type RenameMapMapper<MapT extends FieldMap> = (
     >
     & ExpectedInput<
         & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsExpectedInputOptional<MapT[k]> extends true ?
+            [dst in {
+                [k in ExtractLiteralDstName<MapT>] : (
+                    IsExpectedInputOptional<
+                        Extract<
+                            MapT[Extract<keyof MapT, string>],
+                            { name : k }
+                        >
+                    > extends true ?
                     never :
                     k
                 )
-            }[Extract<keyof MapT, string>]] : (
-                ExpectedInputOf<
-                    MapT[src]
-                >
-                /*
+            }[ExtractLiteralDstName<MapT>]] : (
                 ExpectedInputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { name : MapT[src]["name"] }
+                        { name : dst }
                     >
                 >
-                //*/
             )
         }
         & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsExpectedInputOptional<MapT[k]> extends true ?
+            [dst in {
+                [k in ExtractLiteralDstName<MapT>] : (
+                    IsExpectedInputOptional<
+                        Extract<
+                            MapT[Extract<keyof MapT, string>],
+                            { name : k }
+                        >
+                    > extends true ?
                     k :
                     never
                 )
-            }[Extract<keyof MapT, string>]]? : (
-                ExpectedInputOf<
-                    MapT[src]
-                >
-                /*
+            }[ExtractLiteralDstName<MapT>]]? : (
                 ExpectedInputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { name : MapT[src]["name"] }
+                        { name : dst }
                     >
                 >
-                //*/
             )
         }
+        & (
+            string extends MapT[Extract<keyof MapT, string>]["name"] ?
+            {
+                [name : string] : (
+                    | ExpectedInputOf<
+                        Exclude<MapT[Extract<keyof MapT, string>], { name : ExtractLiteralDstName<MapT> }>
+                    >
+                    | undefined
+                )
+            } :
+            unknown
+        )
     >
     & MappableInput<
-        & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsOptional<MapT[k]> extends true ?
-                    never :
-                    k
+        | (
+            & {
+                [src in {
+                    [k in Extract<keyof MapT, string>] : (
+                        IsOptional<MapT[k]> extends true ?
+                        never :
+                        k
+                    )
+                }[Extract<keyof MapT, string>]] : (
+                    MappableInputOf<
+                        MapT[src]
+                    >
                 )
-            }[Extract<keyof MapT, string>]] : (
-                MappableInputOf<
-                    MapT[src]
-                >
-            )
-        }
-        & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsOptional<MapT[k]> extends true ?
-                    k :
-                    never
+            }
+            & {
+                [src in {
+                    [k in Extract<keyof MapT, string>] : (
+                        IsOptional<MapT[k]> extends true ?
+                        k :
+                        never
+                    )
+                }[Extract<keyof MapT, string>]]? : (
+                    MappableInputOf<
+                        MapT[src]
+                    >
                 )
-            }[Extract<keyof MapT, string>]]? : (
-                MappableInputOf<
-                    MapT[src]
-                >
+            }
+        )
+        | (
+            & {
+                [dst in {
+                    [k in ExtractLiteralDstName<MapT>] : (
+                        IsOptional<
+                            Extract<
+                                MapT[Extract<keyof MapT, string>],
+                                { name : k }
+                            >
+                        > extends true ?
+                        never :
+                        k
+                    )
+                }[ExtractLiteralDstName<MapT>]] : (
+                    MappableInputOf<
+                        Extract<
+                            MapT[Extract<keyof MapT, string>],
+                            { name : dst }
+                        >
+                    >
+                )
+            }
+            & {
+                [dst in {
+                    [k in ExtractLiteralDstName<MapT>] : (
+                        IsOptional<
+                            Extract<
+                                MapT[Extract<keyof MapT, string>],
+                                { name : k }
+                            >
+                        > extends true ?
+                        k :
+                        never
+                    )
+                }[ExtractLiteralDstName<MapT>]]? : (
+                    MappableInputOf<
+                        Extract<
+                            MapT[Extract<keyof MapT, string>],
+                            { name : dst }
+                        >
+                    >
+                )
+            }
+            & (
+                string extends MapT[Extract<keyof MapT, string>]["name"] ?
+                {
+                    [name : string] : (
+                        | MappableInputOf<
+                            Exclude<MapT[Extract<keyof MapT, string>], { name : ExtractLiteralDstName<MapT> }>
+                        >
+                        | undefined
+                    )
+                } :
+                unknown
             )
-        }
+        )
     >
 );
 export function renameMap<MapT extends FieldMap> (

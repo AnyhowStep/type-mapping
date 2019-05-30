@@ -1,3 +1,4 @@
+export * from "./derive-map";
 export * from "./derive";
 export * from "./empty-object";
 export * from "./instance-of-object";

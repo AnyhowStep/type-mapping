@@ -22,6 +22,6 @@ declare const map : {
     }
     ```
 */
-export const a = tm.renameMap(
+export const a = tm.deriveMap(
     map
 );

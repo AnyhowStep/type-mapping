@@ -5,29 +5,31 @@ import {
     ExpectedInput,
     MappableInput,
 } from "../../mapper";
-import {UnionToIntersection} from "../../type-util";
 import * as TypeUtil from "../../type-util";
-import { Primitive } from "../../primitive";
+import { UnionToIntersection } from "../../type-util";
 
+type DeepMergeOutputOfImpl<F extends AnySafeMapper> = (
+    F extends AnySafeMapper ?
+    [OutputOf<F>] :
+    never
+);
+type DeepMergeOutputOf<F extends AnySafeMapper> = (
+    Extract<
+        UnionToIntersection<DeepMergeOutputOfImpl<F>>,
+        [any]
+    >[0]
+);
 export type DeepMergeMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<
-        Extract<OutputOf<ArrT[number]>, Primitive> extends never ?
-        {
-            [k in keyof UnionToIntersection<OutputOf<ArrT[number]>>] : (
-                UnionToIntersection<OutputOf<ArrT[number]>>[k]
-            )
-        } :
-        UnionToIntersection<OutputOf<ArrT[number]>>
+        DeepMergeOutputOf<ArrT[number]>
     >
     & ExpectedInput<
-        Extract<ExpectedInputOf<ArrT[number]>, Primitive> extends never ?
-        {
-            [k in keyof UnionToIntersection<ExpectedInputOf<ArrT[number]>>] : (
-                UnionToIntersection<ExpectedInputOf<ArrT[number]>>[k]
-            )
-        } :
-        UnionToIntersection<ExpectedInputOf<ArrT[number]>>
+        ExpectedInputOf<ArrT[number]>
     >
+    & MappableInput<
+        MappableInputOf<ArrT[number]>
+    >
+    /*
     & MappableInput<
         Extract<MappableInputOf<ArrT[number]>, Primitive> extends never ?
         {
@@ -37,6 +39,7 @@ export type DeepMergeMapper<ArrT extends AnySafeMapper[]> = (
         } :
         UnionToIntersection<MappableInputOf<ArrT[number]>>
     >
+    //*/
     /*
     & SafeMapper<UnionToIntersection<
         OutputOf<ArrT[number]>
@@ -78,10 +81,10 @@ const dm = deepMerge(
 );
 dm("", "").y
 
-
+//*
 const dm2 = deepMerge(
-    (null as unknown as (() => number) & ExpectedInput<{ foo : string }> & MappableInput<{ foo? : string|Buffer }>),
-    (null as unknown as (() => string)),
+    (null as unknown as (() => number) & ExpectedInput<{ foo : string }> & MappableInput<string>),
+    (null as unknown as (() => string) & MappableInput<number>),
 );
 const dm3 = deepMerge(
     (null as unknown as (() => number) & ExpectedInput<{ foo : string }> & MappableInput<{ foo? : string|Buffer }>),

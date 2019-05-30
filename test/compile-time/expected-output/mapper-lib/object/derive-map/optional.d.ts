@@ -1,7 +1,7 @@
 import * as tm from "../../../../../../dist";
 export declare const a: tm.Mapper<unknown, {
-    isOptional: number | undefined;
-    isNotOptional: string | undefined;
+    foo: number | undefined;
+    bar: string | undefined;
 }> & tm.ExpectedInput<{
     isNotOptional: string | undefined;
 } & {
@@ -12,8 +12,8 @@ export declare const a: tm.Mapper<unknown, {
     isOptional?: number | undefined;
 }>;
 export declare const b: tm.Mapper<unknown, {
-    isNotOptional: string | undefined;
-    isOptionalButExpectNumber: number | undefined;
+    foo: number | undefined;
+    bar: string | undefined;
 }> & tm.ExpectedInput<{
     isNotOptional: string | undefined;
     isOptionalButExpectNumber: number;
