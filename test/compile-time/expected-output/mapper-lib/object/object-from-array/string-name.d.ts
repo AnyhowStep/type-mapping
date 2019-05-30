@@ -1,24 +1,27 @@
 import * as tm from "../../../../../../dist";
 export declare const a: tm.Mapper<unknown, {
-    isOptional: number | undefined;
     isNotOptional: string | undefined;
+} & {
+    [name: string]: number | undefined;
 }> & tm.ExpectedInput<{
     isNotOptional: string | undefined;
-} & {
-    isOptional?: number | undefined;
+} & {} & {
+    [name: string]: number | undefined;
 }> & tm.MappableInput<{
     isNotOptional: string | undefined;
-} & {
-    isOptional?: number | undefined;
+} & {} & {
+    [name: string]: number | undefined;
 }>;
 export declare const b: tm.Mapper<unknown, {
     isNotOptional: string | undefined;
-    isOptionalButExpectNumber: number | undefined;
+} & {
+    [name: string]: number | boolean | undefined;
 }> & tm.ExpectedInput<{
     isNotOptional: string | undefined;
-    isOptionalButExpectNumber: number;
-} & {}> & tm.MappableInput<{
+} & {} & {
+    [name: string]: number | boolean | undefined;
+}> & tm.MappableInput<{
     isNotOptional: string | undefined;
-} & {
-    isOptionalButExpectNumber?: number | undefined;
+} & {} & {
+    [name: string]: number | boolean | undefined;
 }>;
