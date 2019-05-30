@@ -1,4 +1,4 @@
-import {SafeMapper} from "../mapper";
+import {SafeMapper, Name} from "../mapper";
 
 /**
     A field is a `SafeMapper<>` with a `name`
@@ -6,12 +6,10 @@ import {SafeMapper} from "../mapper";
 
     A field is a building block of an object `Mapper<>`.
 */
-export interface IField<
-    NameT extends string,
-    OutputT
-> extends SafeMapper<OutputT> {
-    name : NameT,
-}
+export type Field<OutputT, NameT extends string> = (
+    & SafeMapper<OutputT>
+    & Name<NameT>
+);
 export type AnyField = (
-    IField<any, any>
+    Field<any, string>
 );

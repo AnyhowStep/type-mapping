@@ -1,6 +1,6 @@
 import {toTypeStr} from "./to-type-str";
 import {strictEqual} from "./strict-equal";
-import {isPrimitive} from "util";
+import {isPrimitive} from "./is-primitive";
 
 function deepMergeImpl (a : any, b : any) : unknown {
     if (strictEqual(a, b)) {
@@ -85,7 +85,7 @@ function deepMergeImpl (a : any, b : any) : unknown {
 
 export function deepMerge (...args : unknown[]) : unknown {
     if (args.length == 0) {
-        throw new Error(`Cannot merge zero arguments`);
+        throw new Error(`Cannot deep merge zero arguments`);
     }
     let result = args[0];
     for (let i=1; i<args.length; ++i) {

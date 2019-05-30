@@ -1,4 +1,4 @@
-import {RawFieldMap} from "../../field-map";
+import {SafeMapperMap} from "../../field-map";
 import {SafeMapper} from "../../mapper";
 import {OutputOf} from "../../mapper";
 import {ExpectedInput} from "../../mapper";
@@ -11,7 +11,7 @@ import {pipe} from "../operator";
 import {IsExpectedInputOptional} from "../../mapper/predicate";
 
 export type ObjectFromMapMapper<
-    MapT extends RawFieldMap
+    MapT extends SafeMapperMap
 > = (
     & SafeMapper<{
         [name in Extract<keyof MapT, string>] : (
@@ -75,7 +75,7 @@ export type ObjectFromMapMapper<
     of the map, they will not be in the new object.
 */
 export function objectFromMap<
-    MapT extends RawFieldMap
+    MapT extends SafeMapperMap
 > (
     map : MapT
 ) : (

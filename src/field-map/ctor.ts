@@ -1,20 +1,20 @@
-import {Field, field} from "../field";
-import {RawFieldMap} from "./field-map";
-import {OutputOf} from "../mapper";
+import {Field} from "../field";
+import {SafeMapperMap} from "./field-map";
+import {withName} from "../mapper";
 
 /**
     Maps each `Mapper<>` to a `Field<>`
 */
-export type ToFieldMap<MapT extends RawFieldMap> = {
+export type ToFieldMap<MapT extends SafeMapperMap> = {
     [name in Extract<keyof MapT, string>] : (
-        Field<name, OutputOf<MapT[name]>>
+        Field<MapT[name], name>
     )
 };
 
 /**
     Constructs multiple `Field<>` instances at once.
 */
-export function fields<MapT extends RawFieldMap>(
+export function fields<MapT extends SafeMapperMap>(
     map : MapT
 ) : (
     ToFieldMap<MapT>
@@ -24,7 +24,7 @@ export function fields<MapT extends RawFieldMap>(
         if (!map.hasOwnProperty(name)) {
             continue;
         }
-        result[name] = field(name, map[name]);
+        result[name] = withName(map[name], name);
     }
     return result;
 }

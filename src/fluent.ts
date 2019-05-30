@@ -130,10 +130,10 @@ export interface FluentMapper<F extends AnySafeMapper> {
         FluentMapper<CastMapper<F, DstF>>
     );
 
-    deepMerge<ArrT extends SafeMapper<object>[]> (this : SafeMapper<object>, ...arr : ArrT) : (
+    deepMerge<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
         FluentMapper<
             DeepMergeMapper<
-                Parameters<(head : Extract<F, SafeMapper<object>>, ...tail : ArrT) => unknown>
+                Parameters<(head : F, ...tail : ArrT) => unknown>
             >
         >
     );
@@ -294,18 +294,18 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         return fluentMapper(cast(f, castDelegate, dstDelegate));
     };
 
-    result.deepMerge = function<ArrT extends SafeMapper<object>[]> (this : SafeMapper<object>, ...arr : ArrT) : (
+    result.deepMerge = (<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
         FluentMapper<
             DeepMergeMapper<
-                Parameters<(head : Extract<F, SafeMapper<object>>, ...tail : ArrT) => unknown>
+                Parameters<(head : F, ...tail : ArrT) => unknown>
             >
         >
-    ) {
+    ) => {
         return fluentMapper(deepMerge(
             f,
             ...arr
-        ));
-    };
+        )) as any;
+    }) as any;
 
     result.excludeLiteral = <ArrT extends LiteralType[]> (...arr : ArrT) : (
         FluentMapper<ExcludeLiteralMapper<F, ArrT>>

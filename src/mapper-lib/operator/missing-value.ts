@@ -7,10 +7,13 @@ import {
     MappableInput,
     MappableInputOf,
     Optional,
+    ExtractNameOrUnknown,
 } from "../../mapper";
 import {or} from "./or";
 import {literal} from "../literal";
 import {excludeLiteral} from "./exclude-literal";
+import { getNameOrEmptyString } from "../../mapper/query";
+import { setFunctionName } from "../../type-util";
 
 export type OrUndefinedMapper<F extends AnySafeMapper> = (
     & SafeMapper<OutputOf<F>|undefined>
@@ -75,6 +78,7 @@ export type OptionalMapper<F extends AnySafeMapper> = (
     & SafeMapper<OutputOf<F>|undefined>
     & ExpectedInput<ExpectedInputOf<F>|undefined>
     & MappableInput<MappableInputOf<F>|undefined>
+    & ExtractNameOrUnknown<F>
     & Optional
 );
 export function optional<F extends AnySafeMapper> (
@@ -86,6 +90,8 @@ export function optional<F extends AnySafeMapper> (
     const result = (name : string, mixed : unknown) : OutputOf<F>|undefined => {
         return g(name, mixed);
     };
+    result.name = getNameOrEmptyString(f);
+    setFunctionName(result, result.name);
     result.__optional = true as const;
-    return result;
+    return result as any;
 };

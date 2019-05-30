@@ -1,4 +1,4 @@
-import {RawFieldMap} from "../../field-map";
+import {SafeMapperMap} from "../../field-map";
 import {
     SafeMapper,
     AnySafeMapper,
@@ -11,7 +11,7 @@ export function object<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : 
     ObjectFromArrayMapper<ArrT>
 );
 export function object<
-    MapT extends RawFieldMap
+    MapT extends SafeMapperMap
 > (
     map : MapT
 ) : (
