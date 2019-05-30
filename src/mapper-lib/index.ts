@@ -11,5 +11,6 @@ export * from "./number";
 export * from "./object";
 export * from "./operator";
 export * from "./string";
+export * from "./type";
 export * from "./undefined";
 export * from "./unknown";
