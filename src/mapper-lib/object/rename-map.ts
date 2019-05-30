@@ -9,6 +9,9 @@ import {
     MappableInput,
     IsExpectedInputOptional,
 } from "../../mapper";
+import { IsOptional } from "../../mapper/predicate";
+import { AnySafeMapper } from "../../mapper/safe-mapper";
+import { UnionToIntersection } from "../../type-util";
 
 type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
     {
@@ -19,12 +22,23 @@ type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
         )
     }[Extract<keyof MapT, string>]
 );
+type DeepMergeOutputOfImpl<F extends AnySafeMapper> = (
+    F extends AnySafeMapper ?
+    [OutputOf<F>] :
+    never
+);
+type DeepMergeOutputOf<F extends AnySafeMapper> = (
+    Extract<
+        UnionToIntersection<DeepMergeOutputOfImpl<F>>,
+        [any]
+    >[0]
+);
 
 export type RenameMapMapper<MapT extends FieldMap> = (
     & SafeMapper<
         & {
             [dst in ExtractLiteralDstName<MapT>] : (
-                OutputOf<
+                DeepMergeOutputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
                         { name : dst }
@@ -57,6 +71,14 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 ExpectedInputOf<
                     MapT[src]
                 >
+                /*
+                ExpectedInputOf<
+                    Extract<
+                        MapT[Extract<keyof MapT, string>],
+                        { name : MapT[src]["name"] }
+                    >
+                >
+                //*/
             )
         }
         & {
@@ -70,12 +92,39 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 ExpectedInputOf<
                     MapT[src]
                 >
+                /*
+                ExpectedInputOf<
+                    Extract<
+                        MapT[Extract<keyof MapT, string>],
+                        { name : MapT[src]["name"] }
+                    >
+                >
+                //*/
             )
         }
     >
     & MappableInput<
-        {
-            [src in Extract<keyof MapT, string>] : (
+        & {
+            [src in {
+                [k in Extract<keyof MapT, string>] : (
+                    IsOptional<MapT[k]> extends true ?
+                    never :
+                    k
+                )
+            }[Extract<keyof MapT, string>]] : (
+                MappableInputOf<
+                    MapT[src]
+                >
+            )
+        }
+        & {
+            [src in {
+                [k in Extract<keyof MapT, string>] : (
+                    IsOptional<MapT[k]> extends true ?
+                    k :
+                    never
+                )
+            }[Extract<keyof MapT, string>]]? : (
                 MappableInputOf<
                     MapT[src]
                 >
