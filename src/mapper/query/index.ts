@@ -6,6 +6,8 @@ export * from "./handled-input-of-impl";
 export * from "./handled-input-of";
 export * from "./mappable-input-of-impl";
 export * from "./mappable-input-of";
+export * from "./merged-output-of-impl";
+export * from "./merged-output-of";
 export * from "./name-of";
 export * from "./optional-flag-of";
 export * from "./output-of";

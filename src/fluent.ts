@@ -1,5 +1,4 @@
 import {
-    SafeMapper,
     AnySafeMapper,
     OutputOf,
     AnyMapper,
@@ -25,11 +24,9 @@ import {
     OptionalMapper,
     OrMapper,
     ExcludeLiteralMapper,
-    DeepMergeMapper,
     CastMapper,
     CastDelegate,
     cast,
-    deepMerge,
     excludeLiteral,
     orUndefined,
     orNull,
@@ -55,6 +52,9 @@ import {
     arrayLikeToArray,
     unsafeStringIndexer,
     stringIndexer,
+    UnsafePipeMapper,
+    DeepMergeMapper,
+    deepMerge,
 } from "./mapper-lib";
 import {LiteralType} from "./primitive";
 import {setFunctionName} from "./type-util";
@@ -131,11 +131,7 @@ export interface FluentMapper<F extends AnySafeMapper> {
     );
 
     deepMerge<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
-        FluentMapper<
-            DeepMergeMapper<
-                Parameters<(head : F, ...tail : ArrT) => unknown>
-            >
-        >
+        FluentMapper<DeepMergeMapper<F, ArrT>>
     );
 
     excludeLiteral<ArrT extends LiteralType[]> (...arr : ArrT) : (
@@ -153,11 +149,7 @@ export interface FluentMapper<F extends AnySafeMapper> {
     optional () : FluentMapper<OptionalMapper<F>>;
 
     or<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
-        FluentMapper<
-            OrMapper<
-                Parameters<(head : F, ...tail : ArrT) => unknown>
-            >
-        >
+        FluentMapper<OrMapper<F, ArrT>>
     );
 
     pipe<
@@ -201,7 +193,7 @@ export interface FluentMapper<F extends AnySafeMapper> {
         FluentMapper<PipeMapper<F, F4>>
     );
 
-    unsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<SafeMapper<unknown>>;
+    unsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<UnsafePipeMapper<F>>;
 }
 
 export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> {
@@ -294,18 +286,15 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         return fluentMapper(cast(f, castDelegate, dstDelegate));
     };
 
-    result.deepMerge = (<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
-        FluentMapper<
-            DeepMergeMapper<
-                Parameters<(head : F, ...tail : ArrT) => unknown>
-            >
-        >
+    result.deepMerge = <ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
+        FluentMapper<DeepMergeMapper<F, ArrT>>
     ) => {
-        return fluentMapper(deepMerge(
+        const result : DeepMergeMapper<F, ArrT> = deepMerge<F, ArrT>(
             f,
             ...arr
-        )) as any;
-    }) as any;
+        );
+        return fluentMapper(result);
+    };
 
     result.excludeLiteral = <ArrT extends LiteralType[]> (...arr : ArrT) : (
         FluentMapper<ExcludeLiteralMapper<F, ArrT>>
@@ -338,21 +327,17 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
     };
 
     result.or = <ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
-        FluentMapper<
-            OrMapper<
-                Parameters<(head : F, ...tail : ArrT) => unknown>
-            >
-        >
+        FluentMapper<OrMapper<F, ArrT>>
     ) => {
         return fluentMapper(or(f, ...arr));
     };
 
-    result.pipe = (<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<SafeMapper<unknown>> => {
+    result.pipe = (<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<UnsafePipeMapper<F>> => {
         return fluentMapper(unsafePipe(f, ...arr));
     }) as any;
 
-    result.unsafePipe = <ArrT extends AnyMapper[]>(...arr : ArrT) : FluentMapper<SafeMapper<unknown>> => {
-        return fluentMapper(unsafePipe(...arr));
+    result.unsafePipe = <ArrT extends AnyMapper[]>(...arr : ArrT) : FluentMapper<UnsafePipeMapper<F>> => {
+        return fluentMapper(unsafePipe(f, ...arr));
     };
 
     return result;

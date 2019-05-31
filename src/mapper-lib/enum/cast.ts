@@ -1,9 +1,9 @@
 import {Enum, EnumKey, EnumValue, getEntries} from "../../enum-util";
-import {SafeMapper} from "../../mapper/safe-mapper";
-import {ExpectedInput} from "../../mapper/expected-input";
-import {MappableInput} from "../../mapper/mappable-input";
+import {SafeMapper} from "../../mapper";
+import {ExpectedInput} from "../../mapper";
+import {MappableInput} from "../../mapper";
 import {or} from "../operator";
-import {mapper} from "../../mapper/ctor";
+import {mapper} from "../../mapper";
 import {literal} from "../literal";
 import {toTypeStr} from "../../type-util";
 

@@ -1,8 +1,13 @@
-import {SafeMapper, AnySafeMapper} from "../../mapper";
-import {OutputOf} from "../../mapper";
-import {mapper} from "../../mapper";
-import {ExpectedInput} from "../../mapper";
-import {MappableInput} from "../../mapper";
+import {
+    SafeMapper,
+    AnySafeMapper,
+    OutputOf,
+    ExpectedInput,
+    MappableInput,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
+    copyRunTimeModifier,
+} from "../../mapper";
 import {LiteralType} from "../../primitive";
 import {toLiteralUnionStr, toLiteralStr, strictEqual} from "../../type-util";
 
@@ -24,20 +29,23 @@ export type ExcludeLiteralMapper<
         MappableInput<Exclude<T, ArrT[number]>> :
         unknown
     )
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 export function excludeLiteral<
     F extends AnySafeMapper,
     ArrT extends LiteralType[]
-> (delegate : F, ...arr : ArrT) : ExcludeLiteralMapper<F, ArrT> {
-    return mapper<ExcludeLiteralMapper<F, ArrT>>(
-        ((name : string, mixed : unknown) => {
-            const value = delegate(name, mixed);
+> (f : F, ...arr : ArrT) : ExcludeLiteralMapper<F, ArrT> {
+    return copyRunTimeModifier(
+        f,
+        (name : string, mixed : unknown) => {
+            const value = f(name, mixed);
             for (const item of arr) {
                 if (strictEqual(value, item)) {
                     throw new Error(`${name} must not be ${toLiteralUnionStr(arr)}; received ${toLiteralStr(item)}`);
                 }
             }
             return value as any;
-        }) as any
-    );
+        }
+    ) as any;
 }

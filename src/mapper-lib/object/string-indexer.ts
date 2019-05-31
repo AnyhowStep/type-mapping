@@ -4,10 +4,12 @@ import {
     MappableInput,
     OutputOf,
     SafeMapper,
-    mapper,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
+import { copyRunTimeModifier } from "../../mapper/operation";
 
 /**
     This is unsafe because of the following example,
@@ -28,29 +30,33 @@ export type UnsafeStringIndexerMapper<F extends AnySafeMapper> = (
     & MappableInput<{
         [k : string] : MappableInput<F>
     }>
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 
 export function unsafeStringIndexer<F extends AnySafeMapper> (f : F) : (
     UnsafeStringIndexerMapper<F>
 ) {
-    return mapper<UnsafeStringIndexerMapper<F>>(
-        pipe(
-            instanceOfObject(),
-            (name : string, obj : Object) : { [k : string] : OutputOf<F> } => {
-                const result : { [k : string] : OutputOf<F> } = {};
-                for (const k in obj) {
-                    if (!obj.hasOwnProperty(k)) {
-                        continue;
-                    }
-                    result[k] = f(
-                        `${name}[${JSON.stringify(k)}]`,
-                        (obj as any)[k]
-                    );
+    const result = pipe(
+        instanceOfObject(),
+        (name : string, obj : Object) : { [k : string] : OutputOf<F> } => {
+            const result : { [k : string] : OutputOf<F> } = {};
+            for (const k in obj) {
+                if (!obj.hasOwnProperty(k)) {
+                    continue;
                 }
-                return result;
+                result[k] = f(
+                    `${name}[${JSON.stringify(k)}]`,
+                    (obj as any)[k]
+                );
             }
-        )
+            return result;
+        }
     );
+    return copyRunTimeModifier(
+        f,
+        result
+    ) as any;
 }
 
 export type StringIndexerMapper<F extends AnySafeMapper> = (
@@ -63,6 +69,8 @@ export type StringIndexerMapper<F extends AnySafeMapper> = (
     & MappableInput<{
         [k : string] : MappableInput<F>|undefined
     }>
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 
 export function stringIndexer<F extends AnySafeMapper> (f : F) : (

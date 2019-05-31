@@ -1,12 +1,18 @@
-import {AnySafeMapper, SafeMapper} from "../../mapper";
-import {OutputOf} from "../../mapper";
+import {
+    AnySafeMapper,
+    SafeMapper,
+    OutputOf,
+    ExpectedInput,
+    ExpectedInputOfImpl,
+    MappableInput,
+    MappableInputOfImpl,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
+    copyRunTimeModifier,
+} from "../../mapper";
 import {indentErrorMessage} from "../../error-util";
-import {ExpectedInput} from "../../mapper";
-import {ExpectedInputOfImpl} from "../../mapper";
-import {MappableInput} from "../../mapper";
-import {MappableInputOfImpl} from "../../mapper";
 
-export type OrMapper<ArrT extends AnySafeMapper[]> = (
+export type UnsafeOrMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<OutputOf<ArrT[number]>>
     & ExpectedInput<
         ExpectedInputOfImpl<ArrT[number]>[0]
@@ -15,20 +21,48 @@ export type OrMapper<ArrT extends AnySafeMapper[]> = (
         MappableInputOfImpl<ArrT[number]>[0]
     >
 );
-export function or<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
-    OrMapper<ArrT>
- ) {
-    return (name : string, mixed : unknown) : OutputOf<ArrT[number]> => {
-        const messages : string[] = [];
-        for (const d of arr) {
-            try {
-                return d(name, mixed);
-            } catch (err) {
-                messages.push(indentErrorMessage(err.message));
+export function unsafeOr<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
+    UnsafeOrMapper<ArrT>
+) {
+    if (arr.length == 0) {
+        throw new Error(`Cannot call or() on zero mappers`);
+    }
+    return copyRunTimeModifier(
+        arr[0],
+        (name : string, mixed : unknown) : OutputOf<ArrT[number]> => {
+            const messages : string[] = [];
+            for (const d of arr) {
+                try {
+                    return d(name, mixed);
+                } catch (err) {
+                    messages.push(indentErrorMessage(err.message));
+                }
             }
+            throw new Error(`${name} is invalid.\n${messages.join(" or\n")}`);
         }
-        throw new Error(`${name} is invalid.\n${messages.join(" or\n")}`);
-    };
+    );
+}
+export type OrMapper<F extends AnySafeMapper, ArrT extends AnySafeMapper[]> = (
+    & SafeMapper<OutputOf<F|ArrT[number]>>
+    & ExpectedInput<
+        ExpectedInputOfImpl<F|ArrT[number]>[0]
+    >
+    & MappableInput<
+        MappableInputOfImpl<F|ArrT[number]>[0]
+    >
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
+);
+export function or<
+    F extends AnySafeMapper,
+    ArrT extends AnySafeMapper[]
+> (
+    f : F,
+    ...arr : ArrT
+) : (
+    OrMapper<F, ArrT>
+) {
+    return unsafeOr(f, ...arr) as any;
 }
 
 /*

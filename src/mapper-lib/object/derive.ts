@@ -6,12 +6,15 @@ import {
     MappableInputOf,
     ExpectedInput,
     MappableInput,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
+    IsOptional,
+    IsExpectedInputOptional,
     isOptional,
+    copyRunTimeModifier,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
-import {mapper} from "../../mapper/ctor";
-import {IsOptional, IsExpectedInputOptional} from "../../mapper/predicate";
 
 /**
     Use with `and()` or `deepMerge()`
@@ -86,6 +89,8 @@ export type DeriveMapper<
         { [src in SrcKeyT]? : MappableInputOf<F> } :
         { [src in SrcKeyT] : MappableInputOf<F> }
     >
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 export function derive<
     SrcKeyT extends string,
@@ -99,31 +104,33 @@ export function derive<
     DeriveMapper<SrcKeyT, DstKeyT, F>
 ) {
     const optional = isOptional(f);
-    return mapper<DeriveMapper<SrcKeyT, DstKeyT, F>>(
-        pipe(
-            instanceOfObject(),
-            (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
-                let unsafeName : string = "";
-                let unsafeValue : unknown = undefined;
-                if (mixed.hasOwnProperty(srcKey)) {
-                    unsafeName = `${name}.(${srcKey} -derive-> ${dstKey})`;
-                    unsafeValue = (mixed as any)[srcKey];
-                } else if (optional) {
-                    unsafeName = `${name}.${srcKey}`;
-                    unsafeValue = undefined;
-                } else {
-                    throw new Error(`${name} must have property ${srcKey}`);
-                }
-
-                const obj : (
-                    { [dst in DstKeyT] : OutputOf<F> }
-                ) = {
-                    [dstKey] : f(unsafeName, unsafeValue),
-                } as any;
-                return obj;
+    const result = pipe(
+        instanceOfObject(),
+        (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
+            let unsafeName : string = "";
+            let unsafeValue : unknown = undefined;
+            if (mixed.hasOwnProperty(srcKey)) {
+                unsafeName = `${name}.(${srcKey} -derive-> ${dstKey})`;
+                unsafeValue = (mixed as any)[srcKey];
+            } else if (optional) {
+                unsafeName = `${name}.${srcKey}`;
+                unsafeValue = undefined;
+            } else {
+                throw new Error(`${name} must have property ${srcKey}`);
             }
-        )
+
+            const obj : (
+                { [dst in DstKeyT] : OutputOf<F> }
+            ) = {
+                [dstKey] : f(unsafeName, unsafeValue),
+            } as any;
+            return obj;
+        }
     );
+    return copyRunTimeModifier(
+        f,
+        result
+    ) as any;
 }
 /*
 const a = unsignedInteger();

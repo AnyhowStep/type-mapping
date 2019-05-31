@@ -1,25 +1,34 @@
-import {AnyMapper} from "../../mapper";
-import {SafeMapper, AnySafeMapper} from "../../mapper";
-import {OutputOf} from "../../mapper";
-import {ExtractExpectedInputOrUnknown} from "../../mapper";
-import {ExpectedInputOf} from "../../mapper";
+import {
+    AnyMapper,
+    SafeMapper,
+    AnySafeMapper,
+    OutputOf,
+    ExtractExpectedInputOrUnknown,
+    ExpectedInputOf,
+    ExpectedInput,
+    AssertPipeable,
+    MappableInput,
+    MappableInputOf,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
+    copyRunTimeModifier,
+} from "../../mapper";
 import {Primitive} from "../../primitive";
-import {ExpectedInput} from "../../mapper";
-import {AssertPipeable} from "../../mapper";
-import {MappableInput} from "../../mapper/mappable-input";
-import {MappableInputOf} from "../../mapper/query";
 
 function pipeImpl<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown> {
     if (arr.length == 0) {
         throw new Error(`Cannot pipe zero mappers`);
     }
-    return (name : string, mixed : unknown) : unknown => {
-        for (let i=0; i<arr.length; ++i) {
-            const d = arr[i];
-            mixed = d(`${name} |> ${i}`, mixed);
+    return copyRunTimeModifier(
+        arr[0],
+        (name : string, mixed : unknown) : unknown => {
+            for (let i=0; i<arr.length; ++i) {
+                const d = arr[i];
+                mixed = d(`${name} |> ${i}`, mixed);
+            }
+            return mixed;
         }
-        return mixed;
-    };
+    );
 }
 
 export type PipeMapper<
@@ -37,6 +46,8 @@ export type PipeMapper<
         ) :
         ExtractExpectedInputOrUnknown<SrcF>
     )
+    & ExtractNameOrUnknown<SrcF>
+    & ExtractOptionalOrUnknown<SrcF>
 );
 
 export function pipe<
@@ -93,6 +104,24 @@ export function pipe<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unkn
     return pipeImpl(...arr);
 }
 
-export function unsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown> {
+export type UnsafePipeMapper<
+    SrcF extends AnySafeMapper
+> = (
+    & SafeMapper<unknown>
+    & ExpectedInput<ExpectedInputOf<SrcF>>
+    & MappableInput<MappableInputOf<SrcF>>
+    & ExtractNameOrUnknown<SrcF>
+    & ExtractOptionalOrUnknown<SrcF>
+);
+
+export function unsafePipe<
+    SrcF extends AnySafeMapper,
+    ArrT extends AnyMapper[]
+> (f : SrcF, ...arr : ArrT) : (
+    UnsafePipeMapper<SrcF>
+) {
+    return pipeImpl(f, ...arr) as any;
+}
+export function reallyUnsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown> {
     return pipeImpl(...arr);
 }

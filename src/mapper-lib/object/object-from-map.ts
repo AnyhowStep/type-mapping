@@ -8,7 +8,7 @@ import {MappableInputOf} from "../../mapper";
 import {mapper} from "../../mapper";
 import {instanceOfObject} from "./instance-of-object";
 import {pipe} from "../operator";
-import {IsExpectedInputOptional, isOptional, IsOptional} from "../../mapper/predicate";
+import {IsExpectedInputOptional, isOptional, IsOptional} from "../../mapper";
 
 export type ObjectFromMapMapper<
     MapT extends SafeMapperMap

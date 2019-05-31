@@ -1,4 +1,4 @@
-import {SafeMapper} from "../../mapper/safe-mapper";
+import {SafeMapper} from "../../mapper";
 import {allowsInstanceOf, toTypeStr, getCtorName} from "../../type-util";
 
 export function instanceOf<T> (ctor : new (...args : any[]) => T) : (

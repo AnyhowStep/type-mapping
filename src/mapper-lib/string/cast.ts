@@ -1,9 +1,9 @@
 import {cast} from "../operator";
 import {finiteNumber, integer, unsignedInteger} from "../number";
 import {finiteNumberString, integerString, unsignedIntegerString} from "./number-string";
-import {ExpectedInput} from "../../mapper/expected-input";
-import {MappableInput} from "../../mapper/mappable-input";
-import {SafeMapper} from "../../mapper/safe-mapper";
+import {ExpectedInput} from "../../mapper";
+import {MappableInput} from "../../mapper";
+import {SafeMapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 
 export function finiteNumberToFiniteNumberString () {

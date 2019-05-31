@@ -6,7 +6,8 @@ import {
     MappableInput,
     ExpectedInputOf,
     MappableInputOf,
-    mapper,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {arrayLike} from "../array-like";
@@ -17,6 +18,8 @@ export type ArrayLikeToArrayMapper<
     & SafeMapper<OutputOf<F>[]>
     & ExpectedInput<ExpectedInputOf<F>[]>
     & MappableInput<ArrayLike<MappableInputOf<F>>>
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 
 export function arrayLikeToArray<
@@ -26,9 +29,9 @@ export function arrayLikeToArray<
 ) : (
     ArrayLikeToArrayMapper<F>
 ) {
-    return mapper<ArrayLikeToArrayMapper<F>>(pipe(
+    return pipe(
         arrayLike(f),
-        (_name : string, arrayLike : ArrayLike<OutputOf<F>>) : OutputOf<F>[number][] => {
+        ((_name : string, arrayLike : ArrayLike<OutputOf<F>>) : OutputOf<F>[number][] => {
             if (arrayLike instanceof Array) {
                 return arrayLike;
             }
@@ -38,7 +41,7 @@ export function arrayLikeToArray<
                 result.push(arrayLike[i]);
             }
             return result;
-        }
-    ));
+        }) as any
+    ) as any;
 }
 

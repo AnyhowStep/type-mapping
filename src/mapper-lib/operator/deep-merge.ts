@@ -1,27 +1,21 @@
 import {
     AnySafeMapper,
     SafeMapper,
-    OutputOf, ExpectedInputOf, MappableInputOf,
+    OutputOf,
+    ExpectedInputOf,
+    MappableInputOf,
     ExpectedInput,
     MappableInput,
+    MergedOutputOf,
+    copyRunTimeModifier,
 } from "../../mapper";
 import * as TypeUtil from "../../type-util";
-import { UnionToIntersection } from "../../type-util";
+import {indentErrorMessage} from "../../error-util";
+import { ExtractNameOrUnknown, ExtractOptionalOrUnknown } from "../../mapper/operation";
 
-type DeepMergeOutputOfImpl<F extends AnySafeMapper> = (
-    F extends AnySafeMapper ?
-    [OutputOf<F>] :
-    never
-);
-type DeepMergeOutputOf<F extends AnySafeMapper> = (
-    Extract<
-        UnionToIntersection<DeepMergeOutputOfImpl<F>>,
-        [any]
-    >[0]
-);
-export type DeepMergeMapper<ArrT extends AnySafeMapper[]> = (
+export type UnsafeDeepMergeMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<
-        DeepMergeOutputOf<ArrT[number]>
+        MergedOutputOf<ArrT[number]>
     >
     & ExpectedInput<
         ExpectedInputOf<ArrT[number]>
@@ -29,37 +23,27 @@ export type DeepMergeMapper<ArrT extends AnySafeMapper[]> = (
     & MappableInput<
         MappableInputOf<ArrT[number]>
     >
-    /*
-    & MappableInput<
-        Extract<MappableInputOf<ArrT[number]>, Primitive> extends never ?
-        {
-            [k in keyof UnionToIntersection<MappableInputOf<ArrT[number]>>] : (
-                UnionToIntersection<MappableInputOf<ArrT[number]>>[k]
-            )
-        } :
-        UnionToIntersection<MappableInputOf<ArrT[number]>>
-    >
-    //*/
-    /*
-    & SafeMapper<UnionToIntersection<
-        OutputOf<ArrT[number]>
-    >>
-    & ExpectedInput<UnionToIntersection<ExpectedInputOf<ArrT[number]>>>
-    & MappableInput<UnionToIntersection<MappableInputOf<ArrT[number]>>>
-    */
 );
-export function deepMerge<ArrT extends AnySafeMapper[]> (
+export function unsafeDeepMerge<ArrT extends AnySafeMapper[]> (
     ...arr : ArrT
 ) : (
-    DeepMergeMapper<ArrT>
+    UnsafeDeepMergeMapper<ArrT>
 ) {
     if (arr.length == 0) {
         throw new Error(`Cannot deep merge zero mappers`);
     }
-    return (name : string, mixed : unknown) : any => {
+    const result = (name : string, mixed : unknown) : any => {
+        const messages : string[] = [];
         const result : OutputOf<ArrT[number]>[] = [];
         for (const f of arr) {
-            result.push(f(name, mixed) as any);
+            try {
+                result.push(f(name, mixed) as any);
+            } catch (err) {
+                messages.push(indentErrorMessage(err.message));
+            }
+        }
+        if (messages.length > 0) {
+            throw new Error(`${name} is invalid.\n+ ${messages.join("\n+ ")}`);
         }
         try {
             return TypeUtil.deepMerge(...result) as any;
@@ -67,6 +51,31 @@ export function deepMerge<ArrT extends AnySafeMapper[]> (
             throw new Error(`${name} is invalid; ${err.message}`);
         }
     };
+    return copyRunTimeModifier(
+        arr[0],
+        result
+    );
+}
+export type DeepMergeMapper<F extends AnySafeMapper, ArrT extends AnySafeMapper[]> = (
+    & SafeMapper<
+        MergedOutputOf<F|ArrT[number]>
+    >
+    & ExpectedInput<
+        ExpectedInputOf<F|ArrT[number]>
+    >
+    & MappableInput<
+        MappableInputOf<F|ArrT[number]>
+    >
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
+);
+export function deepMerge<F extends AnySafeMapper, ArrT extends AnySafeMapper[]> (
+    f : F,
+    ...arr : ArrT
+) : (
+    DeepMergeMapper<F, ArrT>
+) {
+    return unsafeDeepMerge(f, ...arr) as any;
 }
 
 /*

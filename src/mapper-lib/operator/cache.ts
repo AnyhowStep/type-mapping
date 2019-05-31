@@ -5,8 +5,10 @@ import {
     ExtractExpectedInputOrUnknown,
     ExtractMappableInputOrUnknown,
     ExtendedMapper,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
 } from "../../mapper";
-import {mapper} from "../../mapper";
+import { copyRunTimeModifier } from "../../mapper/operation";
 
 export type CacheMapper<
     CachedT,
@@ -18,6 +20,8 @@ export type CacheMapper<
     >
     & ExtractExpectedInputOrUnknown<F>
     & ExtractMappableInputOrUnknown<F>
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 
 export function cache<
@@ -29,10 +33,12 @@ export function cache<
 ) : (
     CacheMapper<CachedT, F>
 ) {
-    //https://github.com/microsoft/TypeScript/issues/31602
-    return mapper<CacheMapper<CachedT, F>>(
-        ((name : string, mixed : HandledInputOf<F>) : OutputOf<F> => {
+    const result = copyRunTimeModifier(
+        f,
+        (name : string, mixed : HandledInputOf<F>) : OutputOf<F> => {
             return f(name, mixed, cached);
-        }) as any
-    );
+        }
+    )
+    //https://github.com/microsoft/TypeScript/issues/31602
+    return result as any;
 }

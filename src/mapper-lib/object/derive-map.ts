@@ -8,12 +8,12 @@ import {
     MappableInputOf,
     MappableInput,
     IsExpectedInputOptional,
+    IsOptional,
+    MergedOutputOf,
 } from "../../mapper";
-import { IsOptional } from "../../mapper/predicate";
-import { AnySafeMapper } from "../../mapper/safe-mapper";
-import { UnionToIntersection } from "../../type-util";
-import { deepMerge } from "../operator";
-import { derive } from "./derive";
+import {unsafeDeepMerge} from "../operator";
+import {derive} from "./derive";
+import {emptyObject} from "./empty-object";
 
 type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
     {
@@ -24,24 +24,12 @@ type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
         )
     }[Extract<keyof MapT, string>]
 );
-//TODO Move this to mapper directory
-type DeepMergeOutputOfImpl<F extends AnySafeMapper> = (
-    F extends AnySafeMapper ?
-    [OutputOf<F>] :
-    never
-);
-type DeepMergeOutputOf<F extends AnySafeMapper> = (
-    Extract<
-        UnionToIntersection<DeepMergeOutputOfImpl<F>>,
-        [any]
-    >[0]
-);
 
 export type DeriveMapMapper<MapT extends FieldMap> = (
     & SafeMapper<
         & {
             [dst in ExtractLiteralDstName<MapT>] : (
-                DeepMergeOutputOf<
+                MergedOutputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
                         { name : dst }
@@ -132,12 +120,15 @@ export function deriveMap<MapT extends FieldMap> (
         const f = map[k];
         arr.push(derive(k, f.name, f));
     }
-    return deepMerge(...arr) as any;
+    if (arr.length == 0) {
+        return emptyObject() as any;
+    }
+    return unsafeDeepMerge(...arr) as any;
 }
 
 /*
 import { string } from "../string";
-import { withName, withExpectedInput } from "../../mapper/operation";
+import { withName, withExpectedInput } from "../../mapper";
 import { unsignedInteger, stringToFiniteNumber } from "../number";
 import { optional } from "../operator";
 

@@ -3,12 +3,12 @@ import {ExtractOptionalOrUnknown} from "./extract-optional-or-unknown";
 import {
     OutputOf,
     HandledInputOf,
-    getOptionalFlagOrFalse,
 } from "../query";
 import { ExtractExpectedInputOrUnknown } from "./extract-expected-input-or-unknown";
 import { ExtractMappableInputOrUnknown } from "./extract-mappable-input-or-unknown";
 import { Name } from "../name";
 import { setFunctionName } from "../../type-util";
+import { copyOptional } from "./copy-run-time-modifier";
 
 export type WithName<F extends AnyMapper, NameT extends string> = (
     & Mapper<HandledInputOf<F>, OutputOf<F>>
@@ -55,6 +55,5 @@ export function withName<F extends AnyMapper, NameT extends string>(
     };
     result.name = name;
     setFunctionName(result, result.name);
-    result.__optional = getOptionalFlagOrFalse(f);
-    return result as any;
+    return copyOptional(f, result) as any;
 };

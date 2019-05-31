@@ -1,4 +1,4 @@
-import {SafeMapper} from "../../mapper/safe-mapper";
+import {SafeMapper} from "../../mapper";
 
 export interface DeferredMapper<OutputT> extends SafeMapper<OutputT> {
     setImplementation (f : SafeMapper<OutputT>) : void;

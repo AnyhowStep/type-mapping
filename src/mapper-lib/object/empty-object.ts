@@ -1,4 +1,4 @@
-import {SafeMapper} from "../../mapper/safe-mapper";
+import {SafeMapper} from "../../mapper";
 
 /**
     Always returns a new empty object.

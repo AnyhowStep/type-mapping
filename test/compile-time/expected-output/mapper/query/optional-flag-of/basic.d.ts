@@ -1,4 +1,9 @@
 export declare const unnamed: false;
 export declare const optional: true;
+export declare const optionalThenOrUndefined: true;
+export declare const optionalThenNotUndefined: true;
+export declare const optionalThenNotOptional: false;
 export declare const orUndefined: false;
-export declare const optionalThenOrUndefined: false;
+export declare const orUndefinedThenOptional: true;
+export declare const orUndefinedThenNotUndefined: false;
+export declare const orUndefinedThenNotOptional: false;

@@ -1,9 +1,15 @@
-import {AnySafeMapper, SafeMapper} from "../../mapper";
-import {OutputOf} from "../../mapper";
-import {ExpectedInputOf} from "../../mapper";
-import {ExpectedInput} from "../../mapper";
-import {MappableInputOf} from "../../mapper";
-import {MappableInput} from "../../mapper";
+import {
+    AnySafeMapper,
+    SafeMapper,
+    OutputOf,
+    ExpectedInputOf,
+    ExpectedInput,
+    MappableInputOf,
+    MappableInput,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
+    copyRunTimeModifier,
+} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 import {pipe} from "../operator";
 
@@ -22,32 +28,37 @@ export type ArrayMapper<
     & SafeMapper<OutputOf<F>[]>
     & ExpectedInput<ExpectedInputOf<F>[]>
     & MappableInput<MappableInputOf<F>[]>
+    & ExtractNameOrUnknown<F>
+    & ExtractOptionalOrUnknown<F>
 );
 
 export function array<F extends AnySafeMapper> (f : F) : (
     ArrayMapper<F>
 ) {
-    return pipe(
-        instanceOfArray(),
-        (name : string, mixed : any[]) => {
-            let result : any[] = mixed;
-            let isCopy = false;
+    return copyRunTimeModifier(
+        f,
+        pipe(
+            instanceOfArray(),
+            (name : string, mixed : any[]) => {
+                let result : any[] = mixed;
+                let isCopy = false;
 
-            for (let i=0; i<mixed.length; ++i) {
-                const cur = f(`${name}[${i}]`, mixed[i]);
-                //We do not mind === here.
-                //If either is a BigInt polyfill, we are okay with the copy.
-                if (cur === mixed[i]) {
-                    continue;
+                for (let i=0; i<mixed.length; ++i) {
+                    const cur = f(`${name}[${i}]`, mixed[i]);
+                    //We do not mind === here.
+                    //If either is a BigInt polyfill, we are okay with the copy.
+                    if (cur === mixed[i]) {
+                        continue;
+                    }
+                    if (!isCopy) {
+                        result = result.slice();
+                        isCopy = true;
+                    }
+                    result[i] = cur;
                 }
-                if (!isCopy) {
-                    result = result.slice();
-                    isCopy = true;
-                }
-                result[i] = cur;
+
+                return result;
             }
-
-            return result;
-        }
+        )
     );
 }

@@ -1,11 +1,12 @@
-import { AnySafeMapper, SafeMapper } from "../../mapper/safe-mapper";
-import { Name } from "../../mapper/name";
-import { OutputOf, ExpectedInputOfImpl, MappableInputOfImpl, getNameOrEmptyString} from "../../mapper/query";
-import { ExpectedInput } from "../../mapper/expected-input";
-import { IsExpectedInputOptional, IsOptional } from "../../mapper/predicate";
-import { MappableInput } from "../../mapper/mappable-input";
-import { or } from "../operator";
+import { AnySafeMapper, SafeMapper } from "../../mapper";
+import { Name } from "../../mapper";
+import { OutputOf, ExpectedInputOfImpl, MappableInputOfImpl, getNameOrEmptyString} from "../../mapper";
+import { ExpectedInput } from "../../mapper";
+import { IsExpectedInputOptional, IsOptional } from "../../mapper";
+import { MappableInput } from "../../mapper";
+import { unsafeOr } from "../operator";
 import { objectFromMap } from "./object-from-map";
+import { emptyObject } from "./empty-object";
 
 type ExtractLiteralName<F extends AnySafeMapper & Name<string>> = (
     F extends any ?
@@ -142,6 +143,9 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
 export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
     ObjectFromArrayMapper<ArrT>
 ) {
+    if (arr.length == 0) {
+        return emptyObject() as any;
+    }
     const groupedByName : { [k : string] : AnySafeMapper[]|undefined } = {};
     for (const f of arr) {
         const name = getNameOrEmptyString(f);
@@ -160,7 +164,7 @@ export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (
         }
         map[k] = (mappers.length == 1) ?
             mappers[0] :
-            or(...mappers);
+            unsafeOr(...mappers);
     }
     return objectFromMap(map) as any;
 }

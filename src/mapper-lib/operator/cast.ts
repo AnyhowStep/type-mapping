@@ -1,11 +1,16 @@
-import {SafeMapper, AnySafeMapper} from "../../mapper";
-import {OutputOf} from "../../mapper";
-import {ExpectedInput} from "../../mapper";
-import {ExpectedInputOf} from "../../mapper";
-import {MappableInput} from "../../mapper";
-import {MappableInputOf} from "../../mapper";
+import {
+    SafeMapper,
+    AnySafeMapper,
+    OutputOf,
+    ExpectedInput,
+    ExpectedInputOf,
+    MappableInput,
+    MappableInputOf,
+    ExtractNameOrUnknown,
+    ExtractOptionalOrUnknown,
+    copyRunTimeModifier,
+} from "../../mapper";
 import {indentErrorMessage} from "../../error-util";
-import {mapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 
 export type CastDelegate<SrcT, DstT> = (src : SrcT) => DstT;
@@ -13,12 +18,11 @@ export type CastMapper<
     SrcF extends AnySafeMapper,
     DstF extends AnySafeMapper
 > = (
-    SafeMapper<OutputOf<DstF>> &
-    //By default, only accept what the destination type accepts.
-    //You can call relaxed<>() to accept everything that
-    //can be accepted
-    ExpectedInput<ExpectedInputOf<DstF>> &
-    MappableInput<MappableInputOf<SrcF>|MappableInputOf<DstF>>
+    & SafeMapper<OutputOf<DstF>>
+    & ExpectedInput<ExpectedInputOf<DstF>>
+    & MappableInput<MappableInputOf<SrcF>|MappableInputOf<DstF>>
+    & ExtractNameOrUnknown<SrcF>
+    & ExtractOptionalOrUnknown<SrcF>
 );
 export function cast<
     SrcF extends AnySafeMapper,
@@ -30,7 +34,8 @@ export function cast<
 ) : (
     CastMapper<SrcF, DstF>
 ) {
-    return mapper<CastMapper<SrcF, DstF>>(
+    const result = copyRunTimeModifier(
+        srcDelegate,
         (name : string, mixed : unknown) : OutputOf<DstF> => {
             try {
                 //If this works, we are already the desired data type
@@ -61,5 +66,6 @@ export function cast<
                 }
             }
         }
-    );
+    )
+    return result as any;
 }
