@@ -1,0 +1,58 @@
+[
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 124
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 170
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 231
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 280
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 345
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 418
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 487
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"mappable input is never\"]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 554
+  }
+]

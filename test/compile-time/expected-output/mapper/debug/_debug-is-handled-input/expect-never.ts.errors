@@ -1,0 +1,72 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Types of parameters 'm' and 'mixed' are incompatible.",
+        "category": 1,
+        "code": 2328,
+        "next": {
+          "messageText": "Type 'any' is not assignable to type 'never'.",
+          "category": 1,
+          "code": 2322
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 146
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 191
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 251
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 299
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 363
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 435
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 503
+  },
+  {
+    "messageText": "Argument of type '(_n: string, m: never) => never' is not assignable to parameter of type '(name: string, mixed: any, ...args: any[]) => any'.",
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 569
+  }
+]

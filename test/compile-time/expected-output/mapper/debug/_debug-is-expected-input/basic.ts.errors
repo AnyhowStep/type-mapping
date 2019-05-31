@@ -1,0 +1,60 @@
+[
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[string, \"is not expected input\", number]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 108
+  },
+  {
+    "messageText": {
+      "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[false, \"is not expected input\", number] | [true, \"is not expected input\", number]'.",
+      "category": 1,
+      "code": 2684,
+      "next": {
+        "messageText": "Type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to type '[true, \"is not expected input\", number]'.",
+        "category": 1,
+        "code": 2322
+      }
+    },
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 188
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[any, \"is not expected input\", number]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 252
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[unknown, \"is not expected input\", number]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 336
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[never, \"is not expected input\", number]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 428
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[{ \"object\": string; }, \"is not expected input\", number]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 516
+  },
+  {
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[Number, \"is not expected input\", number]'.",
+    "code": 2684,
+    "category": 1,
+    "length": 2,
+    "start": 602
+  }
+]
