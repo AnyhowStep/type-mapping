@@ -13,6 +13,14 @@ import {
     NameOf,
     OptionalFlagOf,
     getOptionalFlagOrFalse,
+    TryMapResult,
+    _debugIsExpectedInput,
+    _DebugIsExpectedInput,
+    _DebugIsHandledInput,
+    _DebugIsMappableInput,
+    _DebugIsOutput,
+    map,
+    tryMap,
 } from "./mapper";
 import {
     OrUndefinedMapper,
@@ -55,6 +63,8 @@ import {
     UnsafePipeMapper,
     DeepMergeMapper,
     deepMerge,
+    NotOptionalMapper,
+    notOptional,
 } from "./mapper-lib";
 import {LiteralType} from "./primitive";
 import {setFunctionName} from "./type-util";
@@ -67,7 +77,30 @@ export interface FluentMapper<F extends AnySafeMapper> {
     __optional : OptionalFlagOf<F>;
     name : NameOf<F>,
 
+    //== mapper/debug ==
+
+    _debugIsExpectedInput<X>(
+        this : _DebugIsExpectedInput<F, X>,
+        _x : X
+    ) : void;
+    _debugIsHandledInput<X>(
+        this : _DebugIsHandledInput<F, X>,
+        _x : X
+    ) : void;
+    _debugIsMappableInput<X>(
+        this : _DebugIsMappableInput<F, X>,
+        _x : X
+    ) : void;
+    _debugIsOutput<X>(
+        this : _DebugIsOutput<F, X>,
+        _x : X
+    ) : void;
+
     //== mapper/operation ==
+
+    map (name : string, mixed : ExpectedInputOf<F>) : OutputOf<F>;
+
+    tryMap (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>>;
 
     withExpectedInput<AcceptT extends MappableInputOf<F>> () : (
         FluentMapper<
@@ -75,25 +108,21 @@ export interface FluentMapper<F extends AnySafeMapper> {
         >
     );
 
-    //== field ==
-
-    withName<
-        NameT extends string
-    > (
+    withName<NameT extends string>(
         name : NameT
     ) : (
         FluentMapper<WithName<F, NameT>>
-    );
-
-    //== array-like ==
-
-    arrayLike () : FluentMapper<ArrayLikeMapper<F>>;
+    )
 
     //== array ==
 
     array () : FluentMapper<ArrayMapper<F>>;
 
     arrayLikeToArray () : FluentMapper<ArrayLikeToArrayMapper<F>>;
+
+    //== array-like ==
+
+    arrayLike () : FluentMapper<ArrayLikeMapper<F>>;
 
     //== object ==
 
@@ -147,6 +176,7 @@ export interface FluentMapper<F extends AnySafeMapper> {
     notMaybe () : FluentMapper<NotMaybeMapper<F>>;
 
     optional () : FluentMapper<OptionalMapper<F>>;
+    notOptional () : FluentMapper<NotOptionalMapper<F>>;
 
     or<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
         FluentMapper<OrMapper<F, ArrT>>
@@ -204,7 +234,38 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
     result.name = getNameOrEmptyString(f);
     setFunctionName(result, result.name);
 
-    //== mapper/operation
+    //== mapper/debug ==
+
+    result._debugIsExpectedInput = function<X> (
+        this : _DebugIsExpectedInput<F, X>,
+        _x : X
+    ) : void {
+    }
+    result._debugIsHandledInput = function<X> (
+        this : _DebugIsHandledInput<F, X>,
+        _x : X
+    ) : void {
+    }
+    result._debugIsMappableInput = function<X> (
+        this : _DebugIsMappableInput<F, X>,
+        _x : X
+    ) : void {
+    }
+    result._debugIsOutput = function<X> (
+        this : _DebugIsOutput<F, X>,
+        _x : X
+    ) : void {
+    }
+
+    //== mapper/operation ==
+
+    result.map = (name : string, mixed : ExpectedInputOf<F>) : OutputOf<F> => {
+        return map(f, name, mixed);
+    };
+
+    result.tryMap = (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>> => {
+        return tryMap(f, name, mixed);
+    };
 
     result.withExpectedInput = <AcceptT extends MappableInputOf<F>> () : (
         FluentMapper<
@@ -224,12 +285,6 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         return fluentMapper(withName(f, name));
     };
 
-    //== array-like ==
-
-    result.arrayLike = () : FluentMapper<ArrayLikeMapper<F>> => {
-        return fluentMapper(arrayLike(f));
-    };
-
     //== array ==
 
     result.array = () : FluentMapper<ArrayMapper<F>> => {
@@ -240,6 +295,11 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         return fluentMapper(arrayLikeToArray(f));
     };
 
+    //== array-like ==
+
+    result.arrayLike = () : FluentMapper<ArrayLikeMapper<F>> => {
+        return fluentMapper(arrayLike(f));
+    };
 
     // == object
 
@@ -324,6 +384,10 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
 
     result.optional = () : FluentMapper<OptionalMapper<F>> => {
         return fluentMapper(optional(f));
+    };
+
+    result.notOptional = () : FluentMapper<NotOptionalMapper<F>> => {
+        return fluentMapper(notOptional(f));
     };
 
     result.or = <ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
