@@ -248,3 +248,168 @@ tape(__filename, t => {
 
     t.end();
 });
+
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gtEq : BigInt(-2),
+            ltEq : BigInt(-4),
+        });
+    });
+
+    t.end();
+});
+tape(__filename, t => {
+    const f = tm.bigIntRange({
+        gtEq : BigInt(-4),
+        ltEq : BigInt(-2),
+    });
+
+    t.false(tm.tryMap(f, "x", BigInt(-7)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-6)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-5)).success);
+    t.deepEqual(f("x", BigInt(-4)).toString(), "-4");
+    t.deepEqual(f("x", BigInt(-3)).toString(), "-3");
+    t.deepEqual(f("x", BigInt(-2)).toString(), "-2");
+    t.false(tm.tryMap(f, "x", BigInt(-1)).success);
+
+    t.end();
+});
+tape(__filename, t => {
+    const f = tm.bigIntRange({
+        gtEq : BigInt(-4),
+        ltEq : BigInt(-4),
+    });
+
+    t.false(tm.tryMap(f, "x", BigInt(-7)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-6)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-5)).success);
+    t.deepEqual(f("x", BigInt(-4)).toString(), "-4");
+    t.false(tm.tryMap(f, "x", BigInt(-3)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-2)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-1)).success);
+
+    t.end();
+});
+
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gtEq : BigInt(-2),
+            lt : BigInt(-4),
+        });
+    });
+
+    t.end();
+});
+tape(__filename, t => {
+    const f = tm.bigIntRange({
+        gtEq : BigInt(-4),
+        lt : BigInt(-2),
+    });
+
+    t.false(tm.tryMap(f, "x", BigInt(-7)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-6)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-5)).success);
+    t.deepEqual(f("x", BigInt(-4)).toString(), "-4");
+    t.deepEqual(f("x", BigInt(-3)).toString(), "-3");
+    t.false(tm.tryMap(f, "x", BigInt(-2)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-1)).success);
+
+    t.end();
+});
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gtEq : BigInt(-2),
+            lt : BigInt(-2),
+        });
+    });
+
+    t.end();
+});
+
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gt : BigInt(-2),
+            ltEq : BigInt(-4),
+        });
+    });
+
+    t.end();
+});
+tape(__filename, t => {
+    const f = tm.bigIntRange({
+        gt : BigInt(-4),
+        ltEq : BigInt(-2),
+    });
+
+    t.false(tm.tryMap(f, "x", BigInt(-7)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-6)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-5)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-4)).success);
+    t.deepEqual(f("x", BigInt(-3)).toString(), "-3");
+    t.deepEqual(f("x", BigInt(-2)).toString(), "-2");
+    t.false(tm.tryMap(f, "x", BigInt(-1)).success);
+
+    t.end();
+});
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gt : BigInt(-2),
+            ltEq : BigInt(-2),
+        });
+    });
+
+    t.end();
+});
+
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gt : BigInt(-2),
+            lt : BigInt(-4),
+        });
+    });
+
+    t.end();
+});
+tape(__filename, t => {
+    const f = tm.bigIntRange({
+        gt : BigInt(-4),
+        lt : BigInt(-2),
+    });
+
+    t.false(tm.tryMap(f, "x", BigInt(-7)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-6)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-5)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-4)).success);
+    t.deepEqual(f("x", BigInt(-3)).toString(), "-3");
+    t.false(tm.tryMap(f, "x", BigInt(-2)).success);
+    t.false(tm.tryMap(f, "x", BigInt(-1)).success);
+
+    t.end();
+});
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gt : BigInt(-2),
+            lt : BigInt(-2),
+        });
+    });
+
+    t.end();
+});
+
+tape(__filename, t => {
+    t.throws(() => {
+        tm.bigIntRange({
+            gt : BigInt(-3),
+            lt : BigInt(-2),
+        });
+    });
+
+    t.end();
+});

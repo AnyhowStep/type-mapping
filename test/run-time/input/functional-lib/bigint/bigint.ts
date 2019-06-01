@@ -8,6 +8,10 @@ tape(__filename, t => {
     t.deepEqual(f("x", BigInt(2)).toString(), BigInt(2).toString());
     t.deepEqual(f("x", BigInt(-4)).toString(), BigInt(-4).toString());
 
+    t.false(tm.tryMap(f, "x", {} as any).success);
+    t.false(tm.tryMap(f, "x", [] as any).success);
+    t.false(tm.tryMap(f, "x", [true] as any).success);
+    t.false(tm.tryMap(f, "x", function () {} as any).success);
     t.false(tm.tryMap(f, "x", "1" as any).success);
     t.false(tm.tryMap(f, "x", 1 as any).success);
     t.false(tm.tryMap(f, "x", new Date() as any).success);

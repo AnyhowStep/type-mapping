@@ -10,6 +10,7 @@ import {
     IsExpectedInputOptional,
     IsOptional,
     MergedOutputOf,
+    getNameOrEmptyString,
 } from "../../mapper";
 import {unsafeDeepMerge} from "../operator";
 import {derive} from "./derive";
@@ -118,7 +119,7 @@ export function deriveMap<MapT extends FieldMap> (
             continue;
         }
         const f = map[k];
-        arr.push(derive(k, f.name, f));
+        arr.push(derive(k, getNameOrEmptyString(f), f));
     }
     if (arr.length == 0) {
         return emptyObject() as any;

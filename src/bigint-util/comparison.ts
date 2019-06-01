@@ -1,3 +1,13 @@
+/**
+    Assumes BigInt.toString() is implemented correctly.
+
+    Assummes we won't get strings like,
+
+    + "-0000"
+    + "-qwerty"
+    + "123.123"
+*/
+
 export function lessThan (a : bigint, b : bigint) {
     const aStr = a.toString();
     const bStr = b.toString();
@@ -62,4 +72,70 @@ export function greaterThanOrEqual (a : bigint, b : bigint) {
         equal(a, b) ||
         greaterThan(a, b)
     );
+}
+export function subOneImpl (str : string) : string {
+    if (str[0] == "-") {
+        const result = addOneImpl(str.substr(1));
+        return "-" + result;
+    }
+
+    if (str == "0") {
+        return "-1";
+    }
+
+    const digits = str
+        .split("")
+        .map(s => parseInt(s));
+
+    for (let i=digits.length-1; i>=0; --i) {
+        const d = digits[i];
+        if (d == 0) {
+            digits[i] = 9;
+        } else {
+            if (i == 0 && digits[i] == 1) {
+                digits.shift();
+            } else {
+                digits[i] = d-1;
+            }
+            break;
+        }
+    }
+
+    if (digits.length == 0) {
+        return "0";
+    } else {
+        return digits.join("");
+    }
+}
+export function addOneImpl (str : string) : string {
+    if (str[0] == "-") {
+        const result = subOneImpl(str.substr(1));
+        if (result == "0") {
+            return result;
+        } else {
+            return "-" + result;
+        }
+    }
+
+    const digits = str
+        .split("")
+        .map(s => parseInt(s));
+    let carry = true;
+
+    for (let i=digits.length-1; i>=0; --i) {
+        const d = digits[i];
+        if (d == 9) {
+            digits[i] = 0;
+        } else {
+            digits[i] = d+1;
+            carry = false;
+            break;
+        }
+    }
+
+    if (carry) {
+        digits.unshift(1);
+    }
+
+    return digits.join("");
 }

@@ -10,6 +10,7 @@ import {
     IsExpectedInputOptional,
     IsOptional,
     MergedOutputOf,
+    getNameOrEmptyString,
 } from "../../mapper";
 import {unsafeDeepMerge} from "../operator";
 import {rename} from "./rename";
@@ -204,7 +205,7 @@ export function renameMap<MapT extends FieldMap> (
             continue;
         }
         const f = map[k];
-        arr.push(rename(k, f.name, f));
+        arr.push(rename(k, getNameOrEmptyString(f), f));
     }
     if (arr.length == 0) {
         return emptyObject() as any;

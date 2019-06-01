@@ -10,6 +10,7 @@ import {
     lessThanOrEqual,
     equal,
 } from "../../bigint-util";
+import { BigIntUtil } from "../..";
 export function bigIntGt (x : bigint) : SafeMapper<bigint> {
     return pipe(
         bigInt(),
@@ -154,6 +155,13 @@ export function bigIntRange (args : {
                     throw new Error(`Min value cannot be equal to max value unless using gtEq and ltEq`);
                 }
             } else {
+                if (
+                    BigIntUtil.addOneImpl(min.value.toString()) == max.value.toString() &&
+                    !min.inclusive &&
+                    !max.inclusive
+                ) {
+                    throw new Error(`There is no bigint 'x' where: ${min.value.toString()} < x < ${max.value.toString()}`);
+                }
                 return pipe(
                     min.f,
                     max.f
