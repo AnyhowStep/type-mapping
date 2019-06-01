@@ -1,6 +1,6 @@
 import {pipe} from "../operator";
 import {instanceOfObject} from "../object";
-import {unsignedInteger, inclusiveRange} from "../number";
+import {unsignedInteger, range} from "../number";
 import {SafeMapper} from "../../mapper";
 import {cache} from "../operator";
 
@@ -13,7 +13,10 @@ export function length (args : {
         cache(
             pipe(
                 unsignedInteger(),
-                inclusiveRange(args)
+                range({
+                    gtEq : args.min,
+                    ltEq : args.max,
+                })
             ),
             (name : string, mixed : Object, lengthDelegate) : { readonly length : number} => {
                 lengthDelegate(`${name}.length`, (mixed as any).length);

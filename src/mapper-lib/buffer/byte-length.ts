@@ -1,6 +1,6 @@
 import {pipe} from "../operator";
 import {instanceOfObject} from "../object";
-import {unsignedInteger, inclusiveRange} from "../number";
+import {unsignedInteger, range} from "../number";
 import {SafeMapper} from "../../mapper";
 import {cache} from "../operator";
 
@@ -13,7 +13,10 @@ export function byteLength (args : {
         cache(
             pipe(
                 unsignedInteger(),
-                inclusiveRange(args)
+                range({
+                    gtEq : args.min,
+                    ltEq : args.max,
+                })
             ),
             (name : string, mixed : Object, byteLengthDelegate) : { readonly byteLength : number} => {
                 byteLengthDelegate(`${name}.byteLength`, (mixed as any).byteLength);

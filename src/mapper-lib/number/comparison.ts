@@ -55,28 +55,103 @@ export function ltEq (x : number) : SafeMapper<number> {
     );
 }
 
-export function inclusiveRange (args : {
-    min? : number,
-    max? : number,
+export function range (args : {
+    gt? : number,
+    lt? : number,
+    gtEq? : number,
+    ltEq? : number,
 }) : SafeMapper<number> {
-    if (typeof args.min == "number") {
-        if (typeof args.max == "number") {
-            if (args.min > args.max) {
-                throw new Error(`"min" cannot be greater than "max"`);
-            } else if (args.min == args.max) {
-                return literal(args.min);
+    const min = (
+        (typeof args.gt == "number") ?
+        (
+            (typeof args.gtEq == "number") ?
+            (
+                (args.gt >= args.gtEq) ?
+                {
+                    f : gt(args.gt),
+                    inclusive : false,
+                    value : args.gt,
+                } :
+                {
+                    f : gtEq(args.gtEq),
+                    inclusive : true,
+                    value : args.gtEq,
+                }
+            ) :
+            {
+                f : gt(args.gt),
+                inclusive : false,
+                value : args.gt,
+            }
+        ) :
+        (
+            (typeof args.gtEq == "number") ?
+            {
+                f : gtEq(args.gtEq),
+                inclusive : true,
+                value : args.gtEq,
+            } :
+            undefined
+        )
+    );
+    const max = (
+        (typeof args.lt == "number") ?
+        (
+            (typeof args.ltEq == "number") ?
+            (
+                (args.lt <= args.ltEq) ?
+                {
+                    f : lt(args.lt),
+                    inclusive : false,
+                    value : args.lt,
+                } :
+                {
+                    f : ltEq(args.ltEq),
+                    inclusive : true,
+                    value : args.ltEq,
+                }
+            ) :
+            {
+                f : lt(args.lt),
+                inclusive : false,
+                value : args.lt,
+            }
+        ) :
+        (
+            (typeof args.ltEq == "number") ?
+            {
+                f : ltEq(args.ltEq),
+                inclusive : true,
+                value : args.ltEq,
+            } :
+            undefined
+        )
+    );
+
+    if (min == undefined) {
+        if (max == undefined) {
+            return finiteNumber();
+        } else {
+            return max.f;
+        }
+    } else {
+        if (max == undefined) {
+            return min.f;
+        } else {
+            if (min.value > max.value) {
+                throw new Error(`Min value cannot be greater than max value`);
+            } else if (min.value == max.value) {
+                if (min.inclusive && max.inclusive) {
+                    return literal(min.value);
+                } else {
+                    throw new Error(`Min value cannot be equal to max value unless using gtEq and ltEq`);
+                }
             } else {
                 return pipe(
-                    gtEq(args.min),
-                    ltEq(args.max)
+                    min.f,
+                    max.f
                 );
             }
-        } else {
-            return gtEq(args.min);
         }
-    } else if (typeof args.max == "number") {
-        return ltEq(args.max);
-    } else {
-        return finiteNumber();
     }
 }

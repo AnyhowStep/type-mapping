@@ -1,5 +1,6 @@
 export * from "./array";
 export * from "./array-like";
+export * from "./bigint";
 export * from "./boolean";
 export * from "./buffer";
 export * from "./date";

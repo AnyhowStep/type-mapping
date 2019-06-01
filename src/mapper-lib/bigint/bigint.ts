@@ -13,7 +13,7 @@ export function bigInt () : SafeMapper<bigint> {
 }
 
 /**
-    Natural BigInt here is defined as an integer >= 0
+    bigint >= 0
 */
 export function unsignedBigInt () : SafeMapper<bigint> {
     const bigIntFactory = getBigIntFactoryFunctionOrError();

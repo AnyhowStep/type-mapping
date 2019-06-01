@@ -62,28 +62,103 @@ export function bigIntLtEq (x : bigint) : SafeMapper<bigint> {
     );
 }
 
-export function bigIntInclusiveRange (args : {
-    min? : bigint,
-    max? : bigint,
+export function bigIntRange (args : {
+    gt? : bigint,
+    lt? : bigint,
+    gtEq? : bigint,
+    ltEq? : bigint,
 }) : SafeMapper<bigint> {
-    if (isBigInt(args.min)) {
-        if (isBigInt(args.max)) {
-            if (greaterThan(args.min, args.max)) {
-                throw new Error(`"min" cannot be greater than "max"`);
-            } else if (equal(args.min, args.max)) {
-                return literal(args.min);
+    const min = (
+        (isBigInt(args.gt)) ?
+        (
+            (isBigInt(args.gtEq)) ?
+            (
+                (greaterThanOrEqual(args.gt, args.gtEq)) ?
+                {
+                    f : bigIntGt(args.gt),
+                    inclusive : false,
+                    value : args.gt,
+                } :
+                {
+                    f : bigIntGtEq(args.gtEq),
+                    inclusive : true,
+                    value : args.gtEq,
+                }
+            ) :
+            {
+                f : bigIntGt(args.gt),
+                inclusive : false,
+                value : args.gt,
+            }
+        ) :
+        (
+            (isBigInt(args.gtEq)) ?
+            {
+                f : bigIntGtEq(args.gtEq),
+                inclusive : true,
+                value : args.gtEq,
+            } :
+            undefined
+        )
+    );
+    const max = (
+        (isBigInt(args.lt)) ?
+        (
+            (isBigInt(args.ltEq)) ?
+            (
+                (lessThanOrEqual(args.lt, args.ltEq)) ?
+                {
+                    f : bigIntLt(args.lt),
+                    inclusive : false,
+                    value : args.lt,
+                } :
+                {
+                    f : bigIntLtEq(args.ltEq),
+                    inclusive : true,
+                    value : args.ltEq,
+                }
+            ) :
+            {
+                f : bigIntLt(args.lt),
+                inclusive : false,
+                value : args.lt,
+            }
+        ) :
+        (
+            (isBigInt(args.ltEq)) ?
+            {
+                f : bigIntLtEq(args.ltEq),
+                inclusive : true,
+                value : args.ltEq,
+            } :
+            undefined
+        )
+    );
+
+    if (min == undefined) {
+        if (max == undefined) {
+            return bigInt();
+        } else {
+            return max.f;
+        }
+    } else {
+        if (max == undefined) {
+            return min.f;
+        } else {
+            if (greaterThan(min.value, max.value)) {
+                throw new Error(`Min value cannot be greater than max value`);
+            } else if (equal(min.value, max.value)) {
+                if (min.inclusive && max.inclusive) {
+                    return literal(min.value);
+                } else {
+                    throw new Error(`Min value cannot be equal to max value unless using gtEq and ltEq`);
+                }
             } else {
                 return pipe(
-                    bigIntGtEq(args.min),
-                    bigIntLtEq(args.max)
+                    min.f,
+                    max.f
                 );
             }
-        } else {
-            return bigIntGtEq(args.min);
         }
-    } else if (isBigInt(args.max)) {
-        return bigIntLtEq(args.max);
-    } else {
-        return bigInt();
     }
 }

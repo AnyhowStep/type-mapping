@@ -21,6 +21,7 @@ import {
     _DebugIsOutput,
     map,
     tryMap,
+    SafeMapper,
 } from "./mapper";
 import {
     OrUndefinedMapper,
@@ -65,6 +66,7 @@ import {
     deepMerge,
     NotOptionalMapper,
     notOptional,
+    DeferredMapper,
 } from "./mapper-lib";
 import {LiteralType} from "./primitive";
 import {setFunctionName} from "./type-util";
@@ -224,6 +226,21 @@ export interface FluentMapper<F extends AnySafeMapper> {
     );
 
     unsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<UnsafePipeMapper<F>>;
+
+    //== type ==
+    /**
+        Special case for `deferred<>()`
+    */
+    setImplementation (
+        this : (
+            F extends {
+                setImplementation (impl : SafeMapper<OutputOf<F>>) : void,
+            } ?
+            unknown :
+            ["Cannot call setImplementation() on non-deferred mapper"]
+        ),
+        impl : SafeMapper<OutputOf<F>>
+    ) : void;
 }
 
 export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> {
@@ -402,6 +419,21 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
 
     result.unsafePipe = <ArrT extends AnyMapper[]>(...arr : ArrT) : FluentMapper<UnsafePipeMapper<F>> => {
         return fluentMapper(unsafePipe(f, ...arr));
+    };
+
+    //== type ==
+
+    result.setImplementation = function (
+        this : (
+            F extends {
+                setImplementation (f : SafeMapper<OutputOf<F>>) : void,
+            } ?
+            unknown :
+            ["Cannot call setImplementation() on non-deferred mapper"]
+        ),
+        impl : SafeMapper<OutputOf<F>>
+    ) : void {
+        (f as unknown as DeferredMapper<any>).setImplementation(impl);
     };
 
     return result;

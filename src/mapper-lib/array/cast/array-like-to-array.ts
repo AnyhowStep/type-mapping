@@ -8,9 +8,9 @@ import {
     MappableInputOf,
     ExtractNameOrUnknown,
     ExtractOptionalOrUnknown,
-} from "../../mapper";
-import {pipe} from "../operator";
-import {arrayLike} from "../array-like";
+} from "../../../mapper";
+import {pipe} from "../../operator";
+import {arrayLike} from "../../array-like";
 
 export type ArrayLikeToArrayMapper<
     F extends AnySafeMapper

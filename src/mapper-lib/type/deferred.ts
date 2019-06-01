@@ -1,7 +1,7 @@
 import {SafeMapper} from "../../mapper";
 
 export interface DeferredMapper<OutputT> extends SafeMapper<OutputT> {
-    setImplementation (f : SafeMapper<OutputT>) : void;
+    setImplementation (impl : SafeMapper<OutputT>) : void;
 };
 export function deferred<OutputT> () : DeferredMapper<OutputT> {
     let implementation : SafeMapper<OutputT>|undefined = undefined;
@@ -12,8 +12,8 @@ export function deferred<OutputT> () : DeferredMapper<OutputT> {
             return implementation(name, mixed);
         }
     };
-    result.setImplementation =(f : SafeMapper<OutputT>) => {
-        implementation = f;
+    result.setImplementation = (impl : SafeMapper<OutputT>) => {
+        implementation = impl;
     };
     return result;
 }

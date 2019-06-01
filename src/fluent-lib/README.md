@@ -1,0 +1,1 @@
+A `fluentMapper()` wrapper around `mapper-lib`.
