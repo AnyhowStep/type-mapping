@@ -1,8 +1,8 @@
 import {AnySafeMapper, Name, ExtendedMapper, OutputOf, MappableInputOf, AnyMapper, AssertPipeable} from "../mapper";
-import * as m from "../mapper-lib";
+import * as m from "../functional-lib";
 import {fluentMapper, FluentMapper} from "../fluent-mapper";
 import {Enum, EnumKey} from "../enum-util";
-import {ToOneEnumValueMapper, ToOneEnumKeyMapper, ObjectFromArrayMapper, ObjectFromMapMapper, CastDelegate, PipeMapper} from "../mapper-lib";
+import {ToOneEnumValueMapper, ToOneEnumKeyMapper, ObjectFromArrayMapper, ObjectFromMapMapper, CastDelegate, PipeMapper} from "../functional-lib";
 import {LiteralType} from "../primitive";
 import { FieldMap, SafeMapperMap } from "../field-map";
 

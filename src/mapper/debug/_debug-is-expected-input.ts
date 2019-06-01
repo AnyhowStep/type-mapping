@@ -25,7 +25,7 @@ export function _debugIsExpectedInput<F extends AnyExtendedMapper, X> (
 }
 
 /*
-import {unknown, optional} from "../../mapper-lib";
+import {unknown, optional} from "../../functional-lib";
 import {withExpectedInput} from "../operation";
 _debugIsExpectedInput(
     withExpectedInput(optional(unknown()))<number>(),

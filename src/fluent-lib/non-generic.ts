@@ -1,4 +1,4 @@
-import * as m from "../mapper-lib";
+import * as m from "../functional-lib";
 import {fluentMapper, FluentMapper} from "../fluent-mapper";
 import {AnySafeMapper} from "../mapper";
 

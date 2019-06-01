@@ -67,7 +67,7 @@ import {
     NotOptionalMapper,
     notOptional,
     DeferredMapper,
-} from "./mapper-lib";
+} from "./functional-lib";
 import {LiteralType} from "./primitive";
 import {setFunctionName} from "./type-util";
 
@@ -439,7 +439,7 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
     return result;
 }
 /*
-import {stringToUnsignedInteger, inclusiveRange} from "./mapper-lib";
+import {stringToUnsignedInteger, inclusiveRange} from "./functional-lib";
 const n = stringToUnsignedInteger();
 const x = fluentMapper(n);
 x.__optional

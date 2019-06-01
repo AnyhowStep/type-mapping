@@ -1,1 +1,1 @@
-A `fluentMapper()` wrapper around `mapper-lib`.
+A `fluentMapper()` wrapper around `functional-lib`.
