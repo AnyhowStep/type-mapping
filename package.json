@@ -11,7 +11,9 @@
     "test-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/runner.ts",
     "accept-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-actual.ts",
     "accept-one": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-one.ts",
-    "test-compile-time-interactive": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/interactive.ts"
+    "test-compile-time-interactive": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/interactive.ts",
+    "test-run-time": "ts-node -P ./test/run-time/tsconfig.json ./test/run-time/runner.ts",
+    "test-run-time-bigint-polyfill": "ts-node -P ./test/run-time/tsconfig.json -r ./test/run-time/bigint-polyfill.ts ./test/run-time/runner.ts"
   },
   "author": "anyhowstep",
   "license": "MIT",
@@ -21,7 +23,9 @@
   },
   "devDependencies": {
     "@types/diff": "^4.0.2",
+    "@types/tape": "^4.2.33",
     "diff": "^4.0.1",
+    "tape": "^4.10.2",
     "ts-node": "^8.1.0",
     "typescript": "^3.5.0-dev.20190523"
   },
