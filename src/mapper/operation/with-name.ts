@@ -53,7 +53,8 @@ export function withName<F extends AnyMapper, NameT extends string>(
     const result = (name : string, mixed : unknown) => {
         return f(name, mixed);
     };
-    result.name = name;
-    setFunctionName(result, result.name);
-    return copyOptional(f, result) as any;
+    return copyOptional(
+        setFunctionName(result, name),
+        result
+    ) as any;
 };

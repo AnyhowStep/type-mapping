@@ -1,7 +1,15 @@
-export function setFunctionName (f : Function, name : string|undefined) {
+import {Name} from "../mapper";
+
+/**
+    Modifies `f` directly.
+*/
+export function setFunctionName<F extends (...args : any[]) => any> (
+    f : Function,
+    name : string|undefined
+) : F & Name<string> {
     if (typeof name != "string") {
         name = "";
     }
-    (f as any).name = name;
     Object.defineProperty(f, "name", { value : name });
+    return f as any;
 }

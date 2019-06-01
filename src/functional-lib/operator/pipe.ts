@@ -24,7 +24,7 @@ function pipeImpl<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown
         (name : string, mixed : unknown) : unknown => {
             for (let i=0; i<arr.length; ++i) {
                 const d = arr[i];
-                mixed = d(`${name} |> ${i}`, mixed);
+                mixed = d(name, mixed);
             }
             return mixed;
         }

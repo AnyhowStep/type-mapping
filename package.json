@@ -1,13 +1,13 @@
 {
   "name": "type-mapping",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Map input data safely",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "rebuild": "(rm -r ./dist) && (npm run build)",
+    "rebuild": "(rm -r ./dist || true) && (npm run build)",
     "test-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/runner.ts",
     "accept-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-actual.ts",
     "accept-one": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-one.ts",

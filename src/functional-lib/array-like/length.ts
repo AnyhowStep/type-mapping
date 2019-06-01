@@ -3,13 +3,18 @@ import {instanceOfObject} from "../object";
 import {unsignedInteger, range} from "../number";
 import {SafeMapper} from "../../mapper";
 import {cache} from "../operator";
+import {string} from "../string";
+import {or} from "../operator";
 
 export function length (args : {
     min? : number,
     max? : number,
 }) : SafeMapper<{ readonly length : number}> {
     return pipe(
-        instanceOfObject(),
+        or(
+            instanceOfObject(),
+            string()
+        ),
         cache(
             pipe(
                 unsignedInteger(),

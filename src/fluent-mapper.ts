@@ -248,8 +248,6 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         return f(name, mixed);
     };
     result.__optional = getOptionalFlagOrFalse(f);
-    result.name = getNameOrEmptyString(f);
-    setFunctionName(result, result.name);
 
     //== mapper/debug ==
 
@@ -436,7 +434,10 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         (f as unknown as DeferredMapper<any>).setImplementation(impl);
     };
 
-    return result;
+    return setFunctionName(
+        result,
+        getNameOrEmptyString(f)
+    );
 }
 /*
 import {stringToUnsignedInteger, inclusiveRange} from "./functional-lib";
