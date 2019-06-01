@@ -31,6 +31,8 @@ tape(__filename, t => {
 
     t.false(typeof f("x", 2) == "string");
     t.false(typeof f("x", "2") == "string");
+    t.false(typeof f("x", 2) == "number");
+    t.false(typeof f("x", "2") == "number");
 
     t.false(tm.tryMap(f, "x", new Date() as any).success);
     t.false(tm.tryMap(f, "x", true as any).success);

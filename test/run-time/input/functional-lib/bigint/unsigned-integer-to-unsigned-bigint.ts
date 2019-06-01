@@ -21,6 +21,7 @@ tape(__filename, t => {
     t.false(tm.tryMap(f, 'x', -1.1 as any).success);
 
     t.false(typeof f("x", 2) == "string");
+    t.false(typeof f("x", 2) == "number");
 
     t.false(tm.tryMap(f, "x", "1" as any).success);
     t.false(tm.tryMap(f, "x", "0" as any).success);
