@@ -2,11 +2,15 @@ import * as tape from "tape";
 import * as tm from "../../../../../dist";
 
 tape(__filename, t => {
-    const f = tm.finiteNumber();
+    const f = tm.integer();
 
     t.deepEqual(f("x", 1), 1);
+    t.deepEqual(f("x", 0), 0);
+    t.deepEqual(f("x", -1), -1);
     t.deepEqual(f("x", Number(1)), 1);
     t.deepEqual(f("x", Math.pow(2, 64)), Math.pow(2, 64));
+    t.false(tm.tryMap(f, "x", 3.141 as any).success);
+    t.false(tm.tryMap(f, "x", -3.141 as any).success);
 
     t.false(tm.tryMap(f, "x", null as any).success);
     t.false(tm.tryMap(f, "x", undefined as any).success);
