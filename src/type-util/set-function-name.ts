@@ -10,6 +10,6 @@ export function setFunctionName<F extends (...args : any[]) => any> (
     if (typeof name != "string") {
         name = "";
     }
-    Object.defineProperty(f, "name", { value : name });
+    (f as any).__name = name;
     return f as any;
 }

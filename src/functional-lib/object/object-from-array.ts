@@ -11,9 +11,9 @@ import { toEmptyObject } from "./to-empty-object";
 type ExtractLiteralName<F extends AnySafeMapper & Name<string>> = (
     F extends any ?
     (
-        string extends F["name"] ?
+        string extends F["__name"] ?
         never :
-        F["name"]
+        F["__name"]
     ) :
     never
 );
@@ -28,7 +28,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
             )
         }
         & (
-            string extends ArrT[number]["name"] ?
+            string extends ArrT[number]["__name"] ?
             {
                 [name : string] : (
                     | OutputOf<
@@ -68,7 +68,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
             )
         }
         & (
-            string extends ArrT[number]["name"] ?
+            string extends ArrT[number]["__name"] ?
             {
                 [name : string] : (
                     | ExpectedInputOfImpl<
@@ -108,7 +108,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
             )
         }
         & (
-            string extends ArrT[number]["name"] ?
+            string extends ArrT[number]["__name"] ?
             {
                 [name : string] : (
                     | MappableInputOfImpl<

@@ -39,7 +39,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
             )
         }
         & (
-            string extends MapT[Extract<keyof MapT, string>]["name"] ?
+            string extends MapT[Extract<keyof MapT, string>]["__name"] ?
             {
                 [name : string] : (
                     | OutputOf<
@@ -95,7 +95,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
             )
         }
         & (
-            string extends MapT[Extract<keyof MapT, string>]["name"] ?
+            string extends MapT[Extract<keyof MapT, string>]["__name"] ?
             {
                 [name : string] : (
                     | ExpectedInputOf<
@@ -180,7 +180,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 )
             }
             & (
-                string extends MapT[Extract<keyof MapT, string>]["name"] ?
+                string extends MapT[Extract<keyof MapT, string>]["__name"] ?
                 {
                     [name : string] : (
                         | MappableInputOf<
