@@ -14,7 +14,7 @@ import {
 } from "../../mapper";
 import {unsafeDeepMerge} from "../operator";
 import {rename} from "./rename";
-import {emptyObject} from "./empty-object";
+import {toEmptyObject} from "./to-empty-object";
 
 type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
     {
@@ -208,7 +208,7 @@ export function renameMap<MapT extends FieldMap> (
         arr.push(rename(k, getNameOrEmptyString(f), f));
     }
     if (arr.length == 0) {
-        return emptyObject() as any;
+        return toEmptyObject() as any;
     }
     return unsafeDeepMerge(...arr) as any;
 }

@@ -6,7 +6,7 @@ import { IsExpectedInputOptional, IsOptional } from "../../mapper";
 import { MappableInput } from "../../mapper";
 import { unsafeOr } from "../operator";
 import { objectFromMap } from "./object-from-map";
-import { emptyObject } from "./empty-object";
+import { toEmptyObject } from "./to-empty-object";
 
 type ExtractLiteralName<F extends AnySafeMapper & Name<string>> = (
     F extends any ?
@@ -144,7 +144,7 @@ export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (
     ObjectFromArrayMapper<ArrT>
 ) {
     if (arr.length == 0) {
-        return emptyObject() as any;
+        return toEmptyObject() as any;
     }
     const groupedByName : { [k : string] : AnySafeMapper[]|undefined } = {};
     for (const f of arr) {

@@ -1,6 +1,6 @@
 export * from "./derive-map";
 export * from "./derive";
-export * from "./empty-object";
+export * from "./to-empty-object";
 export * from "./instance-of-object";
 export * from "./instance-of";
 export * from "./object-from-array";

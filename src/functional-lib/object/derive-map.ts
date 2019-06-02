@@ -12,7 +12,7 @@ import {
 } from "../../mapper";
 import {unsafeDeepMerge} from "../operator";
 import {derive} from "./derive";
-import {emptyObject} from "./empty-object";
+import {toEmptyObject} from "./to-empty-object";
 
 type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
     {
@@ -104,7 +104,7 @@ export function deriveMap<MapT extends FieldMap> (
         arr.push(derive(k, getNameOrEmptyString(f), f));
     }
     if (arr.length == 0) {
-        return emptyObject() as any;
+        return toEmptyObject() as any;
     }
     return unsafeDeepMerge(...arr) as any;
 }
