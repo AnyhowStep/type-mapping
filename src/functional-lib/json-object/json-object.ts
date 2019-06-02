@@ -3,6 +3,8 @@ import {toTypeStr} from "../../type-util";
 
 /**
     Calls `JSON.stringify()` and `JSON.parse()` once.
+
+    Always returns a new object.
 */
 export function jsonObject () : SafeMapper<{ [k : string] : unknown }> {
     return (name : string, mixed : unknown) : { [k : string] : unknown } => {
