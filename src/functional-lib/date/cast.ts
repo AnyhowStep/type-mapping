@@ -21,6 +21,26 @@ export function unsafeStringToDate () {
 }
 
 /**
+    Feel free to specify your own `Date` parsing function,
+    using any JS Date library you want.
+
+    It is safe for `dateParser` to throw `Error`s.
+
+    Do not use `Date.parse(str)` or `new Date(str)`
+    as implementations vary wildly.
+
+    If you wish to use either of those,
+    use `unsafeStringToDate()` instead.
+*/
+export function dateToString (dateParser : (str : string) => Date) {
+    return cast(
+        string(),
+        str => dateParser(str),
+        instanceOfDate()
+    );
+}
+
+/**
     Convert the number of seconds since the Unix Epoch
     to a `Date`.
 
