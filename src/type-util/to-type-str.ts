@@ -13,6 +13,8 @@ export function toLiteralStr (mixed : LiteralType) {
         return "undefined";
     } else if (isBigInt(typeof mixed)) {
         return mixed.toString() + "n";
+    } else if (typeof mixed == "string") {
+        return JSON.stringify(mixed);
     } else {
         return mixed.toString();
     }

@@ -8,7 +8,7 @@ export function literal<ArrT extends LiteralType[]> (...arr : ArrT) : (
     return (name : string, mixed : unknown) : ArrT[number] => {
         for (const item of arr) {
             if (strictEqual(mixed, item)) {
-                return item;
+                return mixed as ArrT[number];
             }
         }
         throw new Error(`${name} must be ${toLiteralUnionStr(arr)}; received ${toTypeStr(mixed)}`);

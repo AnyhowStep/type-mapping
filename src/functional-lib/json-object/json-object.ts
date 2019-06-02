@@ -1,5 +1,5 @@
 import {SafeMapper} from "../../mapper";
-import {toTypeStr} from "../../type-util";
+import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
 
 /**
     Calls `JSON.stringify()` and `JSON.parse()` once.
@@ -11,7 +11,9 @@ export function jsonObject () : SafeMapper<{ [k : string] : unknown }> {
         try {
             const str : string|undefined = JSON.stringify(mixed);
             if (typeof str == "string" && str[0] == "{") {
-                return JSON.parse(str);
+                if (isBigIntNativelySupported() || !isBigInt(mixed)) {
+                    return JSON.parse(str);
+                }
             }
             throw new Error(`${name} must be JSON Object; received ${toTypeStr(mixed)}`);
         } catch (err) {

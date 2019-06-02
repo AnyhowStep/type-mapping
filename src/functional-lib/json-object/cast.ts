@@ -3,7 +3,7 @@ import {
     ExpectedInput,
     MappableInput
 } from "../../mapper";
-import {toTypeStr} from "../../type-util";
+import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
 
 /**
     Calls `JSON.parse()` once, may call `JSON.stringify()` zero or one times.
@@ -21,7 +21,9 @@ export function stringToJsonObject () : (
             try {
                 const str : string|undefined = JSON.stringify(mixed);
                 if (typeof str == "string" && str[0] == "{") {
-                    return JSON.parse(str);
+                    if (isBigIntNativelySupported() || !isBigInt(mixed)) {
+                        return JSON.parse(str);
+                    }
                 }
                 throw new Error(`${name} is invalid JSON Object; received ${toTypeStr(mixed)}`);
             } catch (err) {

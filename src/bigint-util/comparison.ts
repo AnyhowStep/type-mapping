@@ -1,3 +1,5 @@
+import { isBigIntNativelySupported } from "../type-util";
+
 /**
     Assumes BigInt.toString() is implemented correctly.
 
@@ -9,6 +11,9 @@
 */
 
 export function lessThan (a : bigint, b : bigint) {
+    if (isBigIntNativelySupported()) {
+        return a < b;
+    }
     const aStr = a.toString();
     const bStr = b.toString();
     if (aStr == bStr) {
@@ -51,6 +56,9 @@ export function lessThan (a : bigint, b : bigint) {
     }
 }
 export function greaterThan (a : bigint, b : bigint) {
+    if (isBigIntNativelySupported()) {
+        return a > b;
+    }
     const aStr = a.toString();
     const bStr = b.toString();
     if (aStr == bStr) {
@@ -59,15 +67,24 @@ export function greaterThan (a : bigint, b : bigint) {
     return lessThan(b, a);
 }
 export function equal (a : bigint, b : bigint) {
+    if (isBigIntNativelySupported()) {
+        return a == b;
+    }
     return a.toString() == b.toString();
 }
 export function lessThanOrEqual (a : bigint, b : bigint) {
+    if (isBigIntNativelySupported()) {
+        return a <= b;
+    }
     return (
         equal(a, b) ||
         lessThan(a, b)
     );
 }
 export function greaterThanOrEqual (a : bigint, b : bigint) {
+    if (isBigIntNativelySupported()) {
+        return a >= b;
+    }
     return (
         equal(a, b) ||
         greaterThan(a, b)
