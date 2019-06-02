@@ -3,7 +3,16 @@ import {string} from "../string";
 import {instanceOfDate} from "./instance-of-date";
 import {integer} from "../number";
 
-export function stringToDate () {
+/**
+    Unsafe because it just uses `new Date(str)`
+    to convert to a `Date`.
+
+    This may have surprising results.
+    ```ts
+    new Date("1").getTime() === 978325200000
+    ```
+*/
+export function unsafeStringToDate () {
     return cast(
         string(),
         str => new Date(str),
