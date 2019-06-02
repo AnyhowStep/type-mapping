@@ -1,4 +1,5 @@
 import {tryGetBigIntFactoryFunction, isBigIntNativelySupported} from "./try-get-bigint-factory-function";
+import { isInstanceOfBuffer } from "./buffer-ctor";
 
 function isBigIntNative (x : unknown) : x is bigint {
     return (typeof x == "bigint");
@@ -14,7 +15,8 @@ function isBigIntPolyfill (x : unknown) : x is bigint {
 
     if (
         (x instanceof Number) ||
-        (x instanceof String)
+        (x instanceof String) ||
+        isInstanceOfBuffer(x)
     ) {
         //Sanity check.
         //These objects are most likely to pass the

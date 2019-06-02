@@ -52,6 +52,9 @@ export function toTypeStr (mixed : unknown) : string {
     if (str !== "object") {
         return str;
     }
+    if (isBigInt(mixed)) {
+        return "bigint";
+    }
     const prototype = Object.getPrototypeOf(mixed);
     if (prototype == undefined) {
         return "[Unknown Type]";

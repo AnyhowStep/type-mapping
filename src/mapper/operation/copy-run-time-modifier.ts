@@ -55,7 +55,6 @@ export function copyOptional<
     & DstF
     & ExtractOptionalOrUnknown<SrcF>
 ) {
-    setFunctionName(dst, getNameOrEmptyString(src));
     (dst as any).__optional = getOptionalFlagOrFalse(src);
     return dst as any;
 }

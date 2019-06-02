@@ -11,7 +11,6 @@
       if the `ExpectedInput<>` of the `Mapper<>` contains `undefined`
 
     + The `MappableInput<>` of the field will be marked optional
-
 */
 export interface Optional {
   readonly __optional : true,

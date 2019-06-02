@@ -2,6 +2,7 @@ export * from "./allows-instance-of";
 export * from "./deep-merge";
 export * from "./is-any";
 export * from "./is-bigint";
+export * from "./is-pojo";
 export * from "./is-primitive";
 export * from "./set-function-name";
 export * from "./strict-equal";

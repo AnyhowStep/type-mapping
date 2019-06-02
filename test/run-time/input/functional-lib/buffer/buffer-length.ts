@@ -12,6 +12,8 @@ tape(__filename, t => {
     t.false(tm.tryMap(f, "x", Buffer.from("")).success);
     t.false(tm.tryMap(f, "x", Buffer.from("1")).success);
     t.false(tm.tryMap(f, "x", Buffer.from("12")).success);
+    console.log("toStr", Buffer.from("123").toString());
+    f("x", Buffer.from("123"));
     t.true(tm.tryMap(f, "x", Buffer.from("123")).success);
     t.true(tm.tryMap(f, "x", Buffer.from("1234")).success);
     t.true(tm.tryMap(f, "x", Buffer.from("12345")).success);

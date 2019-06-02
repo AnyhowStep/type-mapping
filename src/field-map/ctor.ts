@@ -1,13 +1,12 @@
-import {Field} from "../field";
 import {SafeMapperMap} from "./field-map";
-import {withName} from "../mapper";
+import {withName, WithName} from "../mapper";
 
 /**
     Maps each `Mapper<>` to a `Field<>`
 */
 export type ToFieldMap<MapT extends SafeMapperMap> = {
     [name in Extract<keyof MapT, string>] : (
-        Field<MapT[name], name>
+        WithName<MapT[name], name>
     )
 };
 

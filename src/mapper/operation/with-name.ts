@@ -54,7 +54,7 @@ export function withName<F extends AnyMapper, NameT extends string>(
         return f(name, mixed);
     };
     return copyOptional(
-        setFunctionName(result, name),
-        result
+        f,
+        setFunctionName(result, name)
     ) as any;
 };

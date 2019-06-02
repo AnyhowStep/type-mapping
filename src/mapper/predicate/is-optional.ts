@@ -3,6 +3,7 @@ import {AnySafeMapper} from "../safe-mapper";
 import {Optional} from "../optional";
 import {isUndefinedMappable} from "./missing-value";
 
+//TODO Consider renaming to `IsMappableInputOptional<>`
 export type IsOptional<F extends AnySafeMapper> = (
     F extends Optional ?
     (
@@ -23,6 +24,7 @@ export type IsExpectedInputOptional<F extends AnySafeMapper> = (
     false
 );
 
+//TODO Consider renaming to `isMappableInputOptional()`
 export function isOptional (f : unknown) : f is Optional {
     if (typeof f != "function") {
         return false;

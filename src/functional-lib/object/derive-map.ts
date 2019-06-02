@@ -1,4 +1,4 @@
-import {SafeMapperMap, FieldMap} from "../../field-map";
+import {SafeMapperMap, FieldMap, NonOptionalExpectedInputKey, OptionalExpectedInputKey, NonOptionalMappableInputKey, OptionalMappableInputKey} from "../../field-map";
 import {
     SafeMapper,
     ExpectedInput,
@@ -7,8 +7,6 @@ import {
     ExpectedInputOf,
     MappableInputOf,
     MappableInput,
-    IsExpectedInputOptional,
-    IsOptional,
     MergedOutputOf,
     getNameOrEmptyString,
 } from "../../mapper";
@@ -53,59 +51,43 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
     >
     & ExpectedInput<
         & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsExpectedInputOptional<MapT[k]> extends true ?
-                    never :
-                    k
-                )
-            }[Extract<keyof MapT, string>]] : (
+            [src in NonOptionalExpectedInputKey<MapT>] : (
                 ExpectedInputOf<
                     MapT[src]
                 >
             )
         }
-        & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsExpectedInputOptional<MapT[k]> extends true ?
-                    k :
-                    never
+        & (
+            OptionalExpectedInputKey<MapT> extends never ?
+            unknown :
+            {
+                [src in OptionalExpectedInputKey<MapT>]? : (
+                    ExpectedInputOf<
+                        MapT[src]
+                    >
                 )
-            }[Extract<keyof MapT, string>]]? : (
-                ExpectedInputOf<
-                    MapT[src]
-                >
-            )
-        }
+            }
+        )
     >
     & MappableInput<
         & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsOptional<MapT[k]> extends true ?
-                    never :
-                    k
-                )
-            }[Extract<keyof MapT, string>]] : (
+            [src in NonOptionalMappableInputKey<MapT>] : (
                 MappableInputOf<
                     MapT[src]
                 >
             )
         }
-        & {
-            [src in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsOptional<MapT[k]> extends true ?
-                    k :
-                    never
+        & (
+            OptionalMappableInputKey<MapT> extends never ?
+            unknown :
+            {
+                [src in OptionalMappableInputKey<MapT>]? : (
+                    MappableInputOf<
+                        MapT[src]
+                    >
                 )
-            }[Extract<keyof MapT, string>]]? : (
-                MappableInputOf<
-                    MapT[src]
-                >
-            )
-        }
+            }
+        )
     >
 );
 export function deriveMap<MapT extends FieldMap> (
