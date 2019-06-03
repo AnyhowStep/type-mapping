@@ -1,14 +1,23 @@
-import {SafeMapperMap} from "../../field-map";
-import {SafeMapper} from "../../mapper";
-import {OutputOf} from "../../mapper";
-import {ExpectedInput} from "../../mapper";
-import {ExpectedInputOf} from "../../mapper";
-import {MappableInput} from "../../mapper";
-import {MappableInputOf} from "../../mapper";
-import {mapper} from "../../mapper";
+import {
+    SafeMapperMap,
+    NonOptionalExpectedInputKey,
+    OptionalExpectedInputKey,
+    NonOptionalMappableInputKey,
+    OptionalMappableInputKey,
+} from "../../field-map";
+import {
+    SafeMapper,
+    OutputOf,
+    ExpectedInput,
+    ExpectedInputOf,
+    MappableInput,
+    MappableInputOf,
+    mapper,
+    isOptional,
+} from "../../mapper";
 import {instanceOfObject} from "./instance-of-object";
 import {pipe} from "../operator";
-import {IsExpectedInputOptional, isOptional, IsOptional} from "../../mapper";
+import {toEmptyObject} from "./to-empty-object";
 
 export type ObjectFromMapMapper<
     MapT extends SafeMapperMap
@@ -20,48 +29,24 @@ export type ObjectFromMapMapper<
     }>
     & ExpectedInput<
         & {
-            [name in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsExpectedInputOptional<MapT[k]> extends true ?
-                    never :
-                    k
-                )
-            }[Extract<keyof MapT, string>]] : (
+            [name in NonOptionalExpectedInputKey<MapT>] : (
                 ExpectedInputOf<MapT[name]>
             )
         }
         & {
-            [name in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsExpectedInputOptional<MapT[k]> extends true ?
-                    k :
-                    never
-                )
-            }[Extract<keyof MapT, string>]]? : (
+            [name in OptionalExpectedInputKey<MapT>]? : (
                 ExpectedInputOf<MapT[name]>
             )
         }
     >
     & MappableInput<
         & {
-            [name in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsOptional<MapT[k]> extends true ?
-                        never :
-                        k
-                )
-            }[Extract<keyof MapT, string>]] : (
+            [name in NonOptionalMappableInputKey<MapT>] : (
                 MappableInputOf<MapT[name]>
             )
         }
         & {
-            [name in {
-                [k in Extract<keyof MapT, string>] : (
-                    IsOptional<MapT[k]> extends true ?
-                        k :
-                        never
-                )
-            }[Extract<keyof MapT, string>]]? : (
+            [name in OptionalMappableInputKey<MapT>]? : (
                 MappableInputOf<MapT[name]>
             )
         }
@@ -81,21 +66,19 @@ export function objectFromMap<
 ) : (
     ObjectFromMapMapper<MapT>
 ) {
+    const keys = Object.keys(map);
+    if (keys.length == 0) {
+        return toEmptyObject() as any;
+    }
     const optionalDict : { [k : string] : boolean|undefined } = {};
-    for (const k in map) {
-        if (!map.hasOwnProperty(k)) {
-            continue;
-        }
+    for (const k of keys) {
         optionalDict[k] = isOptional(map[k]);
     }
     return mapper<ObjectFromMapMapper<MapT>>(pipe(
         instanceOfObject(),
         (name : string, mixed : Object) => {
             const result : any = {};
-            for (const k in map) {
-                if (!map.hasOwnProperty(k)) {
-                    continue;
-                }
+            for (const k of keys) {
                 if (mixed.hasOwnProperty(k) || optionalDict[k] === true) {
                     result[k] = map[k](
                         `${name}.${k}`,
