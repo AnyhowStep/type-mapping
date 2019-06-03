@@ -10,9 +10,9 @@ export declare const b: tm.Mapper<unknown, {
     foo: number | undefined;
 }> & tm.ExpectedInput<{
     x: number | undefined;
-} & {}> & tm.MappableInput<{
+}> & tm.MappableInput<{
     x: number | undefined;
-} & {}>;
+}>;
 export declare const c: tm.Mapper<unknown, {
     foo: number | undefined;
 }> & tm.ExpectedInput<{

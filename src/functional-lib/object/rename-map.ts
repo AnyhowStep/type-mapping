@@ -33,7 +33,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 MergedOutputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { name : dst }
+                        { __name : dst }
                     >
                 >
             )
@@ -43,7 +43,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
             {
                 [name : string] : (
                     | OutputOf<
-                        Exclude<MapT[Extract<keyof MapT, string>], { name : ExtractLiteralDstName<MapT> }>
+                        Exclude<MapT[Extract<keyof MapT, string>], { __name : ExtractLiteralDstName<MapT> }>
                     >
                     | undefined
                 )
@@ -58,7 +58,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                     IsExpectedInputOptional<
                         Extract<
                             MapT[Extract<keyof MapT, string>],
-                            { name : k }
+                            { __name : k }
                         >
                     > extends true ?
                     never :
@@ -68,7 +68,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 ExpectedInputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { name : dst }
+                        { __name : dst }
                     >
                 >
             )
@@ -79,7 +79,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                     IsExpectedInputOptional<
                         Extract<
                             MapT[Extract<keyof MapT, string>],
-                            { name : k }
+                            { __name : k }
                         >
                     > extends true ?
                     k :
@@ -89,7 +89,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 ExpectedInputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { name : dst }
+                        { __name : dst }
                     >
                 >
             )
@@ -99,7 +99,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
             {
                 [name : string] : (
                     | ExpectedInputOf<
-                        Exclude<MapT[Extract<keyof MapT, string>], { name : ExtractLiteralDstName<MapT> }>
+                        Exclude<MapT[Extract<keyof MapT, string>], { __name : ExtractLiteralDstName<MapT> }>
                     >
                     | undefined
                 )
@@ -143,7 +143,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                         IsOptional<
                             Extract<
                                 MapT[Extract<keyof MapT, string>],
-                                { name : k }
+                                { __name : k }
                             >
                         > extends true ?
                         never :
@@ -153,7 +153,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                     MappableInputOf<
                         Extract<
                             MapT[Extract<keyof MapT, string>],
-                            { name : dst }
+                            { __name : dst }
                         >
                     >
                 )
@@ -164,7 +164,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                         IsOptional<
                             Extract<
                                 MapT[Extract<keyof MapT, string>],
-                                { name : k }
+                                { __name : k }
                             >
                         > extends true ?
                         k :
@@ -174,7 +174,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                     MappableInputOf<
                         Extract<
                             MapT[Extract<keyof MapT, string>],
-                            { name : dst }
+                            { __name : dst }
                         >
                     >
                 )
@@ -184,7 +184,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 {
                     [name : string] : (
                         | MappableInputOf<
-                            Exclude<MapT[Extract<keyof MapT, string>], { name : ExtractLiteralDstName<MapT> }>
+                            Exclude<MapT[Extract<keyof MapT, string>], { __name : ExtractLiteralDstName<MapT> }>
                         >
                         | undefined
                     )

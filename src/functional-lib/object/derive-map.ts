@@ -31,7 +31,7 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
                 MergedOutputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { name : dst }
+                        { __name : dst }
                     >
                 >
             )
@@ -41,7 +41,7 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
             {
                 [name : string] : (
                     | OutputOf<
-                        Exclude<MapT[Extract<keyof MapT, string>], { name : ExtractLiteralDstName<MapT> }>
+                        Exclude<MapT[Extract<keyof MapT, string>], { __name : ExtractLiteralDstName<MapT> }>
                     >
                     | undefined
                 )
