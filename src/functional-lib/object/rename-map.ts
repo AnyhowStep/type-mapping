@@ -1,30 +1,26 @@
-import {SafeMapperMap, FieldMap} from "../../field-map";
+import {
+    FieldMap,
+    NonOptionalMappableInputKey,
+    OptionalMappableInputKey,
+    ExtractLiteralDstName,
+    NonOptionalExpectedInputDstName,
+    OptionalExpectedInputDstName,
+    NonOptionalMappableInputDstName,
+    OptionalMappableInputDstName,
+} from "../../field-map";
 import {
     SafeMapper,
     ExpectedInput,
-    NameOf,
     OutputOf,
     ExpectedInputOf,
     MappableInputOf,
     MappableInput,
-    IsExpectedInputOptional,
-    IsOptional,
     MergedOutputOf,
     getNameOrEmptyString,
 } from "../../mapper";
 import {unsafeDeepMerge} from "../operator";
 import {rename} from "./rename";
 import {toEmptyObject} from "./to-empty-object";
-
-type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
-    {
-        [srcName in Extract<keyof MapT, string>] : (
-            string extends NameOf<MapT[srcName]> ?
-            never :
-            NameOf<MapT[srcName]>
-        )
-    }[Extract<keyof MapT, string>]
-);
 
 export type RenameMapMapper<MapT extends FieldMap> = (
     & SafeMapper<
@@ -53,18 +49,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
     >
     & ExpectedInput<
         & {
-            [dst in {
-                [k in ExtractLiteralDstName<MapT>] : (
-                    IsExpectedInputOptional<
-                        Extract<
-                            MapT[Extract<keyof MapT, string>],
-                            { __name : k }
-                        >
-                    > extends true ?
-                    never :
-                    k
-                )
-            }[ExtractLiteralDstName<MapT>]] : (
+            [dst in NonOptionalExpectedInputDstName<MapT>] : (
                 ExpectedInputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
@@ -74,18 +59,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
             )
         }
         & {
-            [dst in {
-                [k in ExtractLiteralDstName<MapT>] : (
-                    IsExpectedInputOptional<
-                        Extract<
-                            MapT[Extract<keyof MapT, string>],
-                            { __name : k }
-                        >
-                    > extends true ?
-                    k :
-                    never
-                )
-            }[ExtractLiteralDstName<MapT>]]? : (
+            [dst in OptionalExpectedInputDstName<MapT>]? : (
                 ExpectedInputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
@@ -110,26 +84,14 @@ export type RenameMapMapper<MapT extends FieldMap> = (
     & MappableInput<
         | (
             & {
-                [src in {
-                    [k in Extract<keyof MapT, string>] : (
-                        IsOptional<MapT[k]> extends true ?
-                        never :
-                        k
-                    )
-                }[Extract<keyof MapT, string>]] : (
+                [src in NonOptionalMappableInputKey<MapT>] : (
                     MappableInputOf<
                         MapT[src]
                     >
                 )
             }
             & {
-                [src in {
-                    [k in Extract<keyof MapT, string>] : (
-                        IsOptional<MapT[k]> extends true ?
-                        k :
-                        never
-                    )
-                }[Extract<keyof MapT, string>]]? : (
+                [src in OptionalMappableInputKey<MapT>]? : (
                     MappableInputOf<
                         MapT[src]
                     >
@@ -138,18 +100,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
         )
         | (
             & {
-                [dst in {
-                    [k in ExtractLiteralDstName<MapT>] : (
-                        IsOptional<
-                            Extract<
-                                MapT[Extract<keyof MapT, string>],
-                                { __name : k }
-                            >
-                        > extends true ?
-                        never :
-                        k
-                    )
-                }[ExtractLiteralDstName<MapT>]] : (
+                [dst in NonOptionalMappableInputDstName<MapT>] : (
                     MappableInputOf<
                         Extract<
                             MapT[Extract<keyof MapT, string>],
@@ -159,18 +110,7 @@ export type RenameMapMapper<MapT extends FieldMap> = (
                 )
             }
             & {
-                [dst in {
-                    [k in ExtractLiteralDstName<MapT>] : (
-                        IsOptional<
-                            Extract<
-                                MapT[Extract<keyof MapT, string>],
-                                { __name : k }
-                            >
-                        > extends true ?
-                        k :
-                        never
-                    )
-                }[ExtractLiteralDstName<MapT>]]? : (
+                [dst in OptionalMappableInputDstName<MapT>]? : (
                     MappableInputOf<
                         Extract<
                             MapT[Extract<keyof MapT, string>],

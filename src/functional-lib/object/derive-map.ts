@@ -1,8 +1,14 @@
-import {SafeMapperMap, FieldMap, NonOptionalExpectedInputKey, OptionalExpectedInputKey, NonOptionalMappableInputKey, OptionalMappableInputKey} from "../../field-map";
+import {
+    FieldMap,
+    NonOptionalExpectedInputKey,
+    OptionalExpectedInputKey,
+    NonOptionalMappableInputKey,
+    OptionalMappableInputKey,
+    ExtractLiteralDstName,
+} from "../../field-map";
 import {
     SafeMapper,
     ExpectedInput,
-    NameOf,
     OutputOf,
     ExpectedInputOf,
     MappableInputOf,
@@ -13,16 +19,6 @@ import {
 import {unsafeDeepMerge} from "../operator";
 import {derive} from "./derive";
 import {toEmptyObject} from "./to-empty-object";
-
-type ExtractLiteralDstName<MapT extends SafeMapperMap> = (
-    {
-        [srcName in Extract<keyof MapT, string>] : (
-            string extends NameOf<MapT[srcName]> ?
-            never :
-            NameOf<MapT[srcName]>
-        )
-    }[Extract<keyof MapT, string>]
-);
 
 export type DeriveMapMapper<MapT extends FieldMap> = (
     & SafeMapper<
