@@ -36,7 +36,6 @@ export type PipeMapper<
     DstF extends AnyMapper
 > = (
     & SafeMapper<OutputOf<DstF>>
-    & MappableInput<MappableInputOf<SrcF>>
     & (
         ExpectedInputOf<DstF> extends ExpectedInputOf<SrcF> ?
         (
@@ -46,6 +45,7 @@ export type PipeMapper<
         ) :
         ExtractExpectedInputOrUnknown<SrcF>
     )
+    & MappableInput<MappableInputOf<SrcF>>
     & ExtractNameOrUnknown<SrcF>
     & ExtractOptionalOrUnknown<SrcF>
 );
