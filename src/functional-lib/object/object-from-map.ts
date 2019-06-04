@@ -28,28 +28,44 @@ export type ObjectFromMapMapper<
         )
     }>
     & ExpectedInput<
-        & {
-            [name in NonOptionalExpectedInputKey<MapT>] : (
-                ExpectedInputOf<MapT[name]>
-            )
-        }
-        & {
-            [name in OptionalExpectedInputKey<MapT>]? : (
-                ExpectedInputOf<MapT[name]>
-            )
-        }
+        & (
+            NonOptionalExpectedInputKey<MapT> extends never ?
+            unknown :
+            {
+                [name in NonOptionalExpectedInputKey<MapT>] : (
+                    ExpectedInputOf<MapT[name]>
+                )
+            }
+        )
+        & (
+            OptionalExpectedInputKey<MapT> extends never ?
+            unknown :
+            {
+                [name in OptionalExpectedInputKey<MapT>]? : (
+                    ExpectedInputOf<MapT[name]>
+                )
+            }
+        )
     >
     & MappableInput<
-        & {
-            [name in NonOptionalMappableInputKey<MapT>] : (
-                MappableInputOf<MapT[name]>
-            )
-        }
-        & {
-            [name in OptionalMappableInputKey<MapT>]? : (
-                MappableInputOf<MapT[name]>
-            )
-        }
+        & (
+            NonOptionalMappableInputKey<MapT> extends never ?
+            unknown :
+            {
+                [name in NonOptionalMappableInputKey<MapT>] : (
+                    MappableInputOf<MapT[name]>
+                )
+            }
+        )
+        & (
+            OptionalMappableInputKey<MapT> extends never ?
+            unknown :
+            {
+                [name in OptionalMappableInputKey<MapT>]? : (
+                    MappableInputOf<MapT[name]>
+                )
+            }
+        )
     >
 );
 

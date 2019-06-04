@@ -21,7 +21,7 @@ export declare const b: tm.Mapper<unknown, {
 }> & tm.ExpectedInput<{
     foo: number;
     bar: string | undefined;
-} & {}> & tm.MappableInput<({
+}> & tm.MappableInput<({
     isNotOptional: string | undefined;
 } & {
     isOptionalButExpectNumber?: number | undefined;

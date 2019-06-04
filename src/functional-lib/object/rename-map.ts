@@ -48,26 +48,34 @@ export type RenameMapMapper<MapT extends FieldMap> = (
         )
     >
     & ExpectedInput<
-        & {
-            [dst in NonOptionalExpectedInputDstName<MapT>] : (
-                ExpectedInputOf<
-                    Extract<
-                        MapT[Extract<keyof MapT, string>],
-                        { __name : dst }
+        & (
+            NonOptionalExpectedInputDstName<MapT> extends never ?
+            unknown :
+            {
+                [dst in NonOptionalExpectedInputDstName<MapT>] : (
+                    ExpectedInputOf<
+                        Extract<
+                            MapT[Extract<keyof MapT, string>],
+                            { __name : dst }
+                        >
                     >
-                >
-            )
-        }
-        & {
-            [dst in OptionalExpectedInputDstName<MapT>]? : (
-                ExpectedInputOf<
-                    Extract<
-                        MapT[Extract<keyof MapT, string>],
-                        { __name : dst }
+                )
+            }
+        )
+        & (
+            OptionalExpectedInputDstName<MapT> extends never ?
+            unknown :
+            {
+                [dst in OptionalExpectedInputDstName<MapT>]? : (
+                    ExpectedInputOf<
+                        Extract<
+                            MapT[Extract<keyof MapT, string>],
+                            { __name : dst }
+                        >
                     >
-                >
-            )
-        }
+                )
+            }
+        )
         & (
             string extends MapT[Extract<keyof MapT, string>]["__name"] ?
             {
@@ -83,42 +91,58 @@ export type RenameMapMapper<MapT extends FieldMap> = (
     >
     & MappableInput<
         | (
-            & {
-                [src in NonOptionalMappableInputKey<MapT>] : (
-                    MappableInputOf<
-                        MapT[src]
-                    >
-                )
-            }
-            & {
-                [src in OptionalMappableInputKey<MapT>]? : (
-                    MappableInputOf<
-                        MapT[src]
-                    >
-                )
-            }
+            & (
+                NonOptionalMappableInputKey<MapT> extends never ?
+                unknown :
+                {
+                    [src in NonOptionalMappableInputKey<MapT>] : (
+                        MappableInputOf<
+                            MapT[src]
+                        >
+                    )
+                }
+            )
+            & (
+                OptionalMappableInputKey<MapT> extends never ?
+                unknown :
+                {
+                    [src in OptionalMappableInputKey<MapT>]? : (
+                        MappableInputOf<
+                            MapT[src]
+                        >
+                    )
+                }
+            )
         )
         | (
-            & {
-                [dst in NonOptionalMappableInputDstName<MapT>] : (
-                    MappableInputOf<
-                        Extract<
-                            MapT[Extract<keyof MapT, string>],
-                            { __name : dst }
+            & (
+                NonOptionalMappableInputDstName<MapT> extends never ?
+                unknown :
+                {
+                    [dst in NonOptionalMappableInputDstName<MapT>] : (
+                        MappableInputOf<
+                            Extract<
+                                MapT[Extract<keyof MapT, string>],
+                                { __name : dst }
+                            >
                         >
-                    >
-                )
-            }
-            & {
-                [dst in OptionalMappableInputDstName<MapT>]? : (
-                    MappableInputOf<
-                        Extract<
-                            MapT[Extract<keyof MapT, string>],
-                            { __name : dst }
+                    )
+                }
+            )
+            & (
+                OptionalMappableInputDstName<MapT> extends never ?
+                unknown :
+                {
+                    [dst in OptionalMappableInputDstName<MapT>]? : (
+                        MappableInputOf<
+                            Extract<
+                                MapT[Extract<keyof MapT, string>],
+                                { __name : dst }
+                            >
                         >
-                    >
-                )
-            }
+                    )
+                }
+            )
             & (
                 string extends MapT[Extract<keyof MapT, string>]["__name"] ?
                 {

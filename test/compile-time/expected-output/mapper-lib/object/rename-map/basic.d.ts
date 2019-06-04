@@ -5,10 +5,10 @@ export declare const a: tm.Mapper<unknown, {
 }> & tm.ExpectedInput<{
     foo: number;
     bar: string;
-} & {}> & tm.MappableInput<({
+}> & tm.MappableInput<{
     a: number;
     b: string;
-} & {}) | ({
+} | {
     foo: number;
     bar: string;
-} & {})>;
+}>;

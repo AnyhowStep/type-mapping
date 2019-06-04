@@ -46,13 +46,17 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
         )
     >
     & ExpectedInput<
-        & {
-            [src in NonOptionalExpectedInputKey<MapT>] : (
-                ExpectedInputOf<
-                    MapT[src]
-                >
-            )
-        }
+        & (
+            NonOptionalExpectedInputKey<MapT> extends never ?
+            unknown :
+            {
+                [src in NonOptionalExpectedInputKey<MapT>] : (
+                    ExpectedInputOf<
+                        MapT[src]
+                    >
+                )
+            }
+        )
         & (
             OptionalExpectedInputKey<MapT> extends never ?
             unknown :
@@ -66,13 +70,17 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
         )
     >
     & MappableInput<
-        & {
-            [src in NonOptionalMappableInputKey<MapT>] : (
-                MappableInputOf<
-                    MapT[src]
-                >
-            )
-        }
+        & (
+            NonOptionalMappableInputKey<MapT> extends never ?
+            unknown :
+            {
+                [src in NonOptionalMappableInputKey<MapT>] : (
+                    MappableInputOf<
+                        MapT[src]
+                    >
+                )
+            }
+        )
         & (
             OptionalMappableInputKey<MapT> extends never ?
             unknown :
