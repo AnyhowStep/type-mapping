@@ -1,6 +1,7 @@
 export * from "./allows-instance-of";
 export * from "./buffer-ctor";
 export * from "./deep-merge";
+export * from "./is-instance-of";
 export * from "./is-any";
 export * from "./is-bigint";
 export * from "./is-pojo";

@@ -1,5 +1,5 @@
 import {SafeMapper} from "../../mapper";
-import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
+import {toTypeStr, isInstanceOf} from "../../type-util";
 
 /**
     If you pass in a bigint object created by
@@ -8,15 +8,10 @@ import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
 */
 export function instanceOfObject () : SafeMapper<Object> {
     return (name : string, mixed : unknown) : Object => {
-        if (
-            !(mixed instanceof Object) ||
-            (
-                !isBigIntNativelySupported() &&
-                isBigInt(mixed)
-            )
-        ) {
+        if (isInstanceOf(mixed, Object)) {
+            return mixed;
+        } else {
             throw new Error(`${name} must be instance of Object; received ${toTypeStr(mixed)}`);
         }
-        return mixed;
     };
 }
