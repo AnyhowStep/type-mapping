@@ -8,6 +8,8 @@ tape(__filename, t => {
     t.true(f("x", obj) == obj);
     /**
         TODO Maybe implement `deepPojo()` or something similar?
+        Would arrays be allowed?
+        Would Date objects be allowed?
     */
     t.false(tm.tryMap(f, "x", obj.x.notAPojo as any).success);
 
