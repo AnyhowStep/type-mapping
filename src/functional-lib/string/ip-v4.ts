@@ -3,7 +3,7 @@ import {stringToUnsignedInteger, ltEq} from "../number";
 import {string} from "./string";
 import {SafeMapper} from "../../mapper";
 
-/*
+/**
     https://en.wikipedia.org/wiki/Dot-decimal_notation
 
     An octet is 8-bits.
@@ -20,7 +20,6 @@ import {SafeMapper} from "../../mapper";
 */
 export function ipV4OctetString () : SafeMapper<string> {
     return pipe(
-        string(),
         stringToUnsignedInteger(),
         ltEq(255),
         (_name : string, octet : number) : string => {

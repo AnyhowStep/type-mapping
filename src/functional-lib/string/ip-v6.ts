@@ -3,7 +3,7 @@ import {stringLength, hexadecimalString, string} from "./string";
 import {SafeMapper} from "../../mapper";
 import {arrayFill} from "../../array-util";
 
-/*
+/**
     == INPUT ==
     https://tools.ietf.org/html/rfc4291#section-2.2
 
@@ -77,7 +77,7 @@ function largestConsecutiveZeroCount (segments : string[]) : (
         after  : segments.slice(largestStart+largestCount),
     };
 }
-/*
+/**
     https://tools.ietf.org/html/rfc5952#section-4.2.1
 
     The use of the symbol "::" MUST be used to its maximum capability.
