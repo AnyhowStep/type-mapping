@@ -50,13 +50,13 @@ export function integerFormatString () : SafeMapper<string> {
     );
 }
 /**
-    Just because a string is in natural number format does not mean
+    Just because a string is in unsigned number format does not mean
     it is a finite number.
 
     ```ts
     const nines_80 = "99999999999999999999999999999999999999999999999999999999999999999999999999999999";
     const nines_320 = nines_80.repeat(4);
-    //This will pass, 320 nines in a row is a valid natural number format
+    //This will pass, 320 nines in a row is a valid unsigned number format
     unsignedIntegerFormatString()("", nines_320);
     //Infinity
     parseFloat(nines_320);
@@ -68,7 +68,7 @@ export function integerFormatString () : SafeMapper<string> {
 export function unsignedIntegerFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
-        match(unsignedIntegerRegex, name => `${name} must be valid natural number format string`)
+        match(unsignedIntegerRegex, name => `${name} must be valid unsigned number format string`)
     );
 }
 
@@ -96,7 +96,7 @@ export function finiteNumberString () : SafeMapper<string> {
 }
 
 /**
-    Uses `integerFormatString()` and `parseInt()` internally.
+    Uses `integerFormatString()` and `parseFloat()` internally.
 
     ```ts
     //Output is 10000000000000000 due to loss in precision
@@ -110,8 +110,8 @@ export function integerString () : SafeMapper<string> {
             integer(),
             (name : string, str : string, integerDelegate) => {
                 return integerDelegate(
-                    `parseInt(${name})`,
-                    parseInt(str)
+                    `parseFloat(${name})`,
+                    parseFloat(str)
                 ).toString();
             }
         )
@@ -119,7 +119,7 @@ export function integerString () : SafeMapper<string> {
 }
 
 /**
-    Uses `unsignedIntegerString()` and `parseInt()` internally.
+    Uses `unsignedIntegerString()` and `parseFloat()` internally.
 
     ```ts
     //Output is 10000000000000000 due to loss in precision
@@ -128,13 +128,13 @@ export function integerString () : SafeMapper<string> {
 */
 export function unsignedIntegerString () : SafeMapper<string> {
     return pipe(
-        unsignedIntegerString(),
+        unsignedIntegerFormatString(),
         cache(
             unsignedInteger(),
             (name : string, str : string, unsignedIntegerDelegate) => {
                 return unsignedIntegerDelegate(
-                    `parseInt(${name})`,
-                    parseInt(str)
+                    `parseFloat(${name})`,
+                    parseFloat(str)
                 ).toString();
             }
         )

@@ -21,7 +21,7 @@ export function stringToFiniteNumber () {
 }
 
 /**
-    Uses `integerFormatString()` and `parseInt()` internally.
+    Uses `integerFormatString()` and `parseFloat()` internally.
 
     ```ts
     const s = "999999999999999999999999999"
@@ -32,13 +32,13 @@ export function stringToFiniteNumber () {
 export function stringToInteger () {
     return cast(
         integerFormatString(),
-        parseInt,
+        parseFloat,
         integer()
     );
 }
 
 /**
-    Uses `unsignedIntegerFormatString()` and `parseInt()` internally.
+    Uses `unsignedIntegerFormatString()` and `parseFloat()` internally.
 
     ```ts
     const s = "999999999999999999999999999"
@@ -49,7 +49,7 @@ export function stringToInteger () {
 export function stringToUnsignedInteger () {
     return cast(
         unsignedIntegerFormatString(),
-        parseInt,
+        parseFloat,
         unsignedInteger()
     );
 }
@@ -88,7 +88,7 @@ export function toFiniteNumber () {
 }
 
 /**
-    Uses `integerFormatString()` and `parseInt()` internally.
+    Uses `integerFormatString()` and `parseFloat()` internally.
 
     ```ts
     const s = "999999999999999999999999999"
@@ -115,13 +115,13 @@ export function toInteger () {
                 }
             )
         ),
-        parseInt,
+        parseFloat,
         integer()
     );
 }
 
 /**
-    Uses `unsignedIntegerFormatString()` and `parseInt()` internally.
+    Uses `unsignedIntegerFormatString()` and `parseFloat()` internally.
 
     ```ts
     const s = "999999999999999999999999999"
@@ -148,7 +148,7 @@ export function toUnsignedInteger () {
                 }
             )
         ),
-        parseInt,
+        parseFloat,
         unsignedInteger()
     );
 }
