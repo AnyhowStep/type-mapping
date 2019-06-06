@@ -15,6 +15,7 @@ import {
     MappableInput,
     MergedOutputOf,
     getNameOrEmptyString,
+    Name,
 } from "../../mapper";
 import {unsafeDeepMerge} from "../operator";
 import {derive} from "./derive";
@@ -27,7 +28,7 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
                 MergedOutputOf<
                     Extract<
                         MapT[Extract<keyof MapT, string>],
-                        { __name : dst }
+                        Name<dst>
                     >
                 >
             )
@@ -37,7 +38,7 @@ export type DeriveMapMapper<MapT extends FieldMap> = (
             {
                 [name : string] : (
                     | OutputOf<
-                        Exclude<MapT[Extract<keyof MapT, string>], { __name : ExtractLiteralDstName<MapT> }>
+                        Exclude<MapT[Extract<keyof MapT, string>], Name<ExtractLiteralDstName<MapT>>>
                     >
                     | undefined
                 )

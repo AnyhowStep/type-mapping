@@ -3,6 +3,7 @@ import {
     IsExpectedInputOptional,
     IsOptional,
     NameOf,
+    Name,
 } from "../mapper";
 import {AnyField} from "../field/field";
 
@@ -74,7 +75,7 @@ export type NonOptionalExpectedInputDstName<MapT extends FieldMap> = (
             IsExpectedInputOptional<
                 Extract<
                     MapT[Extract<keyof MapT, string>],
-                    { __name : k }
+                    Name<k>
                 >
             > extends true ?
             never :
@@ -88,7 +89,7 @@ export type OptionalExpectedInputDstName<MapT extends FieldMap> = (
             IsExpectedInputOptional<
                 Extract<
                     MapT[Extract<keyof MapT, string>],
-                    { __name : k }
+                    Name<k>
                 >
             > extends true ?
             k :
@@ -102,7 +103,7 @@ export type NonOptionalMappableInputDstName<MapT extends FieldMap> = (
             IsOptional<
                 Extract<
                     MapT[Extract<keyof MapT, string>],
-                    { __name : k }
+                    Name<k>
                 >
             > extends true ?
             never :
@@ -116,7 +117,7 @@ export type OptionalMappableInputDstName<MapT extends FieldMap> = (
             IsOptional<
                 Extract<
                     MapT[Extract<keyof MapT, string>],
-                    { __name : k }
+                    Name<k>
                 >
             > extends true ?
             k :

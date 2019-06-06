@@ -23,7 +23,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
         & {
             [name in ExtractLiteralName<ArrT[number]>] : (
                 OutputOf<
-                    Extract<ArrT[number], { __name : name }>
+                    Extract<ArrT[number], Name<name>>
                 >
             )
         }
@@ -32,7 +32,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
             {
                 [name : string] : (
                     | OutputOf<
-                        Exclude<ArrT[number], { __name : ExtractLiteralName<ArrT[number]> }>
+                        Exclude<ArrT[number], Name<ExtractLiteralName<ArrT[number]>>>
                     >
                     | undefined
                 )
@@ -44,26 +44,26 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
         & {
             [name in {
                 [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsExpectedInputOptional<Extract<ArrT[number], { __name : k }>> extends true ?
+                    IsExpectedInputOptional<Extract<ArrT[number], Name<k>>> extends true ?
                     never :
                     k
                 )
             }[ExtractLiteralName<ArrT[number]>]] : (
                 ExpectedInputOfImpl<
-                    Extract<ArrT[number], { __name : name }>
+                    Extract<ArrT[number], Name<name>>
                 >[0]
             )
         }
         & {
             [name in {
                 [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsExpectedInputOptional<Extract<ArrT[number], { __name : k }>> extends true ?
+                    IsExpectedInputOptional<Extract<ArrT[number], Name<k>>> extends true ?
                     k :
                     never
                 )
             }[ExtractLiteralName<ArrT[number]>]]? : (
                 ExpectedInputOfImpl<
-                    Extract<ArrT[number], { __name : name }>
+                    Extract<ArrT[number], Name<name>>
                 >[0]
             )
         }
@@ -72,7 +72,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
             {
                 [name : string] : (
                     | ExpectedInputOfImpl<
-                        Exclude<ArrT[number], { __name : ExtractLiteralName<ArrT[number]> }>
+                        Exclude<ArrT[number], Name<ExtractLiteralName<ArrT[number]>>>
                     >[0]
                     | undefined
                 )
@@ -84,26 +84,26 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
         & {
             [name in {
                 [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsOptional<Extract<ArrT[number], { __name : k }>> extends true ?
+                    IsOptional<Extract<ArrT[number], Name<k>>> extends true ?
                     never :
                     k
                 )
             }[ExtractLiteralName<ArrT[number]>]] : (
                 MappableInputOfImpl<
-                    Extract<ArrT[number], { __name : name }>
+                    Extract<ArrT[number], Name<name>>
                 >[0]
             )
         }
         & {
             [name in {
                 [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsOptional<Extract<ArrT[number], { __name : k }>> extends true ?
+                    IsOptional<Extract<ArrT[number], Name<k>>> extends true ?
                     k :
                     never
                 )
             }[ExtractLiteralName<ArrT[number]>]]? : (
                 MappableInputOfImpl<
-                    Extract<ArrT[number], { __name : name }>
+                    Extract<ArrT[number], Name<name>>
                 >[0]
             )
         }
@@ -112,7 +112,7 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
             {
                 [name : string] : (
                     | MappableInputOfImpl<
-                        Exclude<ArrT[number], { __name : ExtractLiteralName<ArrT[number]> }>
+                        Exclude<ArrT[number], Name<ExtractLiteralName<ArrT[number]>>>
                     >[0]
                     | undefined
                 )

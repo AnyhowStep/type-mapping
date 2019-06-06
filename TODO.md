@@ -42,5 +42,3 @@ const partial: tm.Mapper<unknown, {
     d?: undefined;
 }>
 ```
-
-+ Use `Name<K>` instead of `{ __name : K }`
