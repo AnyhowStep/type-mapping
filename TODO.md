@@ -42,3 +42,5 @@ const partial: tm.Mapper<unknown, {
     d?: undefined;
 }>
 ```
+
++ Delete `cache<>()` mapper. It is useless.

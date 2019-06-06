@@ -6,6 +6,7 @@ export * from "./instance-of";
 export * from "./object-from-array";
 export * from "./object-from-map";
 export * from "./object";
+export * from "./partial-derive-map";
 export * from "./partial-rename-map";
 export * from "./pojo";
 export * from "./rename-map";
