@@ -5,11 +5,19 @@ export type ExtractKeyWithParams<ObjT, ArgsT extends AnySafeMapper[]> = (
     {
         [k in Extract<keyof ObjT, string|symbol>] : (
             (
-                Parameters<Extract<ObjT[k], (...args : any[]) => any>>
-            ) extends (
                 { [index in keyof ArgsT] : OutputOf<Extract<ArgsT[index], AnySafeMapper>> }
+            ) extends (
+                Parameters<Extract<ObjT[k], (...args : any[]) => any>>
             ) ?
-            k :
+            (
+                (
+                    Parameters<Extract<ObjT[k], (...args : any[]) => any>>
+                ) extends (
+                    { [index in keyof ArgsT] : OutputOf<Extract<ArgsT[index], AnySafeMapper>> }
+                ) ?
+                k :
+                never
+            ) :
             never
         )
     }[Extract<keyof ObjT, string|symbol>]
@@ -17,16 +25,44 @@ export type ExtractKeyWithParams<ObjT, ArgsT extends AnySafeMapper[]> = (
 export type MethodDecorator<ArgsT extends AnySafeMapper[]> = (
     <
         ObjT,
-        K extends ExtractKeyWithParams<ObjT, ArgsT>
-    >(target : ObjT, propertyKey : K, descriptor : TypedPropertyDescriptor<ObjT[K]>) => void
+        K extends keyof ObjT
+    >(
+        target : ObjT,
+        propertyKey : (
+            K extends ExtractKeyWithParams<ObjT, ArgsT> ?
+            K :
+            [
+                K,
+                "has parameters of type",
+                Parameters<Extract<ObjT[K], (...args : any[]) => any>>,
+                "not exactly",
+                { [index in keyof ArgsT] : OutputOf<Extract<ArgsT[index], AnySafeMapper>> }
+            ]
+        ),
+        descriptor : TypedPropertyDescriptor<ObjT[K]>
+    ) => void
 );
 export function method<ArgsT extends AnySafeMapper[]> (...mappers : ArgsT) : (
     MethodDecorator<ArgsT>
 ) {
     const result = <
         ObjT,
-        K extends ExtractKeyWithParams<ObjT, ArgsT>
-    >(target : ObjT, propertyKey : K, descriptor : TypedPropertyDescriptor<ObjT[K]>) : void => {
+        K extends keyof ObjT
+    >(
+        target : ObjT,
+        propertyKey : (
+            K extends ExtractKeyWithParams<ObjT, ArgsT> ?
+            K :
+            [
+                K,
+                "has parameters of type",
+                Parameters<Extract<ObjT[K], (...args : any[]) => any>>,
+                "not exactly",
+                { [index in keyof ArgsT] : OutputOf<Extract<ArgsT[index], AnySafeMapper>> }
+            ]
+        ),
+        descriptor : TypedPropertyDescriptor<ObjT[K]>
+    ) : void => {
         if (mappers.length == 0) {
             //Nothing to validate.
             return;
@@ -55,7 +91,7 @@ export function method<ArgsT extends AnySafeMapper[]> (...mappers : ArgsT) : (
             }
         }) as unknown as ObjT[K];
     };
-    return result as MethodDecorator<ArgsT>;
+    return result;
 }
 /*
 class Clazz {
