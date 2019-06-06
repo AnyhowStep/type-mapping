@@ -4,7 +4,7 @@ import * as tm from "../../../../../../dist";
 tape(__filename, t => {
     const f = tm.unsignedIntegerFormatString();
 
-    const str = "+123e-789";
+    const str = "+123000e-3";
     t.true(f("x", str) == str);
 
     t.false(tm.tryMap(f, "x", "").success);
@@ -21,21 +21,29 @@ tape(__filename, t => {
     t.true(tm.tryMap(f, "x", "123e789").success);
     t.true(tm.tryMap(f, "x", "+123E789").success);
     t.false(tm.tryMap(f, "x", "-123e789").success);
-    t.true(tm.tryMap(f, "x", "123e-789").success);
-    t.true(tm.tryMap(f, "x", "+123E-789").success);
+    t.false(tm.tryMap(f, "x", "123e-789").success);
+    t.false(tm.tryMap(f, "x", "+123E-789").success);
     t.false(tm.tryMap(f, "x", "-123e-789").success);
     t.true(tm.tryMap(f, "x", "123e+789").success);
     t.true(tm.tryMap(f, "x", "+123E+789").success);
     t.false(tm.tryMap(f, "x", "-123e+789").success);
-    t.false(tm.tryMap(f, "x", "123.456e789").success);
-    t.false(tm.tryMap(f, "x", "+123.456e789").success);
+    t.true(tm.tryMap(f, "x", "123.456e789").success);
+    t.true(tm.tryMap(f, "x", "+123.456e789").success);
     t.false(tm.tryMap(f, "x", "-123.456E789").success);
     t.false(tm.tryMap(f, "x", "123.456e-789").success);
     t.false(tm.tryMap(f, "x", "+123.456e-789").success);
     t.false(tm.tryMap(f, "x", "-123.456E-789").success);
-    t.false(tm.tryMap(f, "x", "123.456e+789").success);
-    t.false(tm.tryMap(f, "x", "+123.456e+789").success);
+    t.true(tm.tryMap(f, "x", "123.456e+789").success);
+    //We'll have many zeroes but this is a valid unsigned integer format string
+    //When using `parseFloat()`, we'll get Infinity,
+    //but the format of the string is, at least, valid.
+    //We can't represent the value with a `double` data type
+    //but we can with arbitrary precision number types.
+    t.true(tm.tryMap(f, "x", "+123.456e+789").success);
     t.false(tm.tryMap(f, "x", "-123.456E+789").success);
+    t.true(tm.tryMap(f, "x", "12345600000E-4").success);
+    t.true(tm.tryMap(f, "x", "12345600000E-5").success);
+    t.false(tm.tryMap(f, "x", "12345600000E-6").success);
 
     t.false(tm.tryMap(f, "x", null as any).success);
     t.false(tm.tryMap(f, "x", undefined as any).success);

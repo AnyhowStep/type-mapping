@@ -4,7 +4,7 @@ import {finiteNumberString, integerString, unsignedIntegerString} from "./number
 import {ExpectedInput} from "../../mapper";
 import {MappableInput} from "../../mapper";
 import {SafeMapper} from "../../mapper";
-import {toTypeStr} from "../../type-util";
+import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
 
 export function finiteNumberToFiniteNumberString () {
     return cast(
@@ -55,11 +55,12 @@ export function jsonObjectToJsonObjectString () : (
 
             return mixed;
         }
-
         try {
             const str : string|undefined = JSON.stringify(mixed);
             if (typeof str == "string" && str[0] == "{") {
-                return str;
+                if (isBigIntNativelySupported() || !isBigInt(mixed)) {
+                    return str;
+                }
             }
             throw new Error(`${name} is invalid JSON Object; received ${toTypeStr(mixed)}`);
         } catch (err) {

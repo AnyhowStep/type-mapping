@@ -3,9 +3,7 @@ import {pipe, cache} from "../operator";
 import {finiteNumber, integer, unsignedInteger} from "../number";
 import {toTrimmed, match} from "./string";
 
-const floatingPointRegex = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
-const integerRegex = /^[-+]?[0-9]+([eE][-+]?[0-9]+)?$/;
-const unsignedIntegerRegex = /^[+]?[0-9]+([eE][-+]?[0-9]+)?$/;
+const floatingPointRegex = /^([-+])?([0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
 /**
     Just because a string is in floating point format does not mean
     it is a finite number.
@@ -27,6 +25,39 @@ export function floatingPointFormatString () : SafeMapper<string> {
         match(floatingPointRegex, name => `${name} must be valid floating point format string`)
     );
 }
+function parseFloatingPointString (str : string) {
+    const m = floatingPointRegex.exec(str);
+    if (m == undefined) {
+        return undefined;
+    }
+    const rawCoefficientSign : string|undefined = m[1];
+    const rawCoefficientValue : string = m[2];
+    const rawExponentSign : string|undefined = m[4];
+    const rawExponentValue : string|undefined = m[5];
+
+    const decimalPlaceIndex = rawCoefficientValue.indexOf(".");
+    const fractionalLength = (decimalPlaceIndex < 0) ?
+        0 :
+        rawCoefficientValue.length - decimalPlaceIndex - 1;
+
+    const exponentValue = (rawExponentValue == undefined) ?
+        0 :
+        parseInt(rawExponentValue) * ((rawExponentSign === "-") ? -1 : 1);
+
+    const normalizedFractionalLength = (fractionalLength - exponentValue);
+    const isInteger = (normalizedFractionalLength <= 0) ?
+        true :
+        /^0+$/.test(rawCoefficientValue.substring(
+            rawCoefficientValue.length-normalizedFractionalLength,
+            rawCoefficientValue.length
+        ));
+    const isNeg = (rawCoefficientSign === "-");
+
+    return {
+        isInteger,
+        isNeg,
+    };
+}
 /**
     Just because a string is in integer format does not mean
     it is a finite number.
@@ -46,7 +77,13 @@ export function floatingPointFormatString () : SafeMapper<string> {
 export function integerFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
-        match(integerRegex, name => `${name} must be valid integer format string`)
+        (name : string, str) : string => {
+            const parsed = parseFloatingPointString(str);
+            if (parsed == undefined || !parsed.isInteger) {
+                throw new Error(`${name} must be a valid integer format string`);
+            }
+            return str;
+        }
     );
 }
 /**
@@ -68,7 +105,13 @@ export function integerFormatString () : SafeMapper<string> {
 export function unsignedIntegerFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
-        match(unsignedIntegerRegex, name => `${name} must be valid unsigned number format string`)
+        (name : string, str) : string => {
+            const parsed = parseFloatingPointString(str);
+            if (parsed == undefined || !parsed.isInteger || parsed.isNeg) {
+                throw new Error(`${name} must be a valid unsigned integer format string`);
+            }
+            return str;
+        }
     );
 }
 

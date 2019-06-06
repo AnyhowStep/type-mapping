@@ -6,6 +6,7 @@ tape(__filename, t => {
 
     //Output is different due to loss in precision
     t.deepEqual(f("x", "9999999999999999"), "10000000000000000");
+    t.deepEqual(f("x", "1230000000000000000000000000000000000000000000000000000000000000000000000000000000000"), "1.23e+84");
 
     t.deepEqual(f("x", "123"), "123");
     t.deepEqual(f("x", "123e2"), "12300");

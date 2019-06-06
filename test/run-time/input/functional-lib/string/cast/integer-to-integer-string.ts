@@ -6,17 +6,8 @@ tape(__filename, t => {
 
     //Output is different due to loss in precision
     t.deepEqual(f("x", "9999999999999999"), "10000000000000000");
-    /**
-        1230000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        becomes
-        1.23e+84
-
-        Technically still an integer.
-        But will fail integerFormatString check because of decimal place.
-
-        TODO Should we allow decimals as long as the exponent makes the expression an integer?
-    */
-    //t.deepEqual(f("x", "1230000000000000000000000000000000000000000000000000000000000000000000000000000000000"), "1.23e+84");
+    t.deepEqual(f("x", "1230000000000000000000000000000000000000000000000000000000000000000000000000000000000"), "1.23e+84");
+    t.deepEqual(f("x", "-1230000000000000000000000000000000000000000000000000000000000000000000000000000000000"), "-1.23e+84");
 
     t.deepEqual(f("x", "123"), "123");
     t.deepEqual(f("x", "123e2"), "12300");

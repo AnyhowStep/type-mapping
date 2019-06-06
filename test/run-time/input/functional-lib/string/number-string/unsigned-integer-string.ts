@@ -15,6 +15,16 @@ tape(__filename, t => {
     t.false(tm.tryMap(f, "x", "-123e2").success);
     t.false(tm.tryMap(f, "x", "-123.456e2").success);
     t.false(tm.tryMap(f, "x", "-123.456e-2").success);
+    t.deepEqual(f("x", "123000e200"), "1.23e+205");
+    t.deepEqual(f("x", "123000e1"), "1230000");
+    t.deepEqual(f("x", "123000e+1"), "1230000");
+    t.deepEqual(f("x", "123000e+0"), "123000");
+    t.deepEqual(f("x", "123000e0"), "123000");
+    t.deepEqual(f("x", "123000e-0"), "123000");
+    t.deepEqual(f("x", "123000e-1"), "12300");
+    t.deepEqual(f("x", "123000e-2"), "1230");
+    t.deepEqual(f("x", "123000e-3"), "123");
+    t.false(tm.tryMap(f, "x", "123000e-4").success);
 
     //Should become Infinity
     t.false(tm.tryMap(f, "x", "1e999").success);
