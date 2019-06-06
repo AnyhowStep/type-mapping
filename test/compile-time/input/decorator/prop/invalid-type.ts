@@ -12,7 +12,7 @@ export class ClazzSuperType {
 
 export class ClazzSubType {
     @tm.prop(tm.literal(1))
-    subTypeAllowed : number = 1;
+    subTypeNotAllowed : number = 1;
 }
 
 export class ClazzUnrelatedType {
@@ -23,4 +23,9 @@ export class ClazzUnrelatedType {
 export class ClazzPartialOverlapType {
     @tm.prop(tm.literal(1, "1"))
     partialOverlapTypeNotAllowed : number = 1;
+}
+
+export class ClazzPartialOverlapType2 {
+    @tm.prop(tm.or(tm.finiteNumber(), tm.string()))
+    partialOverlapTypeNotAllowed2 : number = 1;
 }

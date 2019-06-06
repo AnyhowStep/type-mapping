@@ -12,7 +12,7 @@ export type PropDecorator<F extends AnySafeMapper> = (
         propertyKey : (
             K extends ExtractKeyOfType<ObjT, OutputOf<F>> ?
             K :
-            [K, "is of type", ObjT[K], "not", OutputOf<F>]
+            [K, "is of type", ObjT[K], "not exactly", OutputOf<F>]
         )
     ) => void
 );

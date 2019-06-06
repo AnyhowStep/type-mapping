@@ -1,23 +1,37 @@
 [
   {
-    "messageText": "Argument of type '\"superTypeNotAllowed\"' is not assignable to parameter of type '[\"superTypeNotAllowed\", \"is of type\", number, \"not\", number | undefined]'.",
+    "messageText": "Argument of type '\"superTypeNotAllowed\"' is not assignable to parameter of type '[\"superTypeNotAllowed\", \"is of type\", number, \"not exactly\", number | undefined]'.",
     "code": 2345,
     "category": 1,
     "length": 42,
     "start": 170
   },
   {
-    "messageText": "Argument of type '\"unrelatedTypeNotAllowed\"' is not assignable to parameter of type '[\"unrelatedTypeNotAllowed\", \"is of type\", number, \"not\", string]'.",
+    "messageText": "Argument of type '\"subTypeNotAllowed\"' is not assignable to parameter of type '[\"subTypeNotAllowed\", \"is of type\", number, \"not exactly\", 1]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 22,
+    "start": 287
+  },
+  {
+    "messageText": "Argument of type '\"unrelatedTypeNotAllowed\"' is not assignable to parameter of type '[\"unrelatedTypeNotAllowed\", \"is of type\", number, \"not exactly\", string]'.",
     "code": 2345,
     "category": 1,
     "length": 20,
-    "start": 385
+    "start": 388
   },
   {
-    "messageText": "Argument of type '\"partialOverlapTypeNotAllowed\"' is not assignable to parameter of type '[\"partialOverlapTypeNotAllowed\", \"is of type\", number, \"not\", 1 | \"1\"]'.",
+    "messageText": "Argument of type '\"partialOverlapTypeNotAllowed\"' is not assignable to parameter of type '[\"partialOverlapTypeNotAllowed\", \"is of type\", number, \"not exactly\", 1 | \"1\"]'.",
     "code": 2345,
     "category": 1,
     "length": 27,
-    "start": 495
+    "start": 498
+  },
+  {
+    "messageText": "Argument of type '\"partialOverlapTypeNotAllowed2\"' is not assignable to parameter of type '[\"partialOverlapTypeNotAllowed2\", \"is of type\", number, \"not exactly\", string | number]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 46,
+    "start": 621
   }
 ]

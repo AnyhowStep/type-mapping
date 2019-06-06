@@ -5,11 +5,14 @@ export declare class ClazzSuperType {
     superTypeNotAllowed: number;
 }
 export declare class ClazzSubType {
-    subTypeAllowed: number;
+    subTypeNotAllowed: number;
 }
 export declare class ClazzUnrelatedType {
     unrelatedTypeNotAllowed: number;
 }
 export declare class ClazzPartialOverlapType {
     partialOverlapTypeNotAllowed: number;
+}
+export declare class ClazzPartialOverlapType2 {
+    partialOverlapTypeNotAllowed2: number;
 }
