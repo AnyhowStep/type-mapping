@@ -13,7 +13,8 @@ export type PropDecorator<F extends AnySafeMapper> = (
             K extends ExtractKeyOfType<ObjT, OutputOf<F>> ?
             K :
             [K, "is of type", ObjT[K], "not exactly", OutputOf<F>]
-        )
+        ),
+        __didYouMeanToUseSetterDecorator? : ["Did you mean to use @setter instead?"]
     ) => void
 );
 export function prop<F extends AnySafeMapper> (f : F) : (
