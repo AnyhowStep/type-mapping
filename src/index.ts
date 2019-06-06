@@ -2,6 +2,7 @@ import * as EnumUtil from "./enum-util";
 export {EnumUtil};
 import * as BigIntUtil from "./bigint-util";
 export {BigIntUtil};
+export * from "./decorator";
 import * as ErrorUtil from "./error-util";
 export {ErrorUtil};
 export * from "./field";

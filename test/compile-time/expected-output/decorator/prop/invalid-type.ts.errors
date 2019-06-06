@@ -1,0 +1,23 @@
+[
+  {
+    "messageText": "Argument of type '\"superTypeNotAllowed\"' is not assignable to parameter of type 'never'.",
+    "code": 2345,
+    "category": 1,
+    "length": 42,
+    "start": 170
+  },
+  {
+    "messageText": "Argument of type '\"unrelatedTypeNotAllowed\"' is not assignable to parameter of type 'never'.",
+    "code": 2345,
+    "category": 1,
+    "length": 20,
+    "start": 385
+  },
+  {
+    "messageText": "Argument of type '\"partialOverlapTypeNotAllowed\"' is not assignable to parameter of type 'never'.",
+    "code": 2345,
+    "category": 1,
+    "length": 27,
+    "start": 495
+  }
+]

@@ -3,7 +3,8 @@
     "compilerOptions": {
         "outDir": "./dist",
 
-        "target": "esnext"
+        "target": "esnext",
+        "experimentalDecorators": true
     },
     "include" : [
         "./**/*"

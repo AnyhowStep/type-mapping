@@ -119,6 +119,7 @@ export function runTest () {
         moduleResolution: ts.ModuleResolutionKind.NodeJs,
         declaration : true,
         emitDeclarationOnly : true,
+        experimentalDecorators : true,
     };
     const program = ts.createProgram({
         rootNames : rootNames,
