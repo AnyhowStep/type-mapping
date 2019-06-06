@@ -17,6 +17,7 @@ tape(__filename, t => {
     t.false(tm.tryMap(f, "x", new Date(-Infinity) as any).success);
     t.false(tm.tryMap(f, "x", new Date(+Infinity) as any).success);
     t.false(tm.tryMap(f, "x", new Date("qwerty") as any).success);
+    t.false(tm.tryMap(f, "x", undefined as any).success);
     t.false(tm.tryMap(f, "x", null as any).success);
     t.false(tm.tryMap(f, "x", BigInt(0) as any).success);
     t.false(tm.tryMap(f, "x", BigInt(1) as any).success);
