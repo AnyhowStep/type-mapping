@@ -14,7 +14,7 @@ they’re separate because you can polyfill builtins but not syntax
 If targeting es5 then you should specify at least lib: [ 'es5' ]
 Add ‘dom` to that if targeting the web
 
-+ Implement `Partial`; partialRenameMap, partialDeriveMap, partialObject, partialObjectFromArray, partialObjectFromMap
++ Implement fluent wrappers for `Partial`; partialRenameMap, partialDeriveMap, partialObject, partialObjectFromArray, partialObjectFromMap
 ```ts
 const fields = tm.fields({
     a : tm.finiteNumber(),

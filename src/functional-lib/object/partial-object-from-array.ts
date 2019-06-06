@@ -8,12 +8,10 @@ import {
     getNameOrEmptyString,
     ExpectedInput,
     MappableInput,
-    IsExpectedInputOptional,
-    IsOptional,
 } from "../../mapper";
 import {unsafeOr} from "../operator";
-import {objectFromMap} from "./object-from-map";
 import {toEmptyObject} from "./to-empty-object";
+import {partialObjectFromMap} from "./partial-object-from-map";
 
 type ExtractLiteralName<F extends AnySafeMapper & Name<string>> = (
     F extends any ?
@@ -25,13 +23,14 @@ type ExtractLiteralName<F extends AnySafeMapper & Name<string>> = (
     never
 );
 
-export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]> = (
+export type PartialObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]> = (
     & SafeMapper<
         & {
             [name in ExtractLiteralName<ArrT[number]>] : (
-                OutputOf<
+                | OutputOf<
                     Extract<ArrT[number], Name<name>>
                 >
+                | undefined
             )
         }
         & (
@@ -49,29 +48,11 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
     >
     & ExpectedInput<
         & {
-            [name in {
-                [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsExpectedInputOptional<Extract<ArrT[number], Name<k>>> extends true ?
-                    never :
-                    k
-                )
-            }[ExtractLiteralName<ArrT[number]>]] : (
-                ExpectedInputOfImpl<
+            [name in ExtractLiteralName<ArrT[number]>]? : (
+                | ExpectedInputOfImpl<
                     Extract<ArrT[number], Name<name>>
                 >[0]
-            )
-        }
-        & {
-            [name in {
-                [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsExpectedInputOptional<Extract<ArrT[number], Name<k>>> extends true ?
-                    k :
-                    never
-                )
-            }[ExtractLiteralName<ArrT[number]>]]? : (
-                ExpectedInputOfImpl<
-                    Extract<ArrT[number], Name<name>>
-                >[0]
+                | undefined
             )
         }
         & (
@@ -89,29 +70,11 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
     >
     & MappableInput<
         & {
-            [name in {
-                [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsOptional<Extract<ArrT[number], Name<k>>> extends true ?
-                    never :
-                    k
-                )
-            }[ExtractLiteralName<ArrT[number]>]] : (
-                MappableInputOfImpl<
+            [name in ExtractLiteralName<ArrT[number]>]? : (
+                | MappableInputOfImpl<
                     Extract<ArrT[number], Name<name>>
                 >[0]
-            )
-        }
-        & {
-            [name in {
-                [k in ExtractLiteralName<ArrT[number]>] : (
-                    IsOptional<Extract<ArrT[number], Name<k>>> extends true ?
-                    k :
-                    never
-                )
-            }[ExtractLiteralName<ArrT[number]>]]? : (
-                MappableInputOfImpl<
-                    Extract<ArrT[number], Name<name>>
-                >[0]
+                | undefined
             )
         }
         & (
@@ -147,8 +110,8 @@ export type ObjectFromArrayMapper<ArrT extends (AnySafeMapper & Name<string>)[]>
     );
     ```
 */
-export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
-    ObjectFromArrayMapper<ArrT>
+export function partialObjectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
+    PartialObjectFromArrayMapper<ArrT>
 ) {
     if (arr.length == 0) {
         return toEmptyObject() as any;
@@ -173,32 +136,5 @@ export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (
             mappers[0] :
             unsafeOr(...mappers);
     }
-    return objectFromMap(map) as any;
+    return partialObjectFromMap(map) as any;
 }
-/*
-import { unsignedInteger } from "../number";
-import { fluentMapper } from "../../fluent";
-import { string } from "../string";
-import { boolean, stringToBoolean } from "../boolean";
-const x = objectFromArray(
-    fluentMapper(string()),
-    fluentMapper(boolean()),
-    fluentMapper(unsignedInteger())
-        .withName("test"),
-    fluentMapper(boolean())
-        .withName("test"),
-    fluentMapper(boolean())
-        .orUndefined()
-        .withName("shouldNotBeOptional"),
-    fluentMapper(stringToBoolean())
-        .optional()
-        .withExpectedInput<string|undefined>()
-        .withName("shouldBeOptional"),
-)
-x.__expectedInput
-x.__mappableInput
-
-const out = x("", "")
-out.test = 1;
-const blah = out["blah"];
-//*/
