@@ -1,8 +1,8 @@
-import * as generic from "./generic";
 import * as nonGeneric from "./non-generic";
+import * as generic from "./generic";
 
 const fluentExport = {
-    ...generic,
     ...nonGeneric,
+    ...generic,
 };
 export = fluentExport;

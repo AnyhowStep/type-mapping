@@ -34,13 +34,24 @@ function toFluentExport<ObjT extends {
     }
     return result;
 }
+//No need for omit<>() because `fluent-lib/index.ts`
+//overwrites the generic functions with the ones
+//in `fluent-lib/generic.ts`
+const fluentExport = toFluentExport(omit(
+    m,
+
+    //Well, we need to omit this one because
+    //it doesn't return a SafeMapper<>
+    "castEnumFlyweight"
+));
+/*
 const fluentExport = toFluentExport(omit(
     m,
 
     /**
         List compiled with,
         function\s*[a-zA-Z0-9_]+\s*<
-    */
+    * /
     "arrayLike",
 
     "arrayLikeToArray",
@@ -63,6 +74,11 @@ const fluentExport = toFluentExport(omit(
     "objectFromArray",
     "objectFromMap",
     "object",
+    "partialDeriveMap",
+    "partialObjectFromArray",
+    "partialObjectFromMap",
+    "partialObject",
+    "partialRenameMap",
     "renameMap",
     "rename",
     "unsafeStringIndexer",
@@ -92,4 +108,5 @@ const fluentExport = toFluentExport(omit(
 
     "deferred"
 ));
+*/
 export = fluentExport;
