@@ -1,20 +1,20 @@
 [
   {
-    "messageText": "Argument of type '\"superTypeNotAllowed\"' is not assignable to parameter of type 'never'.",
+    "messageText": "Argument of type '\"superTypeNotAllowed\"' is not assignable to parameter of type '[\"superTypeNotAllowed\", \"is of type\", number, \"not\", number | undefined]'.",
     "code": 2345,
     "category": 1,
     "length": 42,
     "start": 170
   },
   {
-    "messageText": "Argument of type '\"unrelatedTypeNotAllowed\"' is not assignable to parameter of type 'never'.",
+    "messageText": "Argument of type '\"unrelatedTypeNotAllowed\"' is not assignable to parameter of type '[\"unrelatedTypeNotAllowed\", \"is of type\", number, \"not\", string]'.",
     "code": 2345,
     "category": 1,
     "length": 20,
     "start": 385
   },
   {
-    "messageText": "Argument of type '\"partialOverlapTypeNotAllowed\"' is not assignable to parameter of type 'never'.",
+    "messageText": "Argument of type '\"partialOverlapTypeNotAllowed\"' is not assignable to parameter of type '[\"partialOverlapTypeNotAllowed\", \"is of type\", number, \"not\", 1 | \"1\"]'.",
     "code": 2345,
     "category": 1,
     "length": 27,

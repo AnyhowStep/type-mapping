@@ -6,16 +6,26 @@ import {getCtorName} from "../type-util";
 export type PropDecorator<F extends AnySafeMapper> = (
     <
         ObjT,
-        K extends ExtractKeyOfType<ObjT, OutputOf<F>>
-    >(target : ObjT, propertyKey : K) => void
+        K extends keyof ObjT
+    >(
+        target : ObjT,
+        propertyKey : (
+            K extends ExtractKeyOfType<ObjT, OutputOf<F>> ?
+            K :
+            [K, "is of type", ObjT[K], "not", OutputOf<F>]
+        )
+    ) => void
 );
 export function prop<F extends AnySafeMapper> (f : F) : (
     PropDecorator<F>
 ) {
     const result = <
         ObjT,
-        K extends ExtractKeyOfType<ObjT, OutputOf<F>>
-    >(target : ObjT, propertyKey : K) : void => {
+        K extends keyof ObjT
+    >(
+        target : ObjT,
+        propertyKey : K
+    ) : void => {
         /*
             Implementation copied over from schema-decorator.
             The code isn't too well-written and kind of confusing.
