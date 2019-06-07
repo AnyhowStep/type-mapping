@@ -1,10 +1,12 @@
 import {
     AnySafeMapper,
+    SafeMapper,
     OutputOf,
     AnyMapper,
     AssertPipeable,
     MappableInputOf,
     ExpectedInputOf,
+    HandledInputOf,
     WithExpectedInput,
     withExpectedInput,
     getNameOrEmptyString,
@@ -20,8 +22,13 @@ import {
     _DebugIsMappableInput,
     _DebugIsOutput,
     map,
+    mapExpected,
+    mapMappable,
+    mapHandled,
     tryMap,
-    SafeMapper,
+    tryMapExpected,
+    tryMapMappable,
+    tryMapHandled,
 } from "./mapper";
 import {
     OrUndefinedMapper,
@@ -77,7 +84,7 @@ export interface FluentMapper<F extends AnySafeMapper> {
     __expectedInput? : [ExpectedInputOf<F>];
     __mappableInput? : [MappableInputOf<F>];
     __optional : OptionalFlagOf<F>;
-    name : NameOf<F>,
+    __name : NameOf<F>,
 
     //== mapper/debug ==
 
@@ -101,8 +108,14 @@ export interface FluentMapper<F extends AnySafeMapper> {
     //== mapper/operation ==
 
     map (name : string, mixed : ExpectedInputOf<F>) : OutputOf<F>;
+    mapExpected (name : string, mixed : ExpectedInputOf<F>) : OutputOf<F>;
+    mapMappable (name : string, mixed : MappableInputOf<F>) : OutputOf<F>;
+    mapHandled (name : string, mixed : HandledInputOf<F>) : OutputOf<F>;
 
     tryMap (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>>;
+    tryMapExpected (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>>;
+    tryMapMappable (name : string, mixed : MappableInputOf<F>) : TryMapResult<OutputOf<F>>;
+    tryMapHandled (name : string, mixed : HandledInputOf<F>) : TryMapResult<OutputOf<F>>;
 
     withExpectedInput<AcceptT extends MappableInputOf<F>> () : (
         FluentMapper<
@@ -277,9 +290,27 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
     result.map = (name : string, mixed : ExpectedInputOf<F>) : OutputOf<F> => {
         return map(f, name, mixed);
     };
+    result.mapExpected = (name : string, mixed : ExpectedInputOf<F>) : OutputOf<F> => {
+        return mapExpected(f, name, mixed);
+    };
+    result.mapMappable = (name : string, mixed : MappableInputOf<F>) : OutputOf<F> => {
+        return mapMappable(f, name, mixed);
+    };
+    result.mapHandled = (name : string, mixed : HandledInputOf<F>) : OutputOf<F> => {
+        return mapHandled(f, name, mixed);
+    };
 
     result.tryMap = (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>> => {
         return tryMap(f, name, mixed);
+    };
+    result.tryMapExpected = (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>> => {
+        return tryMapExpected(f, name, mixed);
+    };
+    result.tryMapMappable = (name : string, mixed : MappableInputOf<F>) : TryMapResult<OutputOf<F>> => {
+        return tryMapMappable(f, name, mixed);
+    };
+    result.tryMapHandled = (name : string, mixed : HandledInputOf<F>) : TryMapResult<OutputOf<F>> => {
+        return tryMapHandled(f, name, mixed);
     };
 
     result.withExpectedInput = <AcceptT extends MappableInputOf<F>> () : (
@@ -434,6 +465,7 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         (f as unknown as DeferredMapper<any>).setImplementation(impl);
     };
 
+    //const rt : FluentMapper<AnySafeMapper> = result;
     return setFunctionName(
         result,
         getNameOrEmptyString(f)

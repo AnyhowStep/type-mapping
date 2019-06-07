@@ -99,19 +99,17 @@ export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (
 export function objectFromMap<MapT extends SafeMapperMap> (map : MapT) {
     return fluentMapper(m.objectFromMap<MapT>(map));
 }
-export function object<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
-    FluentMapper<ObjectFromArrayMapper<ArrT>>
-);
-export function object<
-    MapT extends SafeMapperMap
-> (
-    map : MapT
-) : (
-    FluentMapper<ObjectFromMapMapper<MapT>>
-);
-export function object (...arr : any[]) {
-    return fluentMapper(m.object(...arr));
+export interface ObjectMapperCreator {
+    <ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
+        FluentMapper<ObjectFromArrayMapper<ArrT>>
+    );
+    <MapT extends SafeMapperMap> (map : MapT) : (
+        FluentMapper<ObjectFromMapMapper<MapT>>
+    );
 }
+export const object : ObjectMapperCreator = (...arr : any[]) => {
+    return fluentMapper(m.object(...arr));
+};
 export function partialDeriveMap<MapT extends FieldMap> (map : MapT) {
     return fluentMapper(m.partialDeriveMap<MapT>(map));
 }
@@ -121,19 +119,17 @@ export function partialObjectFromArray<ArrT extends (AnySafeMapper & Name<string
 export function partialObjectFromMap<MapT extends SafeMapperMap> (map : MapT) {
     return fluentMapper(m.partialObjectFromMap<MapT>(map));
 }
-export function partialObject<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
-    FluentMapper<PartialObjectFromArrayMapper<ArrT>>
-);
-export function partialObject<
-    MapT extends SafeMapperMap
-> (
-    map : MapT
-) : (
-    FluentMapper<PartialObjectFromMapMapper<MapT>>
-);
-export function partialObject (...arr : any[]) {
-    return fluentMapper(m.partialObject(...arr));
+export interface PartialObjectMapperCreator {
+    <ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
+        FluentMapper<PartialObjectFromArrayMapper<ArrT>>
+    );
+    <MapT extends SafeMapperMap> (map : MapT) : (
+        FluentMapper<PartialObjectFromMapMapper<MapT>>
+    );
 }
+export const partialObject : PartialObjectMapperCreator = (...arr : any[]) => {
+    return fluentMapper(m.partialObject(...arr));
+};
 export function partialRenameMap<MapT extends FieldMap> (map : MapT) {
     return fluentMapper(m.partialRenameMap<MapT>(map));
 }
@@ -233,57 +229,59 @@ export function or<
     return fluentMapper(m.or<F, ArrT>(f, ...arr));
 }
 
-export function pipe<
-    F0 extends AnySafeMapper,
-    F1 extends AnyMapper
-> (
-    f0 : F0,
-    f1 : AssertPipeable<F0, F1>
-) : (
-    FluentMapper<PipeMapper<F0, F1>>
-);
-export function pipe<
-    F0 extends AnySafeMapper,
-    F1 extends AnyMapper,
-    F2 extends AnyMapper
-> (
-    f0 : F0,
-    f1 : AssertPipeable<F0, F1>,
-    f2 : AssertPipeable<F1, F2>
-) : (
-    FluentMapper<PipeMapper<F0, F2>>
-);
-export function pipe<
-    F0 extends AnySafeMapper,
-    F1 extends AnyMapper,
-    F2 extends AnyMapper,
-    F3 extends AnyMapper
-> (
-    f0 : F0,
-    f1 : AssertPipeable<F0, F1>,
-    f2 : AssertPipeable<F1, F2>,
-    f3 : AssertPipeable<F2, F3>
-) : (
-    FluentMapper<PipeMapper<F0, F3>>
-);
-export function pipe<
-    F0 extends AnySafeMapper,
-    F1 extends AnyMapper,
-    F2 extends AnyMapper,
-    F3 extends AnyMapper,
-    F4 extends AnyMapper
-> (
-    f0 : F0,
-    f1 : AssertPipeable<F0, F1>,
-    f2 : AssertPipeable<F1, F2>,
-    f3 : AssertPipeable<F2, F3>,
-    f4 : AssertPipeable<F3, F4>
-) : (
-    FluentMapper<PipeMapper<F0, F4>>
-);
-export function pipe<ArrT extends AnyMapper[]> (...arr : ArrT) {
-    return fluentMapper(m.reallyUnsafePipe(...arr));
+export interface PipeMapperCreator {
+    <
+        F0 extends AnySafeMapper,
+        F1 extends AnyMapper
+    > (
+        f0 : F0,
+        f1 : AssertPipeable<F0, F1>
+    ) : (
+        FluentMapper<PipeMapper<F0, F1>>
+    );
+    <
+        F0 extends AnySafeMapper,
+        F1 extends AnyMapper,
+        F2 extends AnyMapper
+    > (
+        f0 : F0,
+        f1 : AssertPipeable<F0, F1>,
+        f2 : AssertPipeable<F1, F2>
+    ) : (
+        FluentMapper<PipeMapper<F0, F2>>
+    );
+    <
+        F0 extends AnySafeMapper,
+        F1 extends AnyMapper,
+        F2 extends AnyMapper,
+        F3 extends AnyMapper
+    > (
+        f0 : F0,
+        f1 : AssertPipeable<F0, F1>,
+        f2 : AssertPipeable<F1, F2>,
+        f3 : AssertPipeable<F2, F3>
+    ) : (
+        FluentMapper<PipeMapper<F0, F3>>
+    );
+    <
+        F0 extends AnySafeMapper,
+        F1 extends AnyMapper,
+        F2 extends AnyMapper,
+        F3 extends AnyMapper,
+        F4 extends AnyMapper
+    > (
+        f0 : F0,
+        f1 : AssertPipeable<F0, F1>,
+        f2 : AssertPipeable<F1, F2>,
+        f3 : AssertPipeable<F2, F3>,
+        f4 : AssertPipeable<F3, F4>
+    ) : (
+        FluentMapper<PipeMapper<F0, F4>>
+    );
 }
+export const pipe : PipeMapperCreator = <ArrT extends AnyMapper[]> (...arr : ArrT) => {
+    return fluentMapper(m.reallyUnsafePipe(...arr));
+};
 export function unsafePipe<
     SrcF extends AnySafeMapper,
     ArrT extends AnyMapper[]
