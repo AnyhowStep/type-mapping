@@ -1,0 +1,37 @@
+[
+  {
+    "messageText": "Argument of type '(_0: number, _opt?: string | undefined) => void' is not assignable to parameter of type '[(_0: number, _opt?: string | undefined) => void, \"has parameters of type\", [number, (string | undefined)?], \"not exactly\", [number, string | null | undefined]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 34,
+    "start": 290
+  },
+  {
+    "messageText": "Argument of type '(_0: number, _opt?: string | undefined) => void' is not assignable to parameter of type '[(_0: number, _opt?: string | undefined) => void, \"has parameters of type\", [number, (string | undefined)?], \"not exactly\", [number, string]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 34,
+    "start": 414
+  },
+  {
+    "messageText": "Argument of type '(_0: number, _opt?: string | undefined) => void' is not assignable to parameter of type '[(_0: number, _opt?: string | undefined) => void, \"has parameters of type\", [number, (string | undefined)?], \"not exactly\", [number, number]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 34,
+    "start": 550
+  },
+  {
+    "messageText": "Argument of type '(_0: number, _opt?: string | undefined) => void' is not assignable to parameter of type '[(_0: number, _opt?: string | undefined) => void, \"has parameters of type\", [number, (string | undefined)?], \"not exactly\", [number, 1 | \"str\" | undefined]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 34,
+    "start": 710
+  },
+  {
+    "messageText": "Argument of type '(_0: number, _opt?: string | undefined) => void' is not assignable to parameter of type '[(_0: number, _opt?: string | undefined) => void, \"has parameters of type\", [number, (string | undefined)?], \"not exactly\", [number, string | number | undefined]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 34,
+    "start": 888
+  }
+]

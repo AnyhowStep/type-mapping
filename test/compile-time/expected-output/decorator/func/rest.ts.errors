@@ -1,0 +1,37 @@
+[
+  {
+    "messageText": "Argument of type '(_0: number, ..._rest: string[]) => void' is not assignable to parameter of type '[(_0: number, ..._rest: string[]) => void, \"has parameters of type\", [number, ...string[]], \"not exactly\", [number, ...(string | undefined)[]]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 39,
+    "start": 278
+  },
+  {
+    "messageText": "Argument of type '(_0: number, ..._rest: string[]) => void' is not assignable to parameter of type '[(_0: number, ..._rest: string[]) => void, \"has parameters of type\", [number, ...string[]], \"not exactly\", [number, ...\"str\"[]]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 39,
+    "start": 418
+  },
+  {
+    "messageText": "Argument of type '(_0: number, ..._rest: string[]) => void' is not assignable to parameter of type '[(_0: number, ..._rest: string[]) => void, \"has parameters of type\", [number, ...string[]], \"not exactly\", [number, ...number[]]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 39,
+    "start": 564
+  },
+  {
+    "messageText": "Argument of type '(_0: number, ..._rest: string[]) => void' is not assignable to parameter of type '[(_0: number, ..._rest: string[]) => void, \"has parameters of type\", [number, ...string[]], \"not exactly\", [number, ...(1 | \"str\")[]]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 39,
+    "start": 718
+  },
+  {
+    "messageText": "Argument of type '(_0: number, ..._rest: string[]) => void' is not assignable to parameter of type '[(_0: number, ..._rest: string[]) => void, \"has parameters of type\", [number, ...string[]], \"not exactly\", [number, ...(string | number)[]]]'.",
+    "code": 2345,
+    "category": 1,
+    "length": 39,
+    "start": 890
+  }
+]

@@ -38,6 +38,9 @@ export function setter<F extends AnySafeMapper> (f : F) : (
         const fullName = `${ctorName}.${propertyName}`;
         const originalMethod = descriptor.set;
         descriptor.set = (function (this : any, ...args : any[]) {
+            if (args.length == 0) {
+                throw new Error(`Cannot call ${fullName}.set() with zero arguments`);
+            }
             for (let i=0; i<args.length; ++i) {
                 args[i] = f(fullName, args[i]);
             }

@@ -1,5 +1,6 @@
 import {AnySafeMapper, OutputOf} from "../mapper";
 import {getCtorName} from "../type-util";
+import {ToRequiredParameters} from "./to-required-parameters";
 
 export type ExtractKeyWithParams<ObjT, ArgsT extends AnySafeMapper[]> = (
     {
@@ -7,11 +8,11 @@ export type ExtractKeyWithParams<ObjT, ArgsT extends AnySafeMapper[]> = (
             (
                 { [index in keyof ArgsT] : OutputOf<Extract<ArgsT[index], AnySafeMapper>> }
             ) extends (
-                Parameters<Extract<ObjT[k], (...args : any[]) => any>>
+                ToRequiredParameters<Extract<ObjT[k], (...args : any[]) => any>>
             ) ?
             (
                 (
-                    Parameters<Extract<ObjT[k], (...args : any[]) => any>>
+                    ToRequiredParameters<Extract<ObjT[k], (...args : any[]) => any>>
                 ) extends (
                     { [index in keyof ArgsT] : OutputOf<Extract<ArgsT[index], AnySafeMapper>> }
                 ) ?
@@ -74,18 +75,26 @@ export function method<ArgsT extends AnySafeMapper[]> (...mappers : ArgsT) : (
         const ctorName = getCtorName((target as any).constructor);
         const fullName = `${ctorName}.${propertyName}`;
         const originalMethod = descriptor.value;
+        if (!(originalMethod instanceof Function)) {
+            throw new Error(`Method ${fullName} not found`);
+        }
         descriptor.value = (function (this : any, ...args : any[]) {
-            for (let i=0; i<args.length; ++i) {
-                if (i<mappers.length) {
-                    args[i] = mappers[i](`${fullName}(#${i})`, args[i]);
+            const max = Math.max(args.length, originalMethod.length);
+
+            for (let i=0; i<max; ++i) {
+                const mapper = (i<mappers.length) ?
+                    mappers[i] :
+                    //Probably a rest parameter
+                    mappers[mappers.length-1];
+                if (i<args.length) {
+                    args[i] = mapper(`${fullName}(#${i})`, args[i]);
                 } else {
-                    //Probably a rest parameter?
-                    args[i] = mappers[mappers.length-1](`${fullName}(#${i})`, args[i]);
+                    args.push(mapper(`${fullName}(#${i})`, undefined));
                 }
             }
 
             if (originalMethod != undefined) {
-                return (originalMethod as any).apply(this, args);
+                return originalMethod.apply(this, args);
             } else {
                 return undefined;
             }

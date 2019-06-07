@@ -3,90 +3,78 @@ import * as tm from "../../../../../dist";
 
 tape(__filename, t => {
     let value = 1;
-    class Clazz {
-        @tm.method(tm.finiteNumber())
-        foo (v : number) {
+    const foo = tm.func(tm.finiteNumber())(
+        (v : number) => {
             value = v;
         }
-    }
-    const c = new Clazz();
+    );
 
-    c.foo(5);
+    foo(5);
     t.deepEqual(value, 5);
     t.throws(() => {
-        c.foo("6" as any);
+        foo("6" as any);
     });
     t.deepEqual(value, 5);
-    t.deepEqual(JSON.stringify(c), `{}`);
 
     t.end();
 });
 
 tape(__filename, t => {
     let value = 1;
-    class Clazz {
-        @tm.method(tm.stringToFiniteNumber())
-        foo (v : number) {
+    const foo = tm.func(tm.stringToFiniteNumber())(
+        (v : number) => {
             value = v;
         }
-    }
-    const c = new Clazz();
+    );
 
-    c.foo(5);
+    foo(5);
     t.deepEqual(value, 5);
     t.doesNotThrow(() => {
-        c.foo("6" as any);
+        foo("6" as any);
     });
     t.deepEqual(value, 6);
-    t.deepEqual(JSON.stringify(c), `{}`);
 
     t.end();
 });
 
 tape(__filename, t => {
     let value = 1;
-    class Clazz {
-        @tm.method(tm.stringToFiniteNumber())
-        foo (v : number) {
+    const foo = tm.func(tm.stringToFiniteNumber())(
+        (v : number) => {
             value = v;
         }
-    }
-    const c = new Clazz();
+    );
 
     t.throws(() => {
-        (c.foo as any)();
+        (foo as any)();
     });
     t.deepEqual(value, 1);
     t.doesNotThrow(() => {
-        c.foo("6" as any);
+        foo("6" as any);
     });
     t.deepEqual(value, 6);
-    t.deepEqual(JSON.stringify(c), `{}`);
 
     t.end();
 });
 
 tape(__filename, t => {
     let value : number|null = 1;
-    class Clazz {
-        @tm.method(tm.or(tm.stringToFiniteNumber(), tm.undefinedToNull()))
-        foo (v : number|null) {
+    const foo = tm.func(tm.or(tm.stringToFiniteNumber(), tm.undefinedToNull()))(
+        (v : number|null) => {
             value = v;
         }
-    }
-    const c = new Clazz();
+    );
 
     t.doesNotThrow(() => {
-        (c.foo as any)();
+        (foo as any)();
     });
     t.deepEqual(value, null);
     t.doesNotThrow(() => {
-        c.foo("6" as any);
+        foo("6" as any);
     });
     t.deepEqual(value, 6);
-    t.deepEqual(JSON.stringify(c), `{}`);
     t.doesNotThrow(() => {
-        (c.foo as any)();
+        (foo as any)();
     });
     t.deepEqual(value, null);
 
