@@ -17,9 +17,11 @@ import * as fLib from "../../fluent-lib";
     these values will show up in query strings.
 */
 export function boolean () : (
-    & FluentMapper<SafeMapper<boolean>>
-    & ExpectedInput<boolean>
-    & MappableInput<boolean | 0 | 1 | "0" | "1" | "false" | "true">
+    FluentMapper<
+        & SafeMapper<boolean>
+        & ExpectedInput<boolean>
+        & MappableInput<boolean | 0 | 1 | "0" | "1" | "false" | "true">
+    >
 ) {
     return fLib.or(
         fLib.boolean(),
@@ -53,9 +55,11 @@ export function boolean () : (
     it will show up in query strings.
 */
 function toTrue () : (
-    & FluentMapper<SafeMapper<true>>
-    & ExpectedInput<true>
-    & MappableInput<true | 1 | "1" | "true">
+    FluentMapper<
+        & SafeMapper<true>
+        & ExpectedInput<true>
+        & MappableInput<true | 1 | "1" | "true">
+    >
 ) {
     return fLib.or(
         fLib.literal(true),
@@ -86,9 +90,11 @@ function toTrue () : (
     it will show up in query strings.
 */
 function toFalse () : (
-    & FluentMapper<SafeMapper<false>>
-    & ExpectedInput<false>
-    & MappableInput<false | 0 | "0" | "false">
+    FluentMapper<
+        & SafeMapper<false>
+        & ExpectedInput<false>
+        & MappableInput<false | 0 | "0" | "false">
+    >
 ) {
     return fLib.or(
         fLib.literal(false),

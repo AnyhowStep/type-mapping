@@ -1,3 +1,8 @@
+//This declaration lets us avoid using @types/node
+declare const Buffer: {
+    new(...args : unknown[]): Buffer;
+};
+
 function tryFindBufferCtor () {
     try {
         return Buffer;

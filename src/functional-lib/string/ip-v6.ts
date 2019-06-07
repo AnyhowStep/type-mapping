@@ -1,4 +1,4 @@
-import {pipe, cache} from "../operator";
+import {pipe} from "../operator";
 import {stringLength, hexadecimalString, string} from "./string";
 import {SafeMapper} from "../../mapper";
 import {arrayFill} from "../../array-util";
@@ -115,59 +115,57 @@ function toIpV6CanonicalString (segments : string[]) {
 }
 
 export function ipV6StringWithMaxSegmentCount (maxSegmentCount : number) : SafeMapper<string> {
+    const ipV6SegmentStringDelegate = ipV6SegmentString();
     return pipe(
         string(),
-        cache(
-            ipV6SegmentString(),
-            (name : string, str : string, ipV6SegmentStringDelegate) : string => {
-                const consecutiveNonZero = str
-                    .replace(/\s+/g, "")
-                    .split("::");
-                if (consecutiveNonZero.length == 1) {
-                    //All non-zeroes
-                    const rawSegments = consecutiveNonZero[0].split(":");
-                    if (rawSegments.length != maxSegmentCount) {
-                        throw new Error(`${name} must have ${maxSegmentCount} segments; found ${rawSegments.length}`);
-                    }
-                    const segments = rawSegments
-                        .map((rawSegment, i) => ipV6SegmentStringDelegate(
-                            `${name} segment${i}`,
-                            rawSegment
-                        ));
-                    return toIpV6CanonicalString(segments);
-                } else if (consecutiveNonZero.length == 2) {
-                    //E.g. ffff:ffff::ffff:ffff:ffff
-                    const rawSegmentsA = consecutiveNonZero[0].split(":").filter(s => s != "");
-                    const rawSegmentsB = consecutiveNonZero[1].split(":").filter(s => s != "");
-                    const rawSegmentCount = rawSegmentsA.length + rawSegmentsB.length;
-                    if (rawSegmentCount >= maxSegmentCount) {
-                        throw new Error(`${name} must have up to ${maxSegmentCount-1} segments when '::' symbol is used; found ${rawSegmentCount}`);
-                    }
-                    const segmentsA = rawSegmentsA
-                        .map((rawSegment, i) => ipV6SegmentStringDelegate(
-                            `${name} segment${i}`,
-                            rawSegment
-                        ));
-                    const segmentBStart = maxSegmentCount - rawSegmentsB.length;
-                    const segmentsB = rawSegmentsB
-                        .map((rawSegment, i) => ipV6SegmentStringDelegate(
-                            `${name} segment${segmentBStart+i}`,
-                            rawSegment
-                        ));
-                    const zeroes = arrayFill(
-                        Array<string>(maxSegmentCount - rawSegmentCount),
-                        "0"
-                    );
-                    return toIpV6CanonicalString(
-                        segmentsA
-                            .concat(zeroes)
-                            .concat(segmentsB)
-                    );
-                } else {
-                    throw new Error(`${name} must only have '::' symbol once; found ${consecutiveNonZero.length-1} uses`);
+        (name : string, str : string) : string => {
+            const consecutiveNonZero = str
+                .replace(/\s+/g, "")
+                .split("::");
+            if (consecutiveNonZero.length == 1) {
+                //All non-zeroes
+                const rawSegments = consecutiveNonZero[0].split(":");
+                if (rawSegments.length != maxSegmentCount) {
+                    throw new Error(`${name} must have ${maxSegmentCount} segments; found ${rawSegments.length}`);
                 }
+                const segments = rawSegments
+                    .map((rawSegment, i) => ipV6SegmentStringDelegate(
+                        `${name} segment${i}`,
+                        rawSegment
+                    ));
+                return toIpV6CanonicalString(segments);
+            } else if (consecutiveNonZero.length == 2) {
+                //E.g. ffff:ffff::ffff:ffff:ffff
+                const rawSegmentsA = consecutiveNonZero[0].split(":").filter(s => s != "");
+                const rawSegmentsB = consecutiveNonZero[1].split(":").filter(s => s != "");
+                const rawSegmentCount = rawSegmentsA.length + rawSegmentsB.length;
+                if (rawSegmentCount >= maxSegmentCount) {
+                    throw new Error(`${name} must have up to ${maxSegmentCount-1} segments when '::' symbol is used; found ${rawSegmentCount}`);
+                }
+                const segmentsA = rawSegmentsA
+                    .map((rawSegment, i) => ipV6SegmentStringDelegate(
+                        `${name} segment${i}`,
+                        rawSegment
+                    ));
+                const segmentBStart = maxSegmentCount - rawSegmentsB.length;
+                const segmentsB = rawSegmentsB
+                    .map((rawSegment, i) => ipV6SegmentStringDelegate(
+                        `${name} segment${segmentBStart+i}`,
+                        rawSegment
+                    ));
+                const zeroes = arrayFill(
+                    Array<string>(maxSegmentCount - rawSegmentCount),
+                    "0"
+                );
+                return toIpV6CanonicalString(
+                    segmentsA
+                        .concat(zeroes)
+                        .concat(segmentsB)
+                );
+            } else {
+                throw new Error(`${name} must only have '::' symbol once; found ${consecutiveNonZero.length-1} uses`);
             }
-        )
+        }
     );
 }
 

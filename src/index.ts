@@ -9,6 +9,8 @@ export * from "./field";
 export * from "./field-map";
 export * from "./functional-lib";
 export * from "./mapper";
+import * as mysql from "./mysql-lib";
+export {mysql};
 import * as TypeUtil from "./type-util";
 export {TypeUtil};
 export * from "./fluent-mapper";

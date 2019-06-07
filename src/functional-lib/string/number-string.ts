@@ -1,5 +1,5 @@
 import {SafeMapper} from "../../mapper";
-import {pipe, cache} from "../operator";
+import {pipe} from "../operator";
 import {finiteNumber, integer, unsignedInteger} from "../number";
 import {toTrimmed, match} from "./string";
 
@@ -124,17 +124,15 @@ export function unsignedIntegerFormatString () : SafeMapper<string> {
     ```
 */
 export function finiteNumberString () : SafeMapper<string> {
+    const finiteNumberDelegate = finiteNumber();
     return pipe(
         floatingPointFormatString(),
-        cache(
-            finiteNumber(),
-            (name : string, str : string, finiteNumberDelegate) => {
-                return finiteNumberDelegate(
-                    `parseFloat(${name})`,
-                    parseFloat(str)
-                ).toString();
-            }
-        )
+        (name : string, str : string) => {
+            return finiteNumberDelegate(
+                `parseFloat(${name})`,
+                parseFloat(str)
+            ).toString();
+        }
     );
 }
 
@@ -147,17 +145,15 @@ export function finiteNumberString () : SafeMapper<string> {
     ```
 */
 export function integerString () : SafeMapper<string> {
+    const integerDelegate = integer();
     return pipe(
         integerFormatString(),
-        cache(
-            integer(),
-            (name : string, str : string, integerDelegate) => {
-                return integerDelegate(
-                    `parseFloat(${name})`,
-                    parseFloat(str)
-                ).toString();
-            }
-        )
+        (name : string, str : string) => {
+            return integerDelegate(
+                `parseFloat(${name})`,
+                parseFloat(str)
+            ).toString();
+        }
     );
 }
 
@@ -170,16 +166,14 @@ export function integerString () : SafeMapper<string> {
     ```
 */
 export function unsignedIntegerString () : SafeMapper<string> {
+    const unsignedIntegerDelegate = unsignedInteger();
     return pipe(
         unsignedIntegerFormatString(),
-        cache(
-            unsignedInteger(),
-            (name : string, str : string, unsignedIntegerDelegate) => {
-                return unsignedIntegerDelegate(
-                    `parseFloat(${name})`,
-                    parseFloat(str)
-                ).toString();
-            }
-        )
+        (name : string, str : string) => {
+            return unsignedIntegerDelegate(
+                `parseFloat(${name})`,
+                parseFloat(str)
+            ).toString();
+        }
     );
 }

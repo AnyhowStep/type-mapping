@@ -1,26 +1,5 @@
-/*
-    zeroPad(1, 4)     === "0001"
-    zeroPad(34, 4)    === "0034"
-    zeroPad(678, 4)   === "0678"
-    zeroPad(1337, 4)  === "1337"
-    zeroPad(92678, 4) === "92678"
-*/
-function zeroPad (num : number, length : number) {
-    const str = num.toString();
-    if (str.length < length) {
-        return "0".repeat(length-str.length) + str;
-    } else {
-        return str;
-    }
-}
-function trailingZeroPad (num : number|string, length : number) {
-    const str = num.toString();
-    if (str.length < length) {
-        return str + "0".repeat(length-str.length);
-    } else {
-        return str;
-    }
-}
+import {zeroPad, trailingZeroPad} from "../../string-util";
+
 //Uses UTC
 //Truncates if fractionSecondPrecision is too small.
 export function toSqlUtc (d : Date, fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/) : string {
