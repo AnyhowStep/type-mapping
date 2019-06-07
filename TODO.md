@@ -7,3 +7,4 @@
 + Run-time tests
 + Reduce amount of function nesting for performance?
     + 9500 tests in 11s at the moment.
++ Idempotency tests `f(x) == f(f(x))`
