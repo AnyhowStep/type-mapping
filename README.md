@@ -138,7 +138,7 @@ See the `test` directory for more examples.
 
 ### Fluent API
 
-In the `stringOrUndefined` example is simple and shows that
+The `stringOrUndefined` example is simple and shows that
 you may combine `Mapper`s.
 
 However, with more complex `Mapper`s, function composition
