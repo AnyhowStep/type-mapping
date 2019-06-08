@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[string, \"is not output\", number]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[string, \"is not output\", number]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
@@ -8,11 +8,11 @@
   },
   {
     "messageText": {
-      "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[false, \"is not output\", number] | [true, \"is not output\", number]'.",
+      "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[false, \"is not output\", number] | [true, \"is not output\", number]'.",
       "category": 1,
       "code": 2684,
       "next": {
-        "messageText": "Type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to type '[true, \"is not output\", number]'.",
+        "messageText": "Type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to type '[true, \"is not output\", number]'.",
         "category": 1,
         "code": 2322
       }
@@ -23,35 +23,35 @@
     "start": 174
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[any, \"is not output\", number]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[any, \"is not output\", number]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 231
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[unknown, \"is not output\", number]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[unknown, \"is not output\", number]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 308
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[never, \"is not output\", number]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[never, \"is not output\", number]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 393
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[{ \"object\": string; }, \"is not output\", number]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[{ \"object\": string; }, \"is not output\", number]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 474
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[Number, \"is not output\", number]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[Number, \"is not output\", number]'.",
     "code": 2684,
     "category": 1,
     "length": 2,

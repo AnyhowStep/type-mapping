@@ -1,55 +1,55 @@
 [
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 124
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 163
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 217
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 259
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 317
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 383
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
     "start": 445
   },
   {
-    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapper/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
+    "messageText": "The 'this' context of type 'typeof import(\"/home/anyhowstep/node-projects/type-mapping/dist/index\")' is not assignable to method's 'this' of type '[\"output is never\"]'.",
     "code": 2684,
     "category": 1,
     "length": 2,
