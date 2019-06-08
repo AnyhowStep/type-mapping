@@ -1,9 +1,13 @@
+
 import {null as nil} from "./non-generic";
 export {
     nil as null,
 };
 /**
     Export generated with `npm run generate-fluent-lib-export`
+
+    The export generation script is needed because of this,
+    https://github.com/microsoft/TypeScript/issues/31824
 */
 export {
     instanceOfArray,

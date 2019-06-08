@@ -1,13 +1,12 @@
-import * as generic from "../../dist/fluent-lib/generic";
-import nonGeneric = require("../../dist/fluent-lib/non-generic");
-import {array} from "../../dist/fluent-lib/non-generic";
+import * as generic from "../../src/fluent-lib/generic";
+import * as nonGeneric from "../../src/fluent-lib/non-generic";
+import * as fs from "fs";
 
 const genericKeys = Object.keys(generic);
 const nonGenericKeys = Object.keys(nonGeneric)
     .filter(k => genericKeys.indexOf(k) < 0)
     .filter(k => k != "null");
-console.log(genericKeys, nonGenericKeys, Object.keys(nonGeneric), nonGeneric.array, array);
-console.log(`
+const str = `
 import {null as nil} from "./non-generic";
 export {
     nil as null,
@@ -26,4 +25,8 @@ import * as mysql from "../mysql-lib";
 export {
     mysql,
 };
-`);
+`;
+console.log(str);
+const fluentLibIndexFile = __dirname + "/../../src/fluent-lib/index.ts";
+fs.writeFileSync(fluentLibIndexFile, str);
+console.log("Wrote export to", fluentLibIndexFile);
