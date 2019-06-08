@@ -4,11 +4,11 @@ import {
     OutputOf,
     HandledInputOf,
 } from "../query";
-import { ExtractExpectedInputOrUnknown } from "./extract-expected-input-or-unknown";
-import { ExtractMappableInputOrUnknown } from "./extract-mappable-input-or-unknown";
-import { Name } from "../name";
-import { setFunctionName } from "../../type-util";
-import { copyOptional } from "./copy-run-time-modifier";
+import {ExtractExpectedInputOrUnknown} from "./extract-expected-input-or-unknown";
+import {ExtractMappableInputOrUnknown} from "./extract-mappable-input-or-unknown";
+import {Name} from "../name";
+import {setFunctionName} from "../../type-util";
+import {copyOptional} from "./copy-run-time-modifier";
 
 export type WithName<F extends AnyMapper, NameT extends string> = (
     & Mapper<HandledInputOf<F>, OutputOf<F>>

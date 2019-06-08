@@ -8,7 +8,7 @@ import {
     ExtractNameOrUnknown,
     ExtractOptionalOrUnknown,
 } from "../../mapper";
-import { copyRunTimeModifier } from "../../mapper/operation";
+import {copyRunTimeModifier} from "../../mapper/operation";
 
 export type CacheMapper<
     CachedT,

@@ -1,4 +1,4 @@
-import { isBigIntNativelySupported } from "../type-util";
+import {isBigIntNativelySupported} from "../type-util";
 
 /**
     Assumes BigInt.toString() is implemented correctly.

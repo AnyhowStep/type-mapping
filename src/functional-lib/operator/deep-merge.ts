@@ -11,7 +11,7 @@ import {
 } from "../../mapper";
 import * as TypeUtil from "../../type-util";
 import {indentErrorMessage} from "../../error-util";
-import { ExtractNameOrUnknown, ExtractOptionalOrUnknown } from "../../mapper/operation";
+import {ExtractNameOrUnknown, ExtractOptionalOrUnknown} from "../../mapper/operation";
 
 export type UnsafeDeepMergeMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<
@@ -79,8 +79,8 @@ export function deepMerge<F extends AnySafeMapper, ArrT extends AnySafeMapper[]>
 }
 
 /*
-import { length } from "../array-like";
-import { string } from "../string";
+import {length} from "../array-like";
+import {string} from "../string";
 const dm = deepMerge(
     (null as unknown as (() => { x : "test" }) & ExpectedInput<{ foo : string }> & MappableInput<{ foo? : string|Buffer }>),
     () : { x : 1 } => (null as any),

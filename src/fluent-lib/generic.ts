@@ -4,7 +4,7 @@ import {fluentMapper, FluentMapper} from "../fluent-mapper";
 import {Enum, EnumKey} from "../enum-util";
 import {ToOneEnumValueMapper, ToOneEnumKeyMapper, ObjectFromArrayMapper, ObjectFromMapMapper, CastDelegate, PipeMapper, PartialObjectFromMapMapper, PartialObjectFromArrayMapper} from "../functional-lib";
 import {LiteralType} from "../primitive";
-import { FieldMap, SafeMapperMap } from "../field-map";
+import {FieldMap, SafeMapperMap} from "../field-map";
 
 export function arrayLike<F extends AnySafeMapper> (f : F) {
     return fluentMapper(m.arrayLike<F>(f));

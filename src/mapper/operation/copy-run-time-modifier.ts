@@ -1,8 +1,8 @@
-import { AnyExtendedMapper } from "../extended-mapper";
-import { ExtractNameOrUnknown } from "./extract-name-or-unknown";
-import { ExtractOptionalOrUnknown } from "./extract-optional-or-unknown";
-import { setFunctionName } from "../../type-util";
-import { getNameOrEmptyString, getOptionalFlagOrFalse } from "../query";
+import {AnyExtendedMapper} from "../extended-mapper";
+import {ExtractNameOrUnknown} from "./extract-name-or-unknown";
+import {ExtractOptionalOrUnknown} from "./extract-optional-or-unknown";
+import {setFunctionName} from "../../type-util";
+import {getNameOrEmptyString, getOptionalFlagOrFalse} from "../query";
 
 /**
     Modifies `dst` by setting `name` and `__optional`.

@@ -175,30 +175,3 @@ export function objectFromArray<ArrT extends (AnySafeMapper & Name<string>)[]> (
     }
     return objectFromMap(map) as any;
 }
-/*
-import { unsignedInteger } from "../number";
-import { fluentMapper } from "../../fluent";
-import { string } from "../string";
-import { boolean, stringToBoolean } from "../boolean";
-const x = objectFromArray(
-    fluentMapper(string()),
-    fluentMapper(boolean()),
-    fluentMapper(unsignedInteger())
-        .withName("test"),
-    fluentMapper(boolean())
-        .withName("test"),
-    fluentMapper(boolean())
-        .orUndefined()
-        .withName("shouldNotBeOptional"),
-    fluentMapper(stringToBoolean())
-        .optional()
-        .withExpectedInput<string|undefined>()
-        .withName("shouldBeOptional"),
-)
-x.__expectedInput
-x.__mappableInput
-
-const out = x("", "")
-out.test = 1;
-const blah = out["blah"];
-//*/

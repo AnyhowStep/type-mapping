@@ -4,8 +4,8 @@ import {
     AnySafeMapper,
     Name,
 } from "../../mapper";
-import { PartialObjectFromMapMapper, partialObjectFromMap } from "./partial-object-from-map";
-import { PartialObjectFromArrayMapper, partialObjectFromArray } from "./partial-object-from-array";
+import {PartialObjectFromMapMapper, partialObjectFromMap} from "./partial-object-from-map";
+import {PartialObjectFromArrayMapper, partialObjectFromArray} from "./partial-object-from-array";
 
 export function partialObject<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
     PartialObjectFromArrayMapper<ArrT>

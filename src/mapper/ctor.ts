@@ -2,7 +2,7 @@ import {AnyExtendedMapper, ExtendedMapper} from "./extended-mapper";
 import {AnyMapper, Mapper} from "./mapper";
 import {HandledInputOf, OutputOf, ExtraParamsOf} from "./query";
 import {Optional} from "./optional";
-import { ExtractNameOrUnknown } from "./operation";
+import {ExtractNameOrUnknown} from "./operation";
 
 /**
     The `ExpectedInput<>` and `MappableInput<>` parts

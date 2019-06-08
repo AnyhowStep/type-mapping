@@ -4,8 +4,8 @@ import {
     AnySafeMapper,
     Name,
 } from "../../mapper";
-import { ObjectFromMapMapper, objectFromMap } from "./object-from-map";
-import { ObjectFromArrayMapper, objectFromArray } from "./object-from-array";
+import {ObjectFromMapMapper, objectFromMap} from "./object-from-map";
+import {ObjectFromArrayMapper, objectFromArray} from "./object-from-array";
 
 export function object<ArrT extends (AnySafeMapper & Name<string>)[]> (...arr : ArrT) : (
     ObjectFromArrayMapper<ArrT>

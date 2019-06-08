@@ -1,5 +1,5 @@
 import {tryGetBigIntFactoryFunction, isBigIntNativelySupported} from "./try-get-bigint-factory-function";
-import { isInstanceOfBuffer } from "./buffer-ctor";
+import {isInstanceOfBuffer} from "./buffer-ctor";
 
 function isBigIntNative (x : unknown) : x is bigint {
     return (typeof x == "bigint");

@@ -115,10 +115,10 @@ export function deriveMap<MapT extends FieldMap> (
 }
 
 /*
-import { string } from "../string";
-import { withName, withExpectedInput } from "../../mapper";
-import { unsignedInteger, stringToFiniteNumber } from "../number";
-import { optional } from "../operator";
+import {string} from "../string";
+import {withName, withExpectedInput} from "../../mapper";
+import {unsignedInteger, stringToFiniteNumber} from "../number";
+import {optional} from "../operator";
 
 const m = renameMap({
     x : withName(string(), "y"),

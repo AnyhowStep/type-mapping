@@ -9,8 +9,9 @@ import {
     greaterThanOrEqual,
     lessThanOrEqual,
     equal,
+    addOneImpl,
 } from "../../bigint-util";
-import { BigIntUtil } from "../..";
+
 export function bigIntGt (x : bigint) : SafeMapper<bigint> {
     return pipe(
         bigInt(),
@@ -156,7 +157,7 @@ export function bigIntRange (args : {
                 }
             } else {
                 if (
-                    BigIntUtil.addOneImpl(min.value.toString()) == max.value.toString() &&
+                    addOneImpl(min.value.toString()) == max.value.toString() &&
                     !min.inclusive &&
                     !max.inclusive
                 ) {

@@ -5,7 +5,7 @@ import {
 } from "../../mapper";
 import {FluentMapper} from "../../fluent-mapper";
 import * as fLib from "../../fluent-lib";
-import { range } from "../../functional-lib";
+import {range} from "../../functional-lib";
 
 /**
     May result in loss in precision if passing in

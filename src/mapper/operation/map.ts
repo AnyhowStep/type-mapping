@@ -1,4 +1,4 @@
-import {AnyMapper } from "../mapper";
+import {AnyMapper} from "../mapper";
 import {OutputOf, ExpectedInputOf, MappableInputOf, HandledInputOf} from "../query";
 
 /**
