@@ -5,7 +5,7 @@ import {
     NameOf,
     Name,
 } from "../mapper";
-import {AnyField} from "../field/field";
+import {AnyField} from "../field";
 
 /**
     Building individual `Field<>` instances is a paid.

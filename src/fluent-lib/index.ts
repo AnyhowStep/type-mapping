@@ -110,3 +110,5 @@ import * as mysql from "../mysql-lib";
 export {
     mysql,
 };
+export * from "../field-map";
+export * from "../decorator";

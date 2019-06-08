@@ -25,6 +25,8 @@ import * as mysql from "../mysql-lib";
 export {
     mysql,
 };
+export * from "../field-map";
+export * from "../decorator";
 `;
 console.log(str);
 const fluentLibIndexFile = __dirname + "/../../src/fluent-lib/index.ts";
