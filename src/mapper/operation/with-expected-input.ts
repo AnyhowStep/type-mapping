@@ -1,8 +1,7 @@
 import {AnyMapper, Mapper} from "../mapper";
 import {MappableInput} from "../mappable-input";
 import {ExpectedInput} from "../expected-input";
-import {ExtractOptionalOrUnknown} from "./extract-optional-or-unknown";
-import {ExtractNameOrUnknown} from "./extract-name-or-unknown";
+import {ExtractRunTimeModifierOrUnknown} from "./extract-run-time-modifier-or-unknown";
 import {
     MappableInputOf,
     OutputOf,
@@ -13,8 +12,7 @@ export type WithExpectedInput<F extends AnyMapper, AcceptT extends MappableInput
     & Mapper<HandledInputOf<F>, OutputOf<F>>
     & ExpectedInput<AcceptT>
     & MappableInput<MappableInputOf<F>>
-    & ExtractOptionalOrUnknown<F>
-    & ExtractNameOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 /**
     Lets you modify the `ExpectedInput<>` of a `Mapper<>`.

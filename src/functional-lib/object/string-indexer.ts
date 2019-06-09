@@ -4,8 +4,7 @@ import {
     MappableInput,
     OutputOf,
     SafeMapper,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     ExpectedInputOf,
     MappableInputOf,
     copyRunTimeModifier,
@@ -32,8 +31,7 @@ export type UnsafeStringIndexerMapper<F extends AnySafeMapper> = (
     & MappableInput<{
         [k : string] : MappableInputOf<F>
     }>
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 
 export function unsafeStringIndexer<F extends AnySafeMapper> (f : F) : (
@@ -71,8 +69,7 @@ export type StringIndexerMapper<F extends AnySafeMapper> = (
     & MappableInput<{
         [k : string] : MappableInputOf<F>|undefined
     }>
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 
 export function stringIndexer<F extends AnySafeMapper> (f : F) : (

@@ -213,6 +213,150 @@ const objArrMapper = tm.object({
 
 -----
 
+### Recommended Usage
+
+As much as possible, use `"type-mapping/fluent"` and its fluent API.
+
+You should only really need to use `type-mapping` and its functional API
+when building custom mappers, or writing a library that utilizes this package
+for compile-time and run-time type safety.
+
+As much as possible, avoid calling `Mapper`s directly.
+Use `map()/mapMappable()` or `tryMap()/tryMapMappable()` instead.
+
+`map()` is an alias for `mapExpected()`.
+`tryMap()` is an alias for `tryMapExpected()`.
+
+```ts
+//Fluent API
+import * as tm from "type-mapping/fluent";
+//HandledInput  : unknown
+//MappableInput : string|number
+//ExpectedInput : number
+//Output        : number
+const a_or_b = tm.stringToFiniteNumber();
+
+//== Calling `Mapper` directly ==
+
+//Compile-time: OK
+//Run-time    : OK; 1
+a_or_b("x", "1");
+//Compile-time: OK
+//Run-time    : OK; 1
+a_or_b("x", 1);
+//Compile-time: OK
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b("x", "hello");
+//Compile-time: OK
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b("x", true);
+
+//== Calling `map()/mapExpected()` ==
+
+//Compile-time: Error; string not assignable to number
+//Run-time    : OK; 1
+a_or_b.map("x", "1");
+//Compile-time: OK
+//Run-time    : OK; 1
+a_or_b.map("x", 1);
+//Compile-time: Error; string not assignable to number
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b.map("x", "hello");
+//Compile-time: Error; boolean not assignable to number
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b.map("x", true);
+
+//== Calling `tryMap()/tryMapExpected()` ==
+
+//Compile-time: Error; string not assignable to number
+//Run-time    : { success : true, value : 1 }
+a_or_b.tryMap("x", "1");
+//Compile-time: OK
+//Run-time    : { success : true, value : 1 }
+a_or_b.tryMap("x", 1);
+//Compile-time: Error; string not assignable to number
+//Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
+a_or_b.tryMap("x", "hello");
+//Compile-time: Error; boolean not assignable to number
+//Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
+a_or_b.tryMap("x", true);
+
+//== Calling `mapMappable()` ==
+
+//Compile-time: OK
+//Run-time    : OK; 1
+a_or_b.mapMappable("x", "1");
+//Compile-time: OK
+//Run-time    : OK; 1
+a_or_b.mapMappable("x", 1);
+//Compile-time: OK
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b.mapMappable("x", "hello");
+//Compile-time: Error; boolean not assignable to string|number
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b.mapMappable("x", true);
+
+//== Calling `tryMapMappable()` ==
+
+//Compile-time: OK
+//Run-time    : { success : true, value : 1 }
+a_or_b.tryMapMappable("x", "1");
+//Compile-time: OK
+//Run-time    : { success : true, value : 1 }
+a_or_b.tryMapMappable("x", 1);
+//Compile-time: OK
+//Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
+a_or_b.tryMapMappable("x", "hello");
+//Compile-time: Error; boolean not assignable to string|number
+//Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
+a_or_b.tryMapMappable("x", true);
+```
+
+With the functional API,
+
+```ts
+//Functional API
+import * as tm from "type-mapping";
+//HandledInput  : unknown
+//MappableInput : string|number
+//ExpectedInput : number
+//Output        : number
+const a_or_b = tm.stringToFiniteNumber();
+
+//Calling `Mapper` directly
+//Compile-time: OK
+//Run-time    : Error; x must be finite number, or finite number string
+a_or_b("c", true);
+
+//Calling `map()`
+//Compile-time: Error; boolean not assignable to number
+//Run-time    : Error; x must be finite number, or finite number string
+tm.map(a_or_b, "c", true);
+
+//Calling `tryMap()`
+//Compile-time: Error; boolean not assignable to number
+//Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
+tm.tryMap(a_or_b, "c", true);
+
+//Calling `mapMappable()`
+//Compile-time: Error; boolean not assignable to string|number
+//Run-time    : Error; x must be finite number, or finite number string
+tm.mapMappable(a_or_b, "c", true);
+
+//Calling `tryMapMappable()`
+//Compile-time: Error; boolean not assignable to string|number
+//Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
+tm.tryMapMappable(a_or_b, "c", true);
+```
+
+When building a package that uses this package for type-safety,
+try to avoid forcing users to invoke `Mapper`s explicitly.
+
+Instead, have them pass the `Mapper`s to your package,
+and have your package invoke them behind the scenes.
+
+-----
+
 ### Default `Mapper`s
 
 TODO, document all default mappers
@@ -565,7 +709,137 @@ The simplest supported polyfill, with no error checking, is,
 
 ### `Optional`
 
-TODO, how `Optional` affects `Mapper`s.
+You may make a mapper optional with `optional<>()`,
+
+```ts
+import * as tm from "type-mapping";
+const a_or_b = tm.literal("a", "b");
+const obj = tm.object({
+    x : tm.optional(a_or_b),
+});
+obj("obj", {});                //OK; { x : undefined }
+obj("obj", { x : undefined }); //OK; { x : undefined }
+obj("obj", { x : "a" });       //OK; { x : "a" }
+obj("obj", { x : "b" });       //OK; { x : "b" }
+obj("obj", { x : "c" });       //Error; obj.x must be "a"|"b"
+```
+
+Using `optional<>()` cancels out `runTimeRequired<>()`
+
+-----
+
+### `orUndefined<>()`
+
+`orUndefined<>()` may have surprising behaviour.
+
+Using `orUndefined<>()` on a field has the following effect,
+
++ The field is required during compile-time
++ The field is optional during run-time
+
+This behaviour lets us use the mappers that map `undefined`
+to play nicely with JSON serialization.
+
+```ts
+//Current behaviour
+//Compile-time required
+//Run-time optional
+import * as tm from "type-mapping";
+const obj = tm.object({
+    x : tm.orUndefined(tm.finiteNumber()),
+});
+const input = { x : undefined };          //{ x : undefined }
+const inputJson = JSON.stringify(input);  //"{}"
+const outputJson = JSON.parse(inputJson); //{}
+const output = obj("output", outputJson); //{ x : undefined }
+```
+
+vs.
+
+```ts
+//Technically more "correct" behaviour but harder to use with JSON serialization
+//Compile-time required
+//Run-time required
+import * as tm from "type-mapping";
+const obj = tm.object({
+    x : tm.orUndefined(tm.finiteNumber()),
+});
+const input = { x : undefined };          //{ x : undefined }
+const inputJson = JSON.stringify(input);  //"{}"
+const outputJson = JSON.parse(inputJson); //{}
+const output = obj("output", outputJson); //Error; output must have property "x"
+```
+
+To make a field allow `undefined` but also make the field required,
+```ts
+import * as tm from "type-mapping";
+tm.runTimeRequired(tm.orUndefined(myMapper))
+```
+
+Or, with the fluent API,
+```ts
+import * as tm from "type-mapping/fluent";
+myMapper.orUndefined().runTimeRequired();
+```
+
+Then, you'll get the following result,
+
+```ts
+import * as tm from "type-mapping";
+const a_or_b = tm.literal("a", "b");
+const obj = tm.object({
+    x : tm.orUndefined(a_or_b),
+});
+obj("obj", {});                //OK; { x : undefined }
+obj("obj", { x : undefined }); //OK; { x : undefined }
+obj("obj", { x : "a" });       //OK; { x : "a" }
+obj("obj", { x : "b" });       //OK; { x : "b" }
+obj("obj", { x : "c" });       //Error; obj.x must be "a"|"b"
+
+const obj2 = tm.object({
+    x : tm.runTimeRequired(tm.orUndefined(a_or_b)),
+});
+obj("obj2", {});                //Error; obj must have property "x"
+obj("obj2", { x : undefined }); //OK; { x : undefined }
+obj("obj2", { x : "a" });       //OK; { x : "a" }
+obj("obj2", { x : "b" });       //OK; { x : "b" }
+obj("obj2", { x : "c" });       //Error; obj2.x must be "a"|"b"
+```
+
+-----
+
+### `RunTimeRequired`
+
+You may make a mapper required during run-time with `runTimeRequired<>()`,
+
+```ts
+import * as tm from "type-mapping";
+const a_or_b = tm.literal("a", "b");
+const obj = tm.object({
+    //Required during compile-time
+    //Optional during run-time
+    x : tm.orUndefined(a_or_b),
+});
+obj("obj", {});                //OK; { x : undefined }
+obj("obj", { x : undefined }); //OK; { x : undefined }
+obj("obj", { x : "a" });       //OK; { x : "a" }
+obj("obj", { x : "b" });       //OK; { x : "b" }
+obj("obj", { x : "c" });       //Error; obj.x must be "a"|"b"
+
+const obj2 = tm.object({
+    //Required during compile-time
+    //Required during run-time
+    x : tm.runTimeRequired(tm.orUndefined(a_or_b)),
+});
+obj2("obj2", {});                //Error; obj2 must have property "x"
+obj2("obj2", { x : undefined }); //OK; { x : undefined }
+obj2("obj2", { x : "a" });       //OK; { x : "a" }
+obj2("obj2", { x : "b" });       //OK; { x : "b" }
+obj2("obj2", { x : "c" });       //Error; obj2.x must be "a"|"b"
+```
+
+Using `runTimeRequired<>()` cancels out `optional<>()` but does not remove
+`undefined` from the `HandledInput`/`MappableInput`/`ExpectedInput`.
 
 -----
 
@@ -723,8 +997,23 @@ be part of another package. (TODO, create replacement package.)
 
 -----
 
-# Cookbook
+### Cookbook
 
 The examples here use the fluent API.
 
 (TODO, examples of common data mapping scenarios and how to handle them)
+
+-----
+
+### Breaking Changes
+
++ 1.3.0 -> 1.4.0
+
+  + `optional()` still makes a field compile-time optional.
+  + `optional()` still makes a field run-time optional.
+  + `orUndefined()` now makes a field run-time optional.
+    Use `runTimeRequired()` to make it run-time required again.
+    This breaking change was introduced to make usage with JSON serialization easier.
+  + `runTimeRequired()` added
+  + `runTimeRequired()` makes a field compile-time required.
+  + `runTimeRequired()` makes a field run-time required.

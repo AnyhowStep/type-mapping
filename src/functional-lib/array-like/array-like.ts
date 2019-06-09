@@ -6,8 +6,7 @@ import {
     ExpectedInput,
     MappableInputOf,
     MappableInput,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import {pipe} from "../operator";
@@ -29,8 +28,7 @@ export type ArrayLikeMapper<
     & SafeMapper<ArrayLike<OutputOf<F>>>
     & ExpectedInput<ArrayLike<ExpectedInputOf<F>>>
     & MappableInput<ArrayLike<MappableInputOf<F>>>
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 
 export function arrayLike<F extends AnySafeMapper> (f : F) : (

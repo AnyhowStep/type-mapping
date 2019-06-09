@@ -5,8 +5,7 @@ import {
     ExtractExpectedInputOrUnknown,
     ExtractMappableInputOrUnknown,
     ExtendedMapper,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
 } from "../../mapper";
 import {copyRunTimeModifier} from "../../mapper/operation";
 
@@ -20,8 +19,7 @@ export type CacheMapper<
     >
     & ExtractExpectedInputOrUnknown<F>
     & ExtractMappableInputOrUnknown<F>
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 
 export function cache<

@@ -11,3 +11,4 @@ export * from "./merged-output-of";
 export * from "./name-of";
 export * from "./optional-flag-of";
 export * from "./output-of";
+export * from "./run-time-required-flag-of";

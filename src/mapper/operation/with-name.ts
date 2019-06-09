@@ -6,15 +6,17 @@ import {
 } from "../query";
 import {ExtractExpectedInputOrUnknown} from "./extract-expected-input-or-unknown";
 import {ExtractMappableInputOrUnknown} from "./extract-mappable-input-or-unknown";
+import {ExtractRunTimeRequiredOrUnknown} from "./extract-run-time-required-or-unknown";
 import {Name} from "../name";
 import {setFunctionName} from "../../type-util";
-import {copyOptional} from "./copy-run-time-modifier";
+import {copyOptional, copyRunTimeRequired} from "./copy-run-time-modifier";
 
 export type WithName<F extends AnyMapper, NameT extends string> = (
     & Mapper<HandledInputOf<F>, OutputOf<F>>
     & ExtractExpectedInputOrUnknown<F>
     & ExtractMappableInputOrUnknown<F>
     & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeRequiredOrUnknown<F>
     & (
         string extends NameT ?
         unknown :
@@ -53,8 +55,11 @@ export function withName<F extends AnyMapper, NameT extends string>(
     const result = (name : string, mixed : unknown) => {
         return f(name, mixed);
     };
-    return copyOptional(
+    return copyRunTimeRequired(
         f,
-        setFunctionName(result, name)
-    ) as any;
+        copyOptional(
+            f,
+            setFunctionName(result, name)
+        )
+    );
 };

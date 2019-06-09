@@ -4,8 +4,7 @@ import {
     OutputOf,
     ExpectedInput,
     MappableInput,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import {LiteralType} from "../../primitive";
@@ -29,8 +28,7 @@ export type ExcludeLiteralMapper<
         MappableInput<Exclude<T, ArrT[number]>> :
         unknown
     )
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 export function excludeLiteral<
     F extends AnySafeMapper,

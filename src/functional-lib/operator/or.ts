@@ -6,8 +6,7 @@ import {
     ExpectedInputOfImpl,
     MappableInput,
     MappableInputOfImpl,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import {indentErrorMessage} from "../../error-util";
@@ -50,8 +49,7 @@ export type OrMapper<F extends AnySafeMapper, ArrT extends AnySafeMapper[]> = (
     & MappableInput<
         MappableInputOfImpl<F|ArrT[number]>[0]
     >
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 export function or<
     F extends AnySafeMapper,

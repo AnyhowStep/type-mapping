@@ -9,8 +9,7 @@ import {
     AssertPipeable,
     MappableInput,
     MappableInputOf,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import {Primitive} from "../../primitive";
@@ -46,8 +45,7 @@ export type PipeMapper<
         ExtractExpectedInputOrUnknown<SrcF>
     )
     & MappableInput<MappableInputOf<SrcF>>
-    & ExtractNameOrUnknown<SrcF>
-    & ExtractOptionalOrUnknown<SrcF>
+    & ExtractRunTimeModifierOrUnknown<SrcF>
 );
 
 export function pipe<
@@ -110,8 +108,7 @@ export type UnsafePipeMapper<
     & SafeMapper<unknown>
     & ExpectedInput<ExpectedInputOf<SrcF>>
     & MappableInput<MappableInputOf<SrcF>>
-    & ExtractNameOrUnknown<SrcF>
-    & ExtractOptionalOrUnknown<SrcF>
+    & ExtractRunTimeModifierOrUnknown<SrcF>
 );
 
 export function unsafePipe<

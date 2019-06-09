@@ -6,12 +6,11 @@ import {
     MappableInputOf,
     ExpectedInput,
     MappableInput,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     IsOptional,
     IsExpectedInputOptional,
-    isOptional,
     copyRunTimeModifier,
+    getRunTimeRequiredFlagOrFalse,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
@@ -84,8 +83,7 @@ export type RenameMapper<
             | { [dst in DstKeyT] : MappableInputOf<F> }
         )
     >
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 export function rename<
     SrcKeyT extends string,
@@ -98,7 +96,7 @@ export function rename<
 ) : (
     RenameMapper<SrcKeyT, DstKeyT, F>
 ) {
-    const optional = isOptional(f);
+    const runTimeRequired = getRunTimeRequiredFlagOrFalse(f);
     const result = pipe(
         instanceOfObject(),
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
@@ -110,11 +108,11 @@ export function rename<
             } else if (mixed.hasOwnProperty(srcKey)) {
                 unsafeName = `${name}.(${srcKey} -rename-> ${dstKey})`;
                 unsafeValue = (mixed as any)[srcKey];
-            } else if (optional) {
+            } else if (runTimeRequired) {
+                throw new Error(`${name} must have property ${dstKey}, or ${srcKey}`);
+            } else {
                 unsafeName = `${name}.${dstKey}`;
                 unsafeValue = undefined;
-            } else {
-                throw new Error(`${name} must have property ${dstKey}, or ${srcKey}`);
             }
 
             const obj : (

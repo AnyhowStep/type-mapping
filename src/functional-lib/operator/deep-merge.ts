@@ -7,11 +7,11 @@ import {
     ExpectedInput,
     MappableInput,
     MergedOutputOf,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import * as TypeUtil from "../../type-util";
 import {indentErrorMessage} from "../../error-util";
-import {ExtractNameOrUnknown, ExtractOptionalOrUnknown} from "../../mapper/operation";
 
 export type UnsafeDeepMergeMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<
@@ -66,8 +66,7 @@ export type DeepMergeMapper<F extends AnySafeMapper, ArrT extends AnySafeMapper[
     & MappableInput<
         MappableInputOf<F|ArrT[number]>
     >
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 export function deepMerge<F extends AnySafeMapper, ArrT extends AnySafeMapper[]> (
     f : F,

@@ -68,6 +68,8 @@ export {
     toEmptyObject,
     instanceOfObject,
     pojo,
+    runTimeRequired,
+    notRunTimeRequired,
     finiteNumberToFiniteNumberString,
     integerToIntegerString,
     unsignedIntegerToUnsignedIntegerString,

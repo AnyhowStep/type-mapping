@@ -6,12 +6,11 @@ import {
     MappableInputOf,
     ExpectedInput,
     MappableInput,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     IsOptional,
     IsExpectedInputOptional,
-    isOptional,
     copyRunTimeModifier,
+    getRunTimeRequiredFlagOrFalse,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
@@ -89,8 +88,7 @@ export type DeriveMapper<
         { [src in SrcKeyT]? : MappableInputOf<F> } :
         { [src in SrcKeyT] : MappableInputOf<F> }
     >
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 export function derive<
     SrcKeyT extends string,
@@ -103,7 +101,13 @@ export function derive<
 ) : (
     DeriveMapper<SrcKeyT, DstKeyT, F>
 ) {
-    const optional = isOptional(f);
+    /**
+        TODO
+                        | `orUndefined` | `optional` | `runTimeRequired()`
+        compile-time    | -no-effect    | optional   | -no-effect-
+        run-time        | optional      | optional   | required
+    */
+    const runTimeRequired = getRunTimeRequiredFlagOrFalse(f);
     const result = pipe(
         instanceOfObject(),
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
@@ -112,11 +116,11 @@ export function derive<
             if (mixed.hasOwnProperty(srcKey)) {
                 unsafeName = `${name}.(${srcKey} -derive-> ${dstKey})`;
                 unsafeValue = (mixed as any)[srcKey];
-            } else if (optional) {
+            } else if (runTimeRequired) {
+                throw new Error(`${name} must have property ${srcKey}`);
+            } else {
                 unsafeName = `${name}.${srcKey}`;
                 unsafeValue = undefined;
-            } else {
-                throw new Error(`${name} must have property ${srcKey}`);
             }
 
             const obj : (

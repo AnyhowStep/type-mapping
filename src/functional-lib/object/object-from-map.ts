@@ -13,7 +13,7 @@ import {
     MappableInput,
     MappableInputOf,
     mapper,
-    isOptional,
+    getRunTimeRequiredFlagOrFalse,
 } from "../../mapper";
 import {instanceOfObject} from "./instance-of-object";
 import {pipe} from "../operator";
@@ -86,16 +86,16 @@ export function objectFromMap<
     if (keys.length == 0) {
         return toEmptyObject() as any;
     }
-    const optionalDict : { [k : string] : boolean|undefined } = {};
+    const runTimeRequiredDict : { [k : string] : boolean|undefined } = {};
     for (const k of keys) {
-        optionalDict[k] = isOptional(map[k]);
+        runTimeRequiredDict[k] = getRunTimeRequiredFlagOrFalse(map[k]);
     }
     return mapper<ObjectFromMapMapper<MapT>>(pipe(
         instanceOfObject(),
         (name : string, mixed : Object) => {
             const result : any = {};
             for (const k of keys) {
-                if (mixed.hasOwnProperty(k) || optionalDict[k] === true) {
+                if (mixed.hasOwnProperty(k) || runTimeRequiredDict[k] === false) {
                     result[k] = map[k](
                         `${name}.${k}`,
                         (mixed as any)[k]

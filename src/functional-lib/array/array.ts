@@ -6,8 +6,7 @@ import {
     ExpectedInput,
     MappableInputOf,
     MappableInput,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import {pipe} from "../operator";
@@ -19,8 +18,7 @@ export type ArrayMapper<
     & SafeMapper<OutputOf<F>[]>
     & ExpectedInput<ExpectedInputOf<F>[]>
     & MappableInput<MappableInputOf<F>[]>
-    & ExtractNameOrUnknown<F>
-    & ExtractOptionalOrUnknown<F>
+    & ExtractRunTimeModifierOrUnknown<F>
 );
 
 export function array<F extends AnySafeMapper> (f : F) : (

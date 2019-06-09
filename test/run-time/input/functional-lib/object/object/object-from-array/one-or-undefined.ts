@@ -15,7 +15,11 @@ tape(__filename, t => {
     t.false(tm.tryMap(f, "x", { a : "2", b : "c" } as any).success);
     t.false(tm.tryMap(f, "x", { a : 2 } as any).success);
     t.false(tm.tryMap(f, "x", { a : undefined } as any).success);
-    t.false(tm.tryMap(f, "x", { b : "a" } as any).success);
+    /*
+        Required during compile-time.
+        Optional during run-time.
+    */
+    t.deepEqual(f("x", { b : "a" } as any), { a : undefined, b : "a" });
 
     t.false(tm.tryMap(f, "x", null as any).success);
     t.false(tm.tryMap(f, "x", undefined as any).success);

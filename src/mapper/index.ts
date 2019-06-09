@@ -10,4 +10,5 @@ export * from "./mappable-input";
 export * from "./mapper";
 export * from "./name";
 export * from "./optional";
+export * from "./run-time-required";
 export * from "./safe-mapper";

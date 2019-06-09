@@ -6,8 +6,7 @@ import {
     ExpectedInputOf,
     MappableInput,
     MappableInputOf,
-    ExtractNameOrUnknown,
-    ExtractOptionalOrUnknown,
+    ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
 } from "../../mapper";
 import {indentErrorMessage} from "../../error-util";
@@ -21,8 +20,7 @@ export type CastMapper<
     & SafeMapper<OutputOf<DstF>>
     & ExpectedInput<ExpectedInputOf<DstF>>
     & MappableInput<MappableInputOf<SrcF>|MappableInputOf<DstF>>
-    & ExtractNameOrUnknown<SrcF>
-    & ExtractOptionalOrUnknown<SrcF>
+    & ExtractRunTimeModifierOrUnknown<SrcF>
 );
 export function cast<
     SrcF extends AnySafeMapper,
