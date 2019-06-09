@@ -110,5 +110,5 @@ import * as mysql from "../mysql-lib";
 export {
     mysql,
 };
-export * from "../field-map";
+export * from "./field-map-ctor";
 export * from "../decorator";
