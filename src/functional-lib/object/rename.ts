@@ -102,10 +102,10 @@ export function rename<
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
             let unsafeName : string = "";
             let unsafeValue : unknown = undefined;
-            if (mixed.hasOwnProperty(dstKey)) {
+            if (Object.prototype.hasOwnProperty.call(mixed, dstKey)) {
                 unsafeName = `${name}.${dstKey}`;
                 unsafeValue = (mixed as any)[dstKey];
-            } else if (mixed.hasOwnProperty(srcKey)) {
+            } else if (Object.prototype.hasOwnProperty.call(mixed, srcKey)) {
                 unsafeName = `${name}.(${srcKey} -rename-> ${dstKey})`;
                 unsafeValue = (mixed as any)[srcKey];
             } else if (runTimeRequired) {

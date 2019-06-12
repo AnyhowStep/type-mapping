@@ -42,7 +42,7 @@ export function unsafeStringIndexer<F extends AnySafeMapper> (f : F) : (
         (name : string, obj : Object) : { [k : string] : OutputOf<F> } => {
             const result : { [k : string] : OutputOf<F> } = {};
             for (const k in obj) {
-                if (!obj.hasOwnProperty(k)) {
+                if (!Object.prototype.hasOwnProperty.call(obj, k)) {
                     continue;
                 }
                 result[k] = f(
@@ -81,7 +81,7 @@ export function stringIndexer<F extends AnySafeMapper> (f : F) : (
         (name : string, obj : Object) : { [k : string] : OutputOf<F>|undefined } => {
             const result : { [k : string] : OutputOf<F>|undefined } = {};
             for (const k in obj) {
-                if (!obj.hasOwnProperty(k)) {
+                if (!Object.prototype.hasOwnProperty.call(obj, k)) {
                     continue;
                 }
                 result[k] = fOrUndefined(

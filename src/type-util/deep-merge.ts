@@ -60,7 +60,10 @@ function deepMergeImpl (a : any, b : any) : unknown {
         }
         mergedKeys[key] = true;
 
-        if (b.hasOwnProperty(key)) {
+        //We do not call `b.hasOwnProperty()` directly
+        //because if `b = Object.create(null)`,
+        //an `Error` will be thrown
+        if (Object.prototype.hasOwnProperty.call(b, key)) {
             result[key] = deepMergeImpl(a[key], b[key]);
         } else {
             result[key] = a[key];
@@ -73,7 +76,10 @@ function deepMergeImpl (a : any, b : any) : unknown {
         }
         mergedKeys[key] = true;
 
-        if (a.hasOwnProperty(key)) {
+        //We do not call `a.hasOwnProperty()` directly
+        //because if `a = Object.create(null)`,
+        //an `Error` will be thrown
+        if (Object.prototype.hasOwnProperty.call(a, key)) {
             result[key] = deepMergeImpl(a[key], b[key]);
         } else {
             result[key] = b[key];

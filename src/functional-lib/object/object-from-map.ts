@@ -95,7 +95,7 @@ export function objectFromMap<
         (name : string, mixed : Object) => {
             const result : any = {};
             for (const k of keys) {
-                if (mixed.hasOwnProperty(k) || runTimeRequiredDict[k] === false) {
+                if (Object.prototype.hasOwnProperty.call(mixed, k) || runTimeRequiredDict[k] === false) {
                     result[k] = map[k](
                         `${name}.${k}`,
                         (mixed as any)[k]

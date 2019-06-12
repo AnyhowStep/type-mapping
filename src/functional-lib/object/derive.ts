@@ -113,7 +113,7 @@ export function derive<
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
             let unsafeName : string = "";
             let unsafeValue : unknown = undefined;
-            if (mixed.hasOwnProperty(srcKey)) {
+            if (Object.prototype.hasOwnProperty.call(mixed, srcKey)) {
                 unsafeName = `${name}.(${srcKey} -derive-> ${dstKey})`;
                 unsafeValue = (mixed as any)[srcKey];
             } else if (runTimeRequired) {
