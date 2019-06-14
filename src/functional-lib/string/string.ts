@@ -87,14 +87,22 @@ export function notMatch (regex : RegExp, errorMessageDelegate? : (name : string
 }
 
 /**
+    Alias for `emailAddress()`
+    @see emailAddress
+*/
+export function email () : SafeMapper<string> {
+    return emailAddress();
+}
+
+/**
     Runs the regex `/^.+@.+$/` on the string.
     Doesn't exactly follow a standard.
 
     You may roll your own email address validator,
     but it's better to just send a confirmation
-    email to check the email is valid.
+    email to check the email address is valid.
 */
-export function email () : SafeMapper<string> {
+export function emailAddress () : SafeMapper<string> {
     return match(
         /^.+@.+$/,
         name => `${name} must be an email address`

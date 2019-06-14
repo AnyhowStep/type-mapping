@@ -94,6 +94,7 @@ export {
     match,
     notMatch,
     email,
+    emailAddress,
     hexadecimalString,
     toUpperCase,
     toLowerCase,
