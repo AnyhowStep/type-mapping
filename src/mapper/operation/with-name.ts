@@ -24,27 +24,9 @@ export type WithName<F extends AnyMapper, NameT extends string> = (
     )
 );
 /**
-    Lets you modify the `ExpectedInput<>` of a `Mapper<>`.
+    Lets you modify the `Name<>` of a `Mapper<>`.
 
-    Returns the same `Mapper<>`, DOES NOT create a new function.
-
-    TODO Decide if it should return a wrapper.
-
-    -----
-
-    ### Use Case
-
-    Give a `Mapper<>` with the following properties,
-
-    + `MappableInput<> = string|number`
-    + `ExpectedInput<> = string`
-
-    If we wish to change the `ExpectedInput<>` to `number`,
-    we do the following,
-
-    ```ts
-    const otherMapper = withExpectedInput(mapper)<number>();
-    ```
+    Returns a new `Mapper<>`.
 */
 export function withName<F extends AnyMapper, NameT extends string>(
     f : F,
