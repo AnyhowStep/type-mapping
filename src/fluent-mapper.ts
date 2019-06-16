@@ -29,6 +29,8 @@ import {
     tryMapExpected,
     tryMapMappable,
     tryMapHandled,
+    ExpectMappableInput,
+    expectMappableInput,
 } from "./mapper";
 import {
     OrUndefinedMapper,
@@ -116,6 +118,12 @@ export interface FluentMapper<F extends AnySafeMapper> {
     tryMapExpected (name : string, mixed : ExpectedInputOf<F>) : TryMapResult<OutputOf<F>>;
     tryMapMappable (name : string, mixed : MappableInputOf<F>) : TryMapResult<OutputOf<F>>;
     tryMapHandled (name : string, mixed : HandledInputOf<F>) : TryMapResult<OutputOf<F>>;
+
+    expectMappableInput () : (
+        FluentMapper<
+            ExpectMappableInput<F>
+        >
+    );
 
     withExpectedInput<AcceptT extends MappableInputOf<F>> () : (
         FluentMapper<
@@ -311,6 +319,14 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
     };
     result.tryMapHandled = (name : string, mixed : HandledInputOf<F>) : TryMapResult<OutputOf<F>> => {
         return tryMapHandled(f, name, mixed);
+    };
+
+    result.expectMappableInput = () : (
+        FluentMapper<
+            ExpectMappableInput<F>
+        >
+    ) => {
+        return fluentMapper(expectMappableInput(f));
     };
 
     result.withExpectedInput = <AcceptT extends MappableInputOf<F>> () : (
