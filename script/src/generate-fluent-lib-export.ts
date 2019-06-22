@@ -21,6 +21,10 @@ export {
     ${nonGenericKeys.join(",\n    ") + ","}
 } from "./non-generic";
 export * from "./generic";
+import * as jsonApi from "../json-api-lib";
+export {
+    jsonApi,
+};
 import * as mysql from "../mysql-lib";
 export {
     mysql,

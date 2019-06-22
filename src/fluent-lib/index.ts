@@ -10,6 +10,7 @@ export {
     https://github.com/microsoft/TypeScript/issues/31824
 */
 export {
+    unsafeAny,
     instanceOfArray,
     implementsArrayLike,
     length,
@@ -47,6 +48,7 @@ export {
     instanceOfDate,
     stringToJsonObject,
     jsonObject,
+    nonMaybe,
     undefinedToNull,
     emptyStringToNull,
     whitespaceStringToNull,
@@ -109,6 +111,10 @@ export {
     unknown,
 } from "./non-generic";
 export * from "./generic";
+import * as jsonApi from "../json-api-lib";
+export {
+    jsonApi,
+};
 import * as mysql from "../mysql-lib";
 export {
     mysql,

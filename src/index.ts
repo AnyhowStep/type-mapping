@@ -9,6 +9,8 @@ export {ErrorUtil};
 export * from "./field";
 export * from "./field-map";
 export * from "./functional-lib";
+import * as jsonApi from "./json-api-lib";
+export {jsonApi};
 export * from "./mapper";
 import * as mysql from "./mysql-lib";
 export {mysql};

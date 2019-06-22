@@ -1,5 +1,7 @@
 + [`mysql`](https://github.com/mysqljs/mysql)-specific mappers
     + Tests needed
++ `json-api-lib`-specific mappers
+    + More tests needed
 
 + Maybe implement `deepEqual<>()`?
 + Implement route declarations in another package?

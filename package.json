@@ -1,6 +1,6 @@
 {
   "name": "type-mapping",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Map input data safely",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,8 @@
     "test-run-time": "ts-node -P ./test/run-time/tsconfig.json -r ./test/run-time/tape-stream.ts ./test/run-time/runner.ts",
     "test-run-time-bigint-polyfill": "ts-node -P ./test/run-time/tsconfig.json -r ./test/run-time/tape-stream.ts -r ./test/run-time/bigint-polyfill.ts ./test/run-time/runner.ts",
     "generate-fluent-lib-export": "ts-node -P ./script/tsconfig.json ./script/src/generate-fluent-lib-export.ts",
-    "sanity-check": "(npm run generate-fluent-lib-export) && (npm run rebuild) && (npm run test-compile-time) && (npm run test-run-time) && (npm run test-run-time-bigint-polyfill)"
+    "sanity-check": "(npm run generate-fluent-lib-export) && (npm run rebuild) && (npm run test-compile-time) && (npm run test-run-time) && (npm run test-run-time-bigint-polyfill)",
+    "generate-doc": "./script/src/generate-doc.js"
   },
   "author": "anyhowstep",
   "license": "MIT",

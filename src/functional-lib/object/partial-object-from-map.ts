@@ -15,15 +15,25 @@ import {instanceOfObject} from "./instance-of-object";
 import {pipe, optional} from "../operator";
 import {toEmptyObject} from "./to-empty-object";
 
-export type PartialObjectFromMapMapper<
-    MapT extends SafeMapperMap
-> = (
-    & SafeMapper<{
-        [name in Extract<keyof MapT, string>] : (
+/**
+    https://github.com/microsoft/TypeScript/issues/31992#issuecomment-503816806
+    We use this no-op `_` type as a hack to get the tooltip to give
+    us a "better-looking" type
+*/
+type _<T> = T;
+//https://github.com/microsoft/TypeScript/issues/31992#issuecomment-503816806
+type OutputType<MapT extends SafeMapperMap, K extends keyof MapT=Extract<keyof MapT, string>> = (
+    _<{
+        [name in K] : (
             | OutputOf<MapT[name]>
             | undefined
         )
     }>
+);
+export type PartialObjectFromMapMapper<
+    MapT extends SafeMapperMap
+> = (
+    & SafeMapper<OutputType<MapT>>
     & ExpectedInput<
         {
             [name in Extract<keyof MapT, string>]? : (
