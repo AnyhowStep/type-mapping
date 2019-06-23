@@ -6,6 +6,8 @@ export * from "./is-any";
 export * from "./is-bigint";
 export * from "./is-pojo";
 export * from "./is-primitive";
+export * from "./omit";
+export * from "./pick";
 export * from "./set-function-name";
 export * from "./strict-equal";
 export * from "./to-type-str";
