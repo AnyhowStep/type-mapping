@@ -1,4 +1,5 @@
 
+/// <reference path="../buffer.d.ts" />
 import {null as nil} from "./non-generic";
 export {
     nil as null,
@@ -111,13 +112,22 @@ export {
     unknown,
 } from "./non-generic";
 export * from "./generic";
-import * as jsonApi from "../json-api-lib";
-export {
-    jsonApi,
-};
-import * as mysql from "../mysql-lib";
-export {
-    mysql,
-};
 export * from "./field-map-ctor";
+
+import * as EnumUtil from "../enum-util";
+export {EnumUtil};
+import * as BigIntUtil from "../bigint-util";
+export {BigIntUtil};
 export * from "../decorator";
+import * as ErrorUtil from "../error-util";
+export {ErrorUtil};
+export * from "../field";
+import * as jsonApi from "../json-api-lib";
+export {jsonApi};
+export * from "../mapper";
+import * as mysql from "../mysql-lib";
+export {mysql};
+import * as TypeUtil from "../type-util";
+export {TypeUtil};
+export * from "../fluent-mapper";
+export * from "../primitive";
