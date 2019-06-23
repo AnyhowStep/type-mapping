@@ -75,6 +75,9 @@ export function enumValue<E extends typeof Enum> (e : E) {
 export function literal<ArrT extends LiteralType[]> (...arr : ArrT) {
     return fluentMapper(m.literal<ArrT>(...arr));
 }
+export function tupleLiteral<TupleT extends readonly LiteralType[]> (...tuple : TupleT) {
+    return fluentMapper(m.tupleLiteral<TupleT>(...tuple));
+}
 
 export function deriveMap<MapT extends FieldMap> (map : MapT) {
     return fluentMapper(m.deriveMap<MapT>(map));
