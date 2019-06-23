@@ -41,12 +41,10 @@ export function dateToString (dateParser : (str : string) => Date) {
 }
 
 /**
-    Convert the number of seconds since the Unix Epoch
-    to a `Date`.
-
-
-    The Unix Epoch is January 1st, 1970 at UTC.
-*/
+ * Convert the number of seconds since the Unix Epoch to a `Date`.
+ *
+ * The Unix Epoch is January 1st, 1970 at UTC.
+ */
 export function unixTimestampSecondsToDate () {
     return cast(
         integer(),
@@ -58,16 +56,40 @@ export function unixTimestampSecondsToDate () {
 }
 
 /**
-    Convert the number of milliseconds since the Unix Epoch
-    to a `Date`.
-
-
-    The Unix Epoch is January 1st, 1970 at UTC.
-*/
+ * Convert the number of milliseconds since the Unix Epoch to a `Date`.
+ *
+ * The Unix Epoch is January 1st, 1970 at UTC.
+ */
 export function unixTimestampMillisecondsToDate () {
     return cast(
         integer(),
         num => new Date(num),
         instanceOfDate()
+    );
+}
+
+/**
+ * Convert a `Date` to the number of seconds since the Unix Epoch.
+ *
+ * The Unix Epoch is January 1st, 1970 at UTC.
+ */
+export function dateToUnixTimestampSeconds () {
+    return cast(
+        instanceOfDate(),
+        d => Math.floor(d.getTime() / 1000),
+        integer()
+    );
+}
+
+/**
+ * Convert a `Date` to the number of milliseconds since the Unix Epoch.
+ *
+ * The Unix Epoch is January 1st, 1970 at UTC.
+ */
+export function dateToUnixTimestampMilliseconds () {
+    return cast(
+        instanceOfDate(),
+        d => d.getTime(),
+        integer()
     );
 }

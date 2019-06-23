@@ -46,6 +46,8 @@ export {
     dateToString,
     unixTimestampSecondsToDate,
     unixTimestampMillisecondsToDate,
+    dateToUnixTimestampSeconds,
+    dateToUnixTimestampMilliseconds,
     instanceOfDate,
     stringToJsonObject,
     jsonObject,
