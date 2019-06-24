@@ -1,4 +1,5 @@
 export * from "./document";
+export * from "./non-error-document";
 export * from "./attribute-collection";
 export * from "./client-resource";
 export * from "./error-link-collection";
