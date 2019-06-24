@@ -10,6 +10,7 @@ export * from "./omit";
 export * from "./pick";
 export * from "./set-function-name";
 export * from "./strict-equal";
+export * from "./sync-return-type";
 export * from "./to-type-str";
 export * from "./try-get-bigint-factory-function";
 export * from "./union-to-intersection";
