@@ -4,6 +4,9 @@ import {LiteralType} from "../../primitive";
 import {instanceOfArray} from "../array";
 import {pipe} from "../operator";
 
+export type TupleLiteralMapper<TupleT extends readonly LiteralType[]> = (
+    SafeMapper<TupleT>
+);
 /**
  * Returns a mapper that checks if incoming data matches the tuple `TupleT`.
  *
@@ -17,7 +20,7 @@ import {pipe} from "../operator";
  * @param tuple The tuple incoming data must equal to
  */
 export function tupleLiteral<TupleT extends readonly LiteralType[]> (...tuple : TupleT) : (
-    SafeMapper<TupleT>
+    TupleLiteralMapper<TupleT>
 ) {
     return pipe(
         instanceOfArray(),

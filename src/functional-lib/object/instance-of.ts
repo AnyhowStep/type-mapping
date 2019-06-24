@@ -1,13 +1,16 @@
 import {SafeMapper} from "../../mapper";
 import {allowsInstanceOf, toTypeStr, getCtorName, isInstanceOf} from "../../type-util";
 
+export type InstanceOfMapper<T> = (
+    SafeMapper<T>
+);
 /**
     If you pass in a bigint object created by
     a polyfill, it will never pass any `instanceof` checks,
     even though the polyfill could be done with an object.
 */
 export function instanceOf<T> (ctor : new (...args : any[]) => T) : (
-    SafeMapper<T>
+    InstanceOfMapper<T>
 ) {
     if (!allowsInstanceOf(ctor)) {
         throw new Error(`instanceof check not allowed on ${getCtorName(ctor)}`);
