@@ -40,6 +40,7 @@ export {mysql};
 import * as TypeUtil from "../type-util";
 export {TypeUtil};
 export * from "../fluent-mapper";
+export * from "../mapping-error";
 export * from "../primitive";
 `;
 console.log(str);

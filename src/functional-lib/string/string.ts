@@ -3,11 +3,17 @@ import {toTypeStr} from "../../type-util";
 import {pipe} from "../operator";
 import {length} from "../array-like";
 import {stringRepeat} from "../../string-util";
+import {makeMappingError} from "../../error-util";
 
 export function string () : SafeMapper<string> {
     return (name : string, mixed : unknown) : string => {
         if (typeof mixed != "string") {
-            throw new Error(`${name} must be string; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be string; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "string",
+            });
         }
         return mixed;
     };

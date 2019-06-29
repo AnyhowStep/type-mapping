@@ -12,3 +12,4 @@
 + Idempotency tests `f(x) == f(f(x))`
 + Tests for run-time required
 + Fluent mapper method for run-time required
++ Implement `MappingError` for all mappers

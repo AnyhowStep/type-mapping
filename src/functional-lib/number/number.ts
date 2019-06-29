@@ -2,12 +2,18 @@ import {SafeMapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 import {pipe} from "../operator";
 import {gtEq} from "./comparison";
+import {makeMappingError} from "../../error-util";
 
 //Unsafe because it allows NaN and +/-Infinity
 export function unsafeNumber () : SafeMapper<number> {
     return (name : string, mixed : unknown) : number => {
         if (typeof mixed != "number") {
-            throw new Error(`${name} must be number; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be number; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "number",
+            });
         }
         return mixed;
     };

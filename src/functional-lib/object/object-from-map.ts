@@ -14,10 +14,14 @@ import {
     MappableInputOf,
     mapper,
     getRunTimeRequiredFlagOrFalse,
+    tryMapHandled,
 } from "../../mapper";
 import {instanceOfObject} from "./instance-of-object";
 import {pipe} from "../operator";
 import {toEmptyObject} from "./to-empty-object";
+import {MappingError} from "../../mapping-error";
+import {toPropertyAccess} from "../../string-util";
+import {makeMappingError} from "../../error-util";
 
 /**
     https://github.com/microsoft/TypeScript/issues/31992#issuecomment-503816806
@@ -103,18 +107,42 @@ export function objectFromMap<
     return mapper<ObjectFromMapMapper<MapT>>(pipe(
         instanceOfObject(),
         (name : string, mixed : Object) => {
+            const propertyErrors : MappingError[] = [];
+
             const result : any = {};
             for (const k of keys) {
                 if (Object.prototype.hasOwnProperty.call(mixed, k) || runTimeRequiredDict[k] === false) {
-                    result[k] = map[k](
-                        `${name}.${k}`,
+                    const propertyResult = tryMapHandled(
+                        map[k],
+                        `${name}${toPropertyAccess(k)}`,
                         (mixed as any)[k]
                     );
+                    if (propertyResult.success) {
+                        result[k] = propertyResult.value;
+                    } else {
+                        propertyErrors.push(propertyResult.mappingError);
+                    }
                 } else {
-                    throw new Error(`${name} must have property ${k}`);
+                    propertyErrors.push(makeMappingError({
+                        message : `${name}${toPropertyAccess(k)} must be explicitly set`,
+                        inputName : `${name}${toPropertyAccess(k)}`,
+                        actualValue : undefined,
+                        expected : `explicitly set`,
+                    }));
                 }
             }
-            return result;
+            if (propertyErrors.length == 0) {
+                return result;
+            } else {
+                throw makeMappingError({
+                    message : `${name} must be valid object`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : `valid object`,
+
+                    propertyErrors,
+                })
+            }
         }
     ));
 }

@@ -2,7 +2,8 @@
 
 Never trust incoming data. Always check it.
 
-This package was written to help check/sanitize/map data declaratively.
+This package was written to help check/sanitize/map data declaratively
+and comes with batteries included.
 
 Each `Mapper` is a function.
 
@@ -354,6 +355,17 @@ try to avoid forcing users to invoke `Mapper`s explicitly.
 
 Instead, have them pass the `Mapper`s to your package,
 and have your package invoke them behind the scenes.
+
+-----
+
+### `MappingError`
+
+A [`MappingError`](src/mapping-error) is an `Error` that implements a certain interface.
+
+TODO, more documentation
+
+A `MappingError` should give you detailed information about why a mapping failed,
+and should provide enough metadata to let you write a custom error handler.
 
 -----
 
