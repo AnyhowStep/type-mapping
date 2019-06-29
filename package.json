@@ -12,6 +12,7 @@
     "accept-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-actual.ts",
     "accept-one": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-one.ts",
     "test-compile-time-interactive": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/interactive.ts",
+    "test-one": "ts-node -P ./test/run-time/tsconfig.json -r ./test/run-time/tape-stream.ts",
     "test-run-time": "ts-node -P ./test/run-time/tsconfig.json -r ./test/run-time/tape-stream.ts ./test/run-time/runner.ts",
     "test-run-time-bigint-polyfill": "ts-node -P ./test/run-time/tsconfig.json -r ./test/run-time/tape-stream.ts -r ./test/run-time/bigint-polyfill.ts ./test/run-time/runner.ts",
     "generate-fluent-lib-export": "ts-node -P ./script/tsconfig.json ./script/src/generate-fluent-lib-export.ts",

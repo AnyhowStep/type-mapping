@@ -27,13 +27,23 @@ export function jsonObjectString () : SafeMapper<string> {
         string(),
         (name : string, str : string) : string => {
             if (!/^\s*\{/.test(str)) {
-                throw new Error(`${name} must be JSON Object string`);
+                throw makeMappingError({
+                    message : `${name} must be JSON Object string`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : "JSON Object string",
+                });
             }
 
             try {
                 JSON.parse(str);
             } catch (err) {
-                throw new Error(`${name} must be JSON Object string; ${err.message}`);
+                throw makeMappingError({
+                    message : `${name} must be valid JSON Object string; ${err.message}`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : "valid JSON Object string",
+                });;
             }
 
             return str;
