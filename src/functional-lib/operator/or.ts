@@ -13,6 +13,7 @@ import {
 import {indentErrorMessage, makeMappingError} from "../../error-util";
 import {MappingError} from "../../mapping-error";
 import { removeDuplicateElements } from "../../array-util";
+import { toTypeStr } from "../../type-util";
 
 export type UnsafeOrMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<OutputOf<ArrT[number]>>
@@ -42,22 +43,45 @@ export function unsafeOr<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
                 }
             }
 
-            const errorMessages = unionErrors
-                .map(e => indentErrorMessage(e.message));
-            const expectedElements = removeDuplicateElements(unionErrors
+            const rawExpectedArr = unionErrors
                 .map(e => e.expected)
-                .filter((i) : i is string => typeof i == "string")
-            ).map(str => `(${str})`);;
-            throw makeMappingError({
-                message : `${name} is invalid.\n${errorMessages.join(" or\n")}`,
-                inputName : name,
-                actualValue : mixed,
-                expected : (expectedElements.length == 0) ?
-                    undefined :
-                    expectedElements.join(" or "),
+                .filter((i) : i is string => typeof i == "string");
+            if (rawExpectedArr.length == unionErrors.length) {
+                const expected = removeDuplicateElements(rawExpectedArr)
+                    .map(str => `(${str})`)
+                    .join(" or ");
 
-                unionErrors,
-            });
+                throw makeMappingError({
+                    message : `${name} must be ${expected}; received ${toTypeStr(mixed)}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected,
+
+                    unionErrors,
+                });
+            } else {
+                /**
+                 * At least one of our mappers did not throw
+                 * a `MappingError`
+                 */
+                const errorMessages = removeDuplicateElements(
+                    unionErrors
+                        .map(e => indentErrorMessage(e.message))
+                ).map(str => `(${str})`);
+
+                const expected = removeDuplicateElements([...rawExpectedArr, "valid value"])
+                    .map(str => `(${str})`)
+                    .join(" or ");
+
+                throw makeMappingError({
+                    message : `${name} is invalid.\n${errorMessages.join(" or\n")}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected,
+
+                    unionErrors,
+                });
+            }
         }
     );
 }

@@ -17,13 +17,7 @@ tape(__filename, t => {
                     expected : err.expected,
                 },
                 {
-                    message : `x is invalid.
-(
-\tx must be instance of Object; received number
-) or
-(
-\tx must be string; received number
-)`,
+                    message : `x must be (Object) or (string); received number`,
                     inputName : "x",
                     actualValue : 123,
                     expected : "(Object) or (string)",

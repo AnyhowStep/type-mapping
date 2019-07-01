@@ -1,11 +1,11 @@
 import * as tape from "tape";
-import * as tm from "../../../../../../dist";
+import * as tm from "../../../../../../../dist";
 
 tape(__filename, t => {
-    const f = tm.length({});
+    const f = tm.orMaybe(tm.boolean());
 
     try {
-        f("x", 123);
+        f("x", 0);
         t.fail("Expected to fail");
     } catch (err) {
         if (tm.ErrorUtil.isMappingError(err)) {
@@ -17,10 +17,10 @@ tape(__filename, t => {
                     expected : err.expected,
                 },
                 {
-                    message : `x must be (Object) or (string); received number`,
+                    message : `x must be (boolean) or (undefined|null); received number`,
                     inputName : "x",
-                    actualValue : 123,
-                    expected : "(Object) or (string)",
+                    actualValue : 0,
+                    expected : "(boolean) or (undefined|null)",
                 }
             );
 
@@ -38,10 +38,10 @@ tape(__filename, t => {
                             expected : err.unionErrors[0].expected,
                         },
                         {
-                            message : "x must be instance of Object; received number",
+                            message : "x must be boolean; received number",
                             inputName : "x",
-                            actualValue : 123,
-                            expected : "Object",
+                            actualValue : 0,
+                            expected : "boolean",
                         }
                     );
                     t.deepEqual(
@@ -52,17 +52,16 @@ tape(__filename, t => {
                             expected : err.unionErrors[1].expected,
                         },
                         {
-                            message : "x must be string; received number",
+                            message : "x must be undefined|null; received number",
                             inputName : "x",
-                            actualValue : 123,
-                            expected : "string",
+                            actualValue : 0,
+                            expected : "undefined|null",
                         }
                     );
                 }
             }
-
         } else {
-            t.fail("Expected mapping error");
+            t.fail("Expected MappingError");
         }
     }
 
