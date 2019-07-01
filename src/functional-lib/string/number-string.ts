@@ -2,6 +2,7 @@ import {SafeMapper} from "../../mapper";
 import {pipe} from "../operator";
 import {finiteNumber, integer, unsignedInteger} from "../number";
 import {toTrimmed, match} from "./string";
+import { makeMappingError } from "../../error-util";
 
 const floatingPointRegex = /^([-+])?([0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
 /**
@@ -22,7 +23,12 @@ const floatingPointRegex = /^([-+])?([0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
 export function floatingPointFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
-        match(floatingPointRegex, name => `${name} must be valid floating point format string`)
+        match(floatingPointRegex, name => {
+            return {
+                message : `${name} must be valid floating point format string`,
+                expected : `valid floating point format string`,
+            };
+        })
     );
 }
 function parseFloatingPointString (str : string) {
@@ -80,7 +86,12 @@ export function integerFormatString () : SafeMapper<string> {
         (name : string, str) : string => {
             const parsed = parseFloatingPointString(str);
             if (parsed == undefined || !parsed.isInteger) {
-                throw new Error(`${name} must be a valid integer format string`);
+                throw makeMappingError({
+                    message : `${name} must be a valid integer format string`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : `valid integer format string`,
+                });
             }
             return str;
         }
@@ -108,7 +119,12 @@ export function unsignedIntegerFormatString () : SafeMapper<string> {
         (name : string, str) : string => {
             const parsed = parseFloatingPointString(str);
             if (parsed == undefined || !parsed.isInteger || parsed.isNeg) {
-                throw new Error(`${name} must be a valid unsigned integer format string`);
+                throw makeMappingError({
+                    message : `${name} must be a valid unsigned integer format string`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : `valid unsigned integer format string`,
+                });
             }
             return str;
         }

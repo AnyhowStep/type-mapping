@@ -1,5 +1,6 @@
 import {SafeMapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
+import {makeMappingError} from "../../error-util";
 
 function nil () : SafeMapper<null> {
     return (name : string, mixed : unknown) : null => {
@@ -7,7 +8,12 @@ function nil () : SafeMapper<null> {
         if (mixed === null) {
             return mixed;
         }
-        throw new Error(`${name} must be null; received ${toTypeStr(mixed)}`);
+        throw makeMappingError({
+            message : `${name} must be null; received ${toTypeStr(mixed)}`,
+            inputName : name,
+            actualValue : mixed,
+            expected : "null",
+        });
     };
 }
 export {nil as null};

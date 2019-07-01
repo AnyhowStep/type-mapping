@@ -141,7 +141,7 @@ export function objectFromMap<
                     expected : `valid object`,
 
                     propertyErrors,
-                })
+                });
             }
         }
     ));

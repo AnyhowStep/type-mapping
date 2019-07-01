@@ -1,5 +1,5 @@
 import * as tape from "tape";
-import * as tm from "../../../../../dist";
+import * as tm from "../../../../../../dist";
 
 tape(__filename, t => {
     const f = tm.implementsArrayLike();
@@ -15,7 +15,7 @@ tape(__filename, t => {
     t.true(f("x", str) == str);
 
     const foo = function (_arg0 : any) {};
-    t.true(f("x", foo) == foo);
+    t.true(f("x", foo) as any == foo);
 
     t.false(tm.tryMap(f, "x", new Date(NaN) as any).success);
     t.false(tm.tryMap(f, "x", new Date(-Infinity) as any).success);

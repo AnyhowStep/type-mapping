@@ -3,11 +3,17 @@ import {toTypeStr} from "../../type-util";
 import {pipe} from "../operator";
 import {byteLength} from "./byte-length";
 import {isInstanceOfBuffer} from "../../type-util/buffer-ctor";
+import {makeMappingError} from "../../error-util";
 
 export function instanceOfBuffer () : SafeMapper<Buffer> {
     return (name : string, mixed : unknown) : Buffer => {
         if (!isInstanceOfBuffer(mixed)) {
-            throw new Error(`${name} must be instance of Buffer; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be instance of Buffer; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "Buffer",
+            });
         }
         return mixed;
     };

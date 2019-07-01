@@ -2,6 +2,7 @@ import {pipe} from "../operator";
 import {stringLength, hexadecimalString, string} from "./string";
 import {SafeMapper} from "../../mapper";
 import {arrayFill} from "../../array-util";
+import {makeMappingError} from "../../error-util";
 
 /**
     == INPUT ==
@@ -126,7 +127,12 @@ export function ipV6StringWithMaxSegmentCount (maxSegmentCount : number) : SafeM
                 //All non-zeroes
                 const rawSegments = consecutiveNonZero[0].split(":");
                 if (rawSegments.length != maxSegmentCount) {
-                    throw new Error(`${name} must have ${maxSegmentCount} segments; found ${rawSegments.length}`);
+                    throw makeMappingError({
+                        message : `${name} must have ${maxSegmentCount} segments; found ${rawSegments.length}`,
+                        inputName : name,
+                        actualValue : str,
+                        expected : `${maxSegmentCount} IPv6 segments`,
+                    });
                 }
                 const segments = rawSegments
                     .map((rawSegment, i) => ipV6SegmentStringDelegate(
@@ -140,7 +146,12 @@ export function ipV6StringWithMaxSegmentCount (maxSegmentCount : number) : SafeM
                 const rawSegmentsB = consecutiveNonZero[1].split(":").filter(s => s != "");
                 const rawSegmentCount = rawSegmentsA.length + rawSegmentsB.length;
                 if (rawSegmentCount >= maxSegmentCount) {
-                    throw new Error(`${name} must have up to ${maxSegmentCount-1} segments when '::' symbol is used; found ${rawSegmentCount}`);
+                    throw makeMappingError({
+                        message : `${name} must have up to ${maxSegmentCount-1} segments when '::' symbol is used; found ${rawSegmentCount}`,
+                        inputName : name,
+                        actualValue : str,
+                        expected : `up to ${maxSegmentCount-1} IPv6 segments`,
+                    });
                 }
                 const segmentsA = rawSegmentsA
                     .map((rawSegment, i) => ipV6SegmentStringDelegate(
@@ -163,7 +174,12 @@ export function ipV6StringWithMaxSegmentCount (maxSegmentCount : number) : SafeM
                         .concat(segmentsB)
                 );
             } else {
-                throw new Error(`${name} must only have '::' symbol once; found ${consecutiveNonZero.length-1} uses`);
+                throw makeMappingError({
+                    message : `${name} must have zero or one '::' symbol; found ${consecutiveNonZero.length-1} uses`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : `IPv6 string with zero or one '::' symbol`,
+                });
             }
         }
     );

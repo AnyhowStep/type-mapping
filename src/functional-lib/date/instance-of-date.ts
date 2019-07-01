@@ -1,17 +1,23 @@
 import {SafeMapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 import {finiteNumber} from "../number";
+import {makeMappingError} from "../../error-util";
 
 /**
-    Must be a valid date.
-
-    mixed.getTime() must be a finiteNumber.
-*/
+ * Must be a valid date.
+ *
+ * `mixed.getTime()` must be a finite number.
+ */
 export function instanceOfDate () : SafeMapper<Date> {
     const unixTimestampMsDelegate = finiteNumber();
     return (name : string, mixed : unknown) : Date => {
         if (!(mixed instanceof Date)) {
-            throw new Error(`${name} must be instance of Date; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be instance of Date; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "Date",
+            });
         }
         const unixTimestampMs = mixed.getTime();
         unixTimestampMsDelegate(`${name}.getTime()`, unixTimestampMs);

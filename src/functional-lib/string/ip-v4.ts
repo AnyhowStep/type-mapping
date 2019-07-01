@@ -2,6 +2,7 @@ import {pipe} from "../operator";
 import {stringToUnsignedInteger, ltEq} from "../number";
 import {string} from "./string";
 import {SafeMapper} from "../../mapper";
+import {makeMappingError} from "../../error-util";
 
 /**
     https://en.wikipedia.org/wiki/Dot-decimal_notation
@@ -36,11 +37,16 @@ export function ipV4String () : SafeMapper<string> {
                 .replace(/\s+/g, "")
                 .split(".");
             if (rawOctets.length != 4) {
-                throw new Error(`${name} must have four octets; found ${rawOctets.length}`);
+                throw makeMappingError({
+                    message : `${name} must have four octets; found ${rawOctets.length}`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : "four IPv4 octets",
+                });
             }
             return rawOctets
                 .map((rawOctet, i) => octetDelegate(
-                    `${name} octet${i}`,
+                    `${name}.octet${i}`,
                     rawOctet
                 ))
                 .join(".");

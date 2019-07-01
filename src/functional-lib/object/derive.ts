@@ -14,6 +14,8 @@ import {
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
+import {toPropertyAccess} from "../../string-util";
+import {makeMappingError} from "../../error-util";
 
 /**
     Use with `and()` or `deepMerge()`
@@ -111,22 +113,24 @@ export function derive<
     const result = pipe(
         instanceOfObject(),
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
-            let unsafeName : string = "";
-            let unsafeValue : unknown = undefined;
-            if (Object.prototype.hasOwnProperty.call(mixed, srcKey)) {
-                unsafeName = `${name}.(${srcKey} -derive-> ${dstKey})`;
-                unsafeValue = (mixed as any)[srcKey];
-            } else if (runTimeRequired) {
-                throw new Error(`${name} must have property ${srcKey}`);
-            } else {
-                unsafeName = `${name}.${srcKey}`;
-                unsafeValue = undefined;
+            if (!Object.prototype.hasOwnProperty.call(mixed, srcKey)) {
+                if (runTimeRequired) {
+                    throw makeMappingError({
+                        message : `${name}${toPropertyAccess(srcKey)} must be explicitly set`,
+                        inputName : `${name}${toPropertyAccess(srcKey)}`,
+                        actualValue : undefined,
+                        expected : `explicitly set`,
+                    });
+                }
             }
 
             const obj : (
                 { [dst in DstKeyT] : OutputOf<F> }
             ) = {
-                [dstKey] : f(unsafeName, unsafeValue),
+                [dstKey] : f(
+                    `${name}${toPropertyAccess(srcKey)}`,
+                    (mixed as any)[srcKey]
+                ),
             } as any;
             return obj;
         }

@@ -22,6 +22,7 @@ export function literal<ArrT extends LiteralType[]> (...arr : ArrT) : (
     if (arr.length == 0) {
         throw new Error(`Cannot map zero literals`);
     }
+    const expected = toLiteralUnionStr(arr);
     return (name : string, mixed : unknown) : ArrT[number] => {
         for (const item of arr) {
             if (strictEqual(mixed, item)) {
@@ -29,10 +30,10 @@ export function literal<ArrT extends LiteralType[]> (...arr : ArrT) : (
             }
         }
         throw makeMappingError({
-            message : `${name} must be ${toLiteralUnionStr(arr)}; received ${toTypeStr(mixed)}`,
+            message : `${name} must be ${expected}; received ${toTypeStr(mixed)}`,
             inputName : name,
             actualValue : mixed,
-            expected : toLiteralUnionStr(arr),
+            expected,
         });
     };
 }

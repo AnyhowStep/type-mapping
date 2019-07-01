@@ -1,13 +1,11 @@
 import * as tape from "tape";
-import * as tm from "../../../../../dist";
+import * as tm from "../../../../../../dist";
 
 tape(__filename, t => {
-    const f = tm.tupleLiteral(
-        456,
-    );
+    const f = tm.implementsArrayLike();
 
     try {
-        f("x", [456, 789]);
+        f("x", { length : "not-number" });
         t.fail("Expected to fail");
     } catch (err) {
         if (tm.ErrorUtil.isMappingError(err)) {
@@ -19,10 +17,10 @@ tape(__filename, t => {
                     expected : err.expected,
                 },
                 {
-                    message : `x must be value of length 1`,
+                    message : `x must be value with "length" property`,
                     inputName : "x",
-                    actualValue : [456, 789],
-                    expected : "value of length 1",
+                    actualValue : { length : "not-number" },
+                    expected : `value with "length" property`,
                 }
             );
 
@@ -40,14 +38,15 @@ tape(__filename, t => {
                             expected : err.propertyErrors[0].expected,
                         },
                         {
-                            message : "x.length must be 1; received number",
+                            message : "x.length must be number; received string",
                             inputName : "x.length",
-                            actualValue : 2,
-                            expected : "1",
+                            actualValue : "not-number",
+                            expected : "number",
                         }
                     );
                 }
             }
+
         } else {
             t.fail("Expected mapping error");
         }

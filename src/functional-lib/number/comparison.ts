@@ -2,6 +2,7 @@ import {pipe} from "../operator";
 import {finiteNumber} from "./number";
 import {SafeMapper} from "../../mapper";
 import {literal} from "../literal";
+import {makeMappingError} from "../../error-util";
 
 export function gt (x : number) : SafeMapper<number> {
     return pipe(
@@ -10,7 +11,12 @@ export function gt (x : number) : SafeMapper<number> {
             if (num > x) {
                 return num;
             } else {
-                throw new Error(`${name} must be greater than ${x}`);
+                throw makeMappingError({
+                    message : `${name} must be greater than ${x}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `greater than ${x}`,
+                });
             }
         }
     );
@@ -23,7 +29,12 @@ export function lt (x : number) : SafeMapper<number> {
             if (num < x) {
                 return num;
             } else {
-                throw new Error(`${name} must be less than ${x}`);
+                throw makeMappingError({
+                    message : `${name} must be less than ${x}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `less than ${x}`,
+                });
             }
         }
     );
@@ -36,7 +47,12 @@ export function gtEq (x : number) : SafeMapper<number> {
             if (num >= x) {
                 return num;
             } else {
-                throw new Error(`${name} must be greater than, or equal to ${x}`);
+                throw makeMappingError({
+                    message : `${name} must be greater than, or equal to ${x}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `greater than, or equal to ${x}`,
+                });
             }
         }
     );
@@ -49,7 +65,12 @@ export function ltEq (x : number) : SafeMapper<number> {
             if (num <= x) {
                 return num;
             } else {
-                throw new Error(`${name} must be less than, or equal to ${x}`);
+                throw makeMappingError({
+                    message : `${name} must be less than, or equal to ${x}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `less than, or equal to ${x}`,
+                });
             }
         }
     );

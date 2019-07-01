@@ -1,5 +1,6 @@
 import {LiteralType} from "../primitive";
 import {isBigInt} from "./is-bigint";
+import { isLiteral } from "./is-primitive";
 
 /**
     Intended to work better than `String(mixed)`.
@@ -16,10 +17,10 @@ export function toLiteralStr (mixed : LiteralType) {
     } else if (typeof mixed == "string") {
         return JSON.stringify(mixed);
     } else {
-        return mixed.toString();
+        return String(mixed);
     }
 }
-export function toLiteralUnionStr (arr : any[]) : string {
+export function toLiteralUnionStr (arr : LiteralType[]) : string {
     return arr
         .map(toLiteralStr)
         .join("|");
@@ -64,4 +65,17 @@ export function toTypeStr (mixed : unknown) : string {
         return "[Unknown Prototype]";
     }
     return getCtorName(constructor);
+}
+
+export function toLiteralOrTypeStr (mixed : unknown) {
+    if (isLiteral(mixed)) {
+        return toLiteralStr(mixed);
+    } else {
+        return toTypeStr(mixed);
+    }
+}
+export function toLiteralOrTypeUnionStr (arr : unknown[]) : string {
+    return arr
+        .map(toLiteralOrTypeStr)
+        .join("|");
 }

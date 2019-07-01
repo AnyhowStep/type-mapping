@@ -8,8 +8,11 @@ import {
     MappableInputOfImpl,
     ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
+    tryMapHandled,
 } from "../../mapper";
-import {indentErrorMessage} from "../../error-util";
+import {indentErrorMessage, makeMappingError} from "../../error-util";
+import {MappingError} from "../../mapping-error";
+import { removeDuplicateElements } from "../../array-util";
 
 export type UnsafeOrMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<OutputOf<ArrT[number]>>
@@ -29,15 +32,32 @@ export function unsafeOr<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
     return copyRunTimeModifier(
         arr[0],
         (name : string, mixed : unknown) : OutputOf<ArrT[number]> => {
-            const messages : string[] = [];
+            const unionErrors : MappingError[] = [];
             for (const d of arr) {
-                try {
-                    return d(name, mixed);
-                } catch (err) {
-                    messages.push(indentErrorMessage(err.message));
+                const elementResult = tryMapHandled(d, name, mixed);
+                if (elementResult.success) {
+                    return elementResult.value;
+                } else {
+                    unionErrors.push(elementResult.mappingError);
                 }
             }
-            throw new Error(`${name} is invalid.\n${messages.join(" or\n")}`);
+
+            const errorMessages = unionErrors
+                .map(e => indentErrorMessage(e.message));
+            const expectedElements = removeDuplicateElements(unionErrors
+                .map(e => e.expected)
+                .filter((i) : i is string => typeof i == "string")
+            ).map(str => `(${str})`);;
+            throw makeMappingError({
+                message : `${name} is invalid.\n${errorMessages.join(" or\n")}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : (expectedElements.length == 0) ?
+                    undefined :
+                    expectedElements.join(" or "),
+
+                unionErrors,
+            });
         }
     );
 }

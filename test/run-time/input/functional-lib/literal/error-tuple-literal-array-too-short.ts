@@ -19,12 +19,35 @@ tape(__filename, t => {
                     expected : err.expected,
                 },
                 {
-                    message : `x.length must be 1; received number`,
-                    inputName : "x.length",
-                    actualValue : 0,
-                    expected : "1",
+                    message : `x must be value of length 1`,
+                    inputName : "x",
+                    actualValue : [],
+                    expected : "value of length 1",
                 }
             );
+
+            if (err.propertyErrors == undefined) {
+                t.fail("Expected propertyErrors");
+            } else {
+                if (err.propertyErrors.length != 1) {
+                    t.fail("Expected one propertyErrors");
+                } else {
+                    t.deepEqual(
+                        {
+                            message : err.propertyErrors[0].message,
+                            inputName : err.propertyErrors[0].inputName,
+                            actualValue : err.propertyErrors[0].actualValue,
+                            expected : err.propertyErrors[0].expected,
+                        },
+                        {
+                            message : "x.length must be 1; received number",
+                            inputName : "x.length",
+                            actualValue : 0,
+                            expected : "1",
+                        }
+                    );
+                }
+            }
         } else {
             t.fail("Expected mapping error");
         }

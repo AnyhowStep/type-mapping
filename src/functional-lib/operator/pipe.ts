@@ -11,6 +11,7 @@ import {
     MappableInputOf,
     ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
+    tryMapHandled,
 } from "../../mapper";
 import {Primitive} from "../../primitive";
 
@@ -23,7 +24,12 @@ function pipeImpl<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown
         (name : string, mixed : unknown) : unknown => {
             for (let i=0; i<arr.length; ++i) {
                 const d = arr[i];
-                mixed = d(name, mixed);
+                const elementResult = tryMapHandled(d, name, mixed);
+                if (elementResult.success) {
+                    mixed = elementResult.value;
+                } else {
+                    throw elementResult.mappingError;
+                }
             }
             return mixed;
         }

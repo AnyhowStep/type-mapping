@@ -4,6 +4,7 @@ import {
     MappableInput
 } from "../../mapper";
 import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
+import {makeMappingError} from "../../error-util";
 
 /**
     Calls `JSON.parse()` once, may call `JSON.stringify()` zero or one times.
@@ -25,20 +26,40 @@ export function stringToJsonObject () : (
                         return JSON.parse(str);
                     }
                 }
-                throw new Error(`${name} is invalid JSON Object; received ${toTypeStr(mixed)}`);
+                throw makeMappingError({
+                    message : `${name} must be JSON Object; received ${toTypeStr(mixed)}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : "JSON Object",
+                });
             } catch (err) {
-                throw new Error(`${name} is invalid JSON Object; ${err.message}`);
+                throw makeMappingError({
+                    message : `${name} must be JSON Object; ${err.message}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : "JSON Object",
+                });
             }
         }
 
         if (!/^\s*\{/.test(mixed)) {
-            throw new Error(`${name} is invalid JSON Object string`);
+            throw makeMappingError({
+                message : `${name} must be JSON Object string`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "JSON Object string",
+            });
         }
 
         try {
             return JSON.parse(mixed);
         } catch (err) {
-            throw new Error(`${name} is invalid JSON Object string; ${err.message}`);
+            throw makeMappingError({
+                message : `${name} must be valid JSON Object string; ${err.message}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "valid JSON Object string",
+            });
         }
     };
 }

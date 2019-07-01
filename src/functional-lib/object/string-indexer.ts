@@ -8,9 +8,13 @@ import {
     ExpectedInputOf,
     MappableInputOf,
     copyRunTimeModifier,
+    tryMapHandled,
 } from "../../mapper";
 import {pipe, orUndefined} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
+import {MappingError} from "../../mapping-error";
+import {toPropertyAccess} from "../../string-util";
+import {makeMappingError} from "../../error-util";
 
 /**
     This is unsafe because of the following example,
@@ -40,17 +44,36 @@ export function unsafeStringIndexer<F extends AnySafeMapper> (f : F) : (
     const result = pipe(
         instanceOfObject(),
         (name : string, obj : Object) : { [k : string] : OutputOf<F> } => {
+            const propertyErrors : MappingError[] = [];
+
             const result : { [k : string] : OutputOf<F> } = {};
             for (const k in obj) {
                 if (!Object.prototype.hasOwnProperty.call(obj, k)) {
                     continue;
                 }
-                result[k] = f(
-                    `${name}[${JSON.stringify(k)}]`,
+                const propertyResult = tryMapHandled(
+                    f,
+                    `${name}${toPropertyAccess(k)}`,
                     (obj as any)[k]
                 );
+                if (propertyResult.success) {
+                    result[k] = propertyResult.value;
+                } else {
+                    propertyErrors.push(propertyResult.mappingError);
+                }
             }
-            return result;
+            if (propertyErrors.length == 0) {
+                return result;
+            } else {
+                throw makeMappingError({
+                    message : `${name} must be valid object`,
+                    inputName : name,
+                    actualValue : obj,
+                    expected : `valid object`,
+
+                    propertyErrors,
+                });
+            }
         }
     );
     return copyRunTimeModifier(
@@ -79,17 +102,36 @@ export function stringIndexer<F extends AnySafeMapper> (f : F) : (
     const result = pipe(
         instanceOfObject(),
         (name : string, obj : Object) : { [k : string] : OutputOf<F>|undefined } => {
+            const propertyErrors : MappingError[] = [];
+
             const result : { [k : string] : OutputOf<F>|undefined } = {};
             for (const k in obj) {
                 if (!Object.prototype.hasOwnProperty.call(obj, k)) {
                     continue;
                 }
-                result[k] = fOrUndefined(
-                    `${name}[${JSON.stringify(k)}]`,
+                const propertyResult = tryMapHandled(
+                    fOrUndefined,
+                    `${name}${toPropertyAccess(k)}`,
                     (obj as any)[k]
                 );
+                if (propertyResult.success) {
+                    result[k] = propertyResult.value;
+                } else {
+                    propertyErrors.push(propertyResult.mappingError);
+                }
             }
-            return result;
+            if (propertyErrors.length == 0) {
+                return result;
+            } else {
+                throw makeMappingError({
+                    message : `${name} must be valid object`,
+                    inputName : name,
+                    actualValue : obj,
+                    expected : `valid object`,
+
+                    propertyErrors,
+                });
+            }
         }
     );
     return copyRunTimeModifier(

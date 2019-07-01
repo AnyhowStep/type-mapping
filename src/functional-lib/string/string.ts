@@ -1,5 +1,5 @@
 import {SafeMapper} from "../../mapper";
-import {toTypeStr} from "../../type-util";
+import {toTypeStr, toLiteralStr} from "../../type-util";
 import {pipe} from "../operator";
 import {length} from "../array-like";
 import {stringRepeat} from "../../string-util";
@@ -43,7 +43,7 @@ export function jsonObjectString () : SafeMapper<string> {
                     inputName : name,
                     actualValue : str,
                     expected : "valid JSON Object string",
-                });;
+                });
             }
 
             return str;
@@ -68,32 +68,81 @@ export function stringExactLength (length : number) : SafeMapper<string> {
     });
 }
 
-export function match (regex : RegExp, errorMessageDelegate? : (name : string) => string) : SafeMapper<string> {
+export interface MatchMapperErrorDelegate {
+    (name : string) : (
+        | string
+        | {
+            message : string,
+            expected : string,
+        }
+    );
+}
+export function match (regex : RegExp, errorDelegate? : MatchMapperErrorDelegate) : SafeMapper<string> {
     return pipe(
         string(),
         (name : string, mixed : string) : string => {
             if (regex.test(mixed)) {
                 return mixed;
             } else {
-                if (errorMessageDelegate == undefined) {
-                    throw new Error(`${name} must match ${regex.source}`);
+                if (errorDelegate == undefined) {
+                    throw makeMappingError({
+                        message : `${name} must match ${regex.toString()}`,
+                        inputName : name,
+                        actualValue : mixed,
+                        expected : regex.toString(),
+                    });
                 } else {
-                    throw new Error(errorMessageDelegate(name));
+                    const errResult = errorDelegate(name);
+                    if (typeof errResult == "string") {
+                        throw makeMappingError({
+                            message : errResult,
+                            inputName : name,
+                            actualValue : mixed,
+                            expected : regex.toString(),
+                        });
+                    } else {
+                        throw makeMappingError({
+                            message : errResult.message,
+                            inputName : name,
+                            actualValue : mixed,
+                            expected : errResult.expected,
+                        });
+                    }
                 }
             }
         }
     );
 }
 
-export function notMatch (regex : RegExp, errorMessageDelegate? : (name : string) => string) : SafeMapper<string> {
+export function notMatch (regex : RegExp, errorDelegate? : MatchMapperErrorDelegate) : SafeMapper<string> {
     return pipe(
         string(),
         (name : string, mixed : string) : string => {
             if (regex.test(mixed)) {
-                if (errorMessageDelegate == undefined) {
-                    throw new Error(`${name} must not match ${regex.source}`);
+                if (errorDelegate == undefined) {
+                    throw makeMappingError({
+                        message : `${name} must not match ${regex.toString()}`,
+                        inputName : name,
+                        actualValue : mixed,
+                        expected : `not ${regex.toString()}`,
+                    });
                 } else {
-                    throw new Error(errorMessageDelegate(name));
+                    const errResult = errorDelegate(name);
+                    if (typeof errResult == "string") {
+                        throw makeMappingError({
+                            message : errResult,
+                            inputName : name,
+                            actualValue : mixed,
+                            expected : `not ${regex.toString()}`,
+                        });
+                    } else {
+                        throw makeMappingError({
+                            message : errResult.message,
+                            inputName : name,
+                            actualValue : mixed,
+                            expected : errResult.expected,
+                        });
+                    }
                 }
             } else {
                 return mixed;
@@ -103,38 +152,51 @@ export function notMatch (regex : RegExp, errorMessageDelegate? : (name : string
 }
 
 /**
-    Alias for `emailAddress()`
-    @see emailAddress
-*/
+ *
+ * Alias for `emailAddress()`
+ *  @see {@link emailAddress}
+ *
+ * @deprecated
+ */
 export function email () : SafeMapper<string> {
     return emailAddress();
 }
 
 /**
-    Runs the regex `/^.+@.+$/` on the string.
-    Doesn't exactly follow a standard.
-
-    You may roll your own email address validator,
-    but it's better to just send a confirmation
-    email to check the email address is valid.
-*/
+ * Runs the regex `/^.+@.+$/` on the string.
+ * Doesn't exactly follow a standard.
+ *
+ * You may roll your own email address validator,
+ * but it's better to just send a confirmation
+ * email to check the email address is valid.
+ */
 export function emailAddress () : SafeMapper<string> {
     return match(
         /^.+@.+$/,
-        name => `${name} must be an email address`
+        name => {
+            return {
+                message : `${name} must be an email address`,
+                expected : `email address`,
+            };
+        }
     );
 }
 
 /**
-    + Allows empty string.
-    + Allows digits 0-9.
-    + Allows uppercase A-F.
-    + Allows lowercase a-f.
-*/
+ * + Allows empty string.
+ * + Allows digits 0-9.
+ * + Allows uppercase A-F.
+ * + Allows lowercase a-f.
+ */
 export function hexadecimalString () : SafeMapper<string> {
     return match(
         /^[a-fA-F0-9]*$/,
-        name => `${name} must be a hexadecimal string`
+        name => {
+            return {
+                message : `${name} must be a hexadecimal string`,
+                expected : `hexadecimal string`,
+            };
+        }
     );
 }
 
@@ -200,6 +262,9 @@ export function subStringBlacklist (blacklist : string[], configuration : {
             subString => subString.toLowerCase()
         );
     }
+
+    const blacklistStr = blacklist.map(s => toLiteralStr(s)).join(", ");
+    const expected = `not ${blacklistStr}`;
     return pipe(
         string(),
         (name : string, original : string) : string => {
@@ -217,7 +282,12 @@ export function subStringBlacklist (blacklist : string[], configuration : {
             if (found.length == 0) {
                 return original;
             } else {
-                throw new Error(`${name} must not contain the following: ${blacklist.join(", ")}; found ${found.join(", ")}`);
+                throw makeMappingError({
+                    message : `${name} must not contain the following: ${blacklistStr}; found ${found.map(s => toLiteralStr(s)).join(", ")}`,
+                    inputName : name,
+                    actualValue : original,
+                    expected : expected,
+                });
             }
         }
     );

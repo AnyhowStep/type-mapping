@@ -11,6 +11,7 @@ import {
     equal,
     addOneImpl,
 } from "../../bigint-util";
+import {makeMappingError} from "../../error-util";
 
 export function bigIntGt (x : bigint) : SafeMapper<bigint> {
     return pipe(
@@ -19,7 +20,12 @@ export function bigIntGt (x : bigint) : SafeMapper<bigint> {
             if (greaterThan(num, x)) {
                 return num;
             } else {
-                throw new Error(`${name} must be greater than ${toLiteralStr(x)}`);
+                throw makeMappingError({
+                    message : `${name} must be greater than ${toLiteralStr(x)}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `greater than ${toLiteralStr(x)}`,
+                });
             }
         }
     );
@@ -32,7 +38,12 @@ export function bigIntLt (x : bigint) : SafeMapper<bigint> {
             if (lessThan(num, x)) {
                 return num;
             } else {
-                throw new Error(`${name} must be less than ${toLiteralStr(x)}`);
+                throw makeMappingError({
+                    message : `${name} must be less than ${toLiteralStr(x)}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `less than ${toLiteralStr(x)}`,
+                });
             }
         }
     );
@@ -45,7 +56,12 @@ export function bigIntGtEq (x : bigint) : SafeMapper<bigint> {
             if (greaterThanOrEqual(num, x)) {
                 return num;
             } else {
-                throw new Error(`${name} must be greater than, or equal to ${toLiteralStr(x)}`);
+                throw makeMappingError({
+                    message : `${name} must be greater than, or equal to ${toLiteralStr(x)}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `greater than, or equal to ${toLiteralStr(x)}`,
+                });
             }
         }
     );
@@ -58,7 +74,12 @@ export function bigIntLtEq (x : bigint) : SafeMapper<bigint> {
             if (lessThanOrEqual(num, x)) {
                 return num;
             } else {
-                throw new Error(`${name} must be less than, or equal to ${toLiteralStr(x)}`);
+                throw makeMappingError({
+                    message : `${name} must be less than, or equal to ${toLiteralStr(x)}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : `less than, or equal to ${toLiteralStr(x)}`,
+                });
             }
         }
     );

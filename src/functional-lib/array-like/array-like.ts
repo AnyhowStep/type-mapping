@@ -11,6 +11,7 @@ import {
 } from "../../mapper";
 import {pipe} from "../operator";
 import {implementsArrayLike} from "./implements-array-like";
+import {toPropertyAccess} from "../../string-util";
 
 function copyArrayLike (arr : ArrayLike<any>) {
     const result : any[] = [];
@@ -46,7 +47,14 @@ export function arrayLike<F extends AnySafeMapper> (f : F) : (
                 let isCopy = false;
 
                 for (let i=0; i<mixed.length; ++i) {
-                    const cur = f(`${name}[${i}]`, (mixed as any)[i]);
+                    /**
+                     * For now, fail quick for array-likes.
+                     *
+                     * @todo Should we accumulate errors like in `objectFromMap()`?
+                     * The array-like might be too large. How large is too large?
+                     * Should we accumulate the first `n` errors before throwing?
+                     */
+                    const cur = f(`${name}${toPropertyAccess(i)}`, (mixed as any)[i]);
                     //We do not mind === here.
                     //If either is a BigInt polyfill, we are okay with the copy.
                     if (cur === (mixed as any)[i]) {

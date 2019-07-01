@@ -9,10 +9,14 @@ import {
     MergedOutputOf,
     ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
+    tryMapHandled,
 } from "../../mapper";
 import * as TypeUtil from "../../type-util";
-import {indentErrorMessage} from "../../error-util";
-
+import {indentErrorMessage, makeMappingError} from "../../error-util";
+import {MappingError} from "../../mapping-error";
+import { removeDuplicateElements } from "../../array-util";
+import { toPropertyAccess } from "../../string-util";
+declare const console : any;
 export type UnsafeDeepMergeMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<
         MergedOutputOf<ArrT[number]>
@@ -32,28 +36,92 @@ export function unsafeDeepMerge<ArrT extends AnySafeMapper[]> (
     if (arr.length == 0) {
         throw new Error(`Cannot deep merge zero mappers`);
     }
-    const result = (name : string, mixed : unknown) : any => {
-        const messages : string[] = [];
-        const result : OutputOf<ArrT[number]>[] = [];
+    const mapper = (name : string, mixed : unknown) : any => {
+        const intersectionErrors : MappingError[] = [];
+
+        const values : OutputOf<ArrT[number]>[] = [];
         for (const f of arr) {
-            try {
-                result.push(f(name, mixed) as any);
-            } catch (err) {
-                messages.push(indentErrorMessage(err.message));
+            const elementResult = tryMapHandled(f, name, mixed);
+
+            if (elementResult.success) {
+                values.push(elementResult.value);
+            } else {
+                intersectionErrors.push(elementResult.mappingError);
             }
         }
-        if (messages.length > 0) {
-            throw new Error(`${name} is invalid.\n+ ${messages.join("\n+ ")}`);
+        if (intersectionErrors.length > 0) {
+            const errorMessages = intersectionErrors
+                .map(e => indentErrorMessage(e.message));
+            const expectedElements = removeDuplicateElements(intersectionErrors
+                .map(e => e.expected)
+                .filter((i) : i is string => typeof i == "string")
+            ).map(str => `(${str})`);
+
+            throw makeMappingError({
+                message : `${name} is invalid.\n+ ${errorMessages.join("\n+ ")}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : (expectedElements.length == 0) ?
+                    undefined :
+                    expectedElements.join(" and "),
+
+                intersectionErrors,
+            });
         }
-        try {
-            return TypeUtil.deepMerge(...result) as any;
-        } catch (err) {
-            throw new Error(`${name} is invalid; ${err.message}`);
+        const deepMergeResult = TypeUtil.tryDeepMerge(...values);
+        if (deepMergeResult.success) {
+            return deepMergeResult.value;
+        } else {
+            /**
+             * In general, this should not happen.
+             * If we are here, our mappers may be doing something suspicious.
+             */
+            /**
+             * If `path.length == 0`,
+             * then it's a top-level value that failed to merge
+             */
+            if (deepMergeResult.path == undefined) {
+                console.log(deepMergeResult);
+            }
+            if (deepMergeResult.path.length == 0) {
+                throw makeMappingError({
+                    message : `${name} is invalid; ${deepMergeResult.message}`,
+                    inputName : name,
+                    actualValue : deepMergeResult.acualValue,
+                    expected : deepMergeResult.expected,
+                });
+            } else {
+                throw makeMappingError({
+                    message : `${name} is invalid; ${deepMergeResult.message}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : deepMergeResult.path.reduceRight(
+                        (memo, part) => {
+                            return `{ ${JSON.stringify(part)} : ${memo} }`;
+                        },
+                        deepMergeResult.expected
+                    ),
+
+                    propertyErrors : [
+                        makeMappingError({
+                            message : deepMergeResult.message,
+                            inputName : deepMergeResult.path.reduce(
+                                (memo, part) => {
+                                    return memo + toPropertyAccess(part);
+                                },
+                                name
+                            ),
+                            actualValue : deepMergeResult.acualValue,
+                            expected : deepMergeResult.expected,
+                        }),
+                    ],
+                });
+            }
         }
     };
     return copyRunTimeModifier(
         arr[0],
-        result
+        mapper
     );
 }
 export type DeepMergeMapper<F extends AnySafeMapper, ArrT extends AnySafeMapper[]> = (

@@ -1,5 +1,6 @@
 import {SafeMapper} from "../../mapper";
 import {allowsInstanceOf, toTypeStr, getCtorName, isInstanceOf} from "../../type-util";
+import {makeMappingError} from "../../error-util";
 
 export type InstanceOfMapper<T> = (
     SafeMapper<T>
@@ -15,11 +16,17 @@ export function instanceOf<T> (ctor : new (...args : any[]) => T) : (
     if (!allowsInstanceOf(ctor)) {
         throw new Error(`instanceof check not allowed on ${getCtorName(ctor)}`);
     }
+    const ctorName = getCtorName(ctor);
     return (name : string, mixed : unknown) : T => {
         if (isInstanceOf(mixed, ctor)) {
             return mixed;
         } else {
-            throw new Error(`${name} must be instance of ${getCtorName(ctor)}; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be instance of ${ctorName}; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : ctorName,
+            });
         }
     };
 }

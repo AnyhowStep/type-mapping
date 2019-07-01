@@ -5,6 +5,7 @@ import {ExpectedInput} from "../../mapper";
 import {MappableInput} from "../../mapper";
 import {SafeMapper} from "../../mapper";
 import {toTypeStr, isBigIntNativelySupported, isBigInt} from "../../type-util";
+import {makeMappingError} from "../../error-util";
 
 export function finiteNumberToFiniteNumberString () {
     return cast(
@@ -44,13 +45,23 @@ export function jsonObjectToJsonObjectString () : (
     return (name : string, mixed : unknown) : string => {
         if (typeof mixed == "string") {
             if (!/^\s*\{/.test(mixed)) {
-                throw new Error(`${name} is invalid JSON Object string`);
+                throw makeMappingError({
+                    message : `${name} must be JSON Object string`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : "JSON Object string",
+                });
             }
 
             try {
                 JSON.parse(mixed);
             } catch (err) {
-                throw new Error(`${name} is invalid JSON Object string; ${err.message}`);
+                throw makeMappingError({
+                    message : `${name} must be valid JSON Object string; ${err.message}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : "valid JSON Object string",
+                });
             }
 
             return mixed;
@@ -62,9 +73,19 @@ export function jsonObjectToJsonObjectString () : (
                     return str;
                 }
             }
-            throw new Error(`${name} is invalid JSON Object; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be JSON Object; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "JSON Object",
+            });
         } catch (err) {
-            throw new Error(`${name} is invalid JSON Object; ${err.message}`);
+            throw makeMappingError({
+                message : `${name} must be JSON Object; ${err.message}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : "JSON Object",
+            });
         }
     };
 }

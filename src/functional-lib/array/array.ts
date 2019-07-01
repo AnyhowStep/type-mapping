@@ -11,6 +11,7 @@ import {
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfArray} from "./instance-of-array";
+import {toPropertyAccess} from "../../string-util";
 
 export type ArrayMapper<
     F extends AnySafeMapper
@@ -33,7 +34,14 @@ export function array<F extends AnySafeMapper> (f : F) : (
                 let isCopy = false;
 
                 for (let i=0; i<mixed.length; ++i) {
-                    const cur = f(`${name}[${i}]`, mixed[i]);
+                    /**
+                     * For now, fail quick for arrays.
+                     *
+                     * @todo Should we accumulate errors like in `objectFromMap()`?
+                     * The array might be too large. How large is too large?
+                     * Should we accumulate the first `n` errors before throwing?
+                     */
+                    const cur = f(`${name}${toPropertyAccess(i)}`, mixed[i]);
                     //We do not mind === here.
                     //If either is a BigInt polyfill, we are okay with the copy.
                     if (cur === mixed[i]) {

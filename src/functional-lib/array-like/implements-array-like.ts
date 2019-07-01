@@ -9,6 +9,6 @@ import {length} from "./length";
     console.log(x[0]);
     ```
 */
-export function implementsArrayLike () : SafeMapper<ArrayLike<any>> {
+export function implementsArrayLike () : SafeMapper<ArrayLike<unknown>> {
     return length({});
 }

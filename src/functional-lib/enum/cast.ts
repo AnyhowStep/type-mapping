@@ -5,7 +5,8 @@ import {MappableInput} from "../../mapper";
 import {or} from "../operator";
 import {mapper} from "../../mapper";
 import {literal} from "../literal";
-import {toTypeStr} from "../../type-util";
+import {toTypeStr, toLiteralStr, toLiteralOrTypeUnionStr} from "../../type-util";
+import {makeMappingError} from "../../error-util";
 
 export type ToEnumValueMapper<E extends typeof Enum> = (
     & SafeMapper<EnumValue<E>>
@@ -16,7 +17,7 @@ export function toEnumValue<E extends typeof Enum> (e : E) : (
     ToEnumValueMapper<E>
 ) {
     const entries = getEntries(e);
-    const mappableKeys = entries.map(e => e.key).join("|");
+    const mappableKeys = entries.map(e => toLiteralStr(e.key)).join("|");
     //https://github.com/microsoft/TypeScript/issues/31602
     //Discovered string and conditional types also give problems
     return mapper<ToEnumValueMapper<E>>(
@@ -29,7 +30,12 @@ export function toEnumValue<E extends typeof Enum> (e : E) : (
                         return entry.value as any;
                     }
                 }
-                throw new Error(`${name} must be ${mappableKeys}; received ${toTypeStr(mixed)}`);
+                throw makeMappingError({
+                    message : `${name} must be ${mappableKeys}; received ${toTypeStr(mixed)}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : mappableKeys,
+                });
             }
         ) as any
     );
@@ -44,7 +50,7 @@ export function toEnumKey<E extends typeof Enum> (e : E) : (
     ToEnumKeyMapper<E>
 ) {
     const entries = getEntries(e);
-    const mappableValues = entries.map(e => e.value).join("|");
+    const mappableValues = entries.map(e => toLiteralStr(e.value)).join("|");
     //https://github.com/microsoft/TypeScript/issues/31602
     //Discovered string and conditional types also give problems
     return mapper<ToEnumKeyMapper<E>>(
@@ -57,7 +63,12 @@ export function toEnumKey<E extends typeof Enum> (e : E) : (
                         return entry.key as any;
                     }
                 }
-                throw new Error(`${name} must be ${mappableValues}; received ${toTypeStr(mixed)}`);
+                throw makeMappingError({
+                    message : `${name} must be ${mappableValues}; received ${toTypeStr(mixed)}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : mappableValues,
+                });
             }
         ) as any
     );
@@ -84,9 +95,10 @@ export function toOneEnumValue<E extends typeof Enum, K extends EnumKey<E>> (
         ))
         .map(entry => entry.key);
     const mappable = (
-        String(desiredValue) +
-        " or " +
-        validKeys.join("|")
+        toLiteralOrTypeUnionStr([
+            desiredValue,
+            ...validKeys,
+        ])
     );
 
     return mapper<ToOneEnumValueMapper<E, K>>(
@@ -101,7 +113,12 @@ export function toOneEnumValue<E extends typeof Enum, K extends EnumKey<E>> (
                 }
             }
 
-            throw new Error(`${name} must be ${mappable}; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be ${mappable}; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : mappable,
+            });
         }
     );
 }
@@ -128,11 +145,11 @@ export function toOneEnumKey<E extends typeof Enum, K extends EnumKey<E>> (
         ))
         .map(e => e.key);
     const mappable = (
-        String(k) +
-        " or " +
-        validKeys.join("|") +
-        " or " +
-        String(validValue)
+        toLiteralOrTypeUnionStr([
+            k,
+            ...validKeys,
+            validValue,
+        ])
     );
 
     return mapper<ToOneEnumKeyMapper<E, K>>(
@@ -151,7 +168,12 @@ export function toOneEnumKey<E extends typeof Enum, K extends EnumKey<E>> (
                 return k;
             }
 
-            throw new Error(`${name} must be ${mappable}; received ${toTypeStr(mixed)}`);
+            throw makeMappingError({
+                message : `${name} must be ${mappable}; received ${toTypeStr(mixed)}`,
+                inputName : name,
+                actualValue : mixed,
+                expected : mappable,
+            });
         }
     );
 }

@@ -6,6 +6,7 @@ import {cast} from "../operator";
 import {literal} from "../literal";
 import {undefined as undef} from "./undefined";
 import {match} from "../string";
+import {makeMappingError} from "../../error-util";
 
 export function nullToUndefined () : (
     & SafeMapper<undefined>
@@ -17,7 +18,12 @@ export function nullToUndefined () : (
         if (mixed === undefined || mixed === null) {
             return undefined;
         }
-        throw new Error(`${name} must be null|undefined; received ${toTypeStr(mixed)}`);
+        throw makeMappingError({
+            message : `${name} must be null|undefined; received ${toTypeStr(mixed)}`,
+            inputName : name,
+            actualValue : mixed,
+            expected : "null|undefined",
+        });
     };
 }
 
@@ -34,7 +40,12 @@ export function emptyStringToUndefined () {
 */
 export function whitespaceStringToUndefined () {
     return cast(
-        match(/^\s*$/, name => `${name} must be a whitespace string`),
+        match(/^\s*$/, name => {
+            return {
+                message : `${name} must be a whitespace string`,
+                expected : `whitespace string`,
+            };
+        }),
         () => undefined,
         undef()
     );

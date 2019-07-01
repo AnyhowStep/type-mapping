@@ -8,9 +8,9 @@ import {
     MappableInputOf,
     ExtractRunTimeModifierOrUnknown,
     copyRunTimeModifier,
+    tryMapHandled,
 } from "../../mapper";
-import {indentErrorMessage} from "../../error-util";
-import {toTypeStr} from "../../type-util";
+import {makeMappingError} from "../../error-util";
 
 export type CastDelegate<SrcT, DstT> = (src : SrcT) => DstT;
 export type CastMapper<
@@ -26,42 +26,84 @@ export function cast<
     SrcF extends AnySafeMapper,
     DstF extends AnySafeMapper
 > (
-    srcDelegate : SrcF,
+    srcMapper : SrcF,
     castDelegate : CastDelegate<OutputOf<SrcF>, MappableInputOf<DstF>>,
-    dstDelegate : DstF
+    dstMapper : DstF
 ) : (
     CastMapper<SrcF, DstF>
 ) {
     const result = copyRunTimeModifier(
-        srcDelegate,
+        srcMapper,
         (name : string, mixed : unknown) : OutputOf<DstF> => {
-            try {
+            const alreadyDstResult = tryMapHandled(dstMapper, name, mixed);
+            if (alreadyDstResult.success) {
                 //If this works, we are already the desired data type
-                return dstDelegate(name, mixed);
-            } catch (err) {
-                try {
-                    //Failed. We need to cast.
-                    let src : undefined|OutputOf<SrcF> = undefined;
-                    let dst : undefined|MappableInputOf<DstF> = undefined;
-                    try {
-                        src = srcDelegate(`${toTypeStr(mixed)}(${name})`, mixed) as OutputOf<SrcF>;
-                    } catch (srcErr) {
-                        throw new Error(`Cannot cast; ${srcErr.message}`);
-                    }
-                    try {
-                        dst = castDelegate(src as any);
-                    } catch (castErr) {
-                        throw new Error(`Cannot cast (${toTypeStr(mixed)}(${name}) as ${toTypeStr(src)}); ${castErr.message}`);
-                    }
-                    try {
-                        return dstDelegate(`(${toTypeStr(mixed)}(${name}) as ${toTypeStr(src)} as ${toTypeStr(dst)})`, dst);
-                    } catch (dstErr) {
-                        throw new Error(`Cannot cast; ${dstErr.message}`);
-                    }
-                } catch (err2) {
-                    //Ugh, disgusting; nested try catch
-                    throw new Error(`${indentErrorMessage(err.message)} and\n${indentErrorMessage(err2.message)}`);
-                }
+                return alreadyDstResult.value;
+            }
+            const cannotCastPrefix = (alreadyDstResult.mappingError.expected == undefined) ?
+                `Cannot cast ${name};` :
+                `Cannot cast ${name} to ${alreadyDstResult.mappingError.expected};`
+            //Failed. We need to cast.
+            const mapSrcResult = tryMapHandled(srcMapper, name, mixed);
+            if (!mapSrcResult.success) {
+                throw makeMappingError({
+                    message : `${cannotCastPrefix} ${mapSrcResult.mappingError.message}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : mapSrcResult.mappingError.expected,
+
+                    unionErrors : [
+                        alreadyDstResult.mappingError,
+                        mapSrcResult.mappingError,
+                    ],
+                });
+            }
+
+            let dst : undefined|MappableInputOf<DstF> = undefined;
+            try {
+                dst = castDelegate(mapSrcResult.value);
+            } catch (castErr) {
+                /**
+                 * In general, this should never happen.
+                 * If we're here, that means the `srcMapper` or `srcMapper` isn't working right.
+                 */
+                throw makeMappingError({
+                    message : `${cannotCastPrefix} ${castErr.message}`,
+                    inputName : name,
+                    actualValue : mapSrcResult.value,
+                    /**
+                     * Since it seems like the `castDelegate` or `srcMapper` isn't working right,
+                     * we should only expect whatever the `dstMapper` expects.
+                     */
+                    expected : alreadyDstResult.mappingError.expected,
+
+                    stack : castErr.stack,
+                });
+            }
+
+            const mapDstResult = tryMapHandled(dstMapper, name, dst);
+            if (mapDstResult.success) {
+                return mapDstResult.value;
+            } else {
+                /**
+                 * In general, this should never happen.
+                 * If we're here, that means the `castDelegate` or `srcMapper` isn't working right.
+                 */
+                throw makeMappingError({
+                    message : `${cannotCastPrefix} ${mapDstResult.mappingError.message}`,
+                    inputName : name,
+                    actualValue : dst,
+                    /**
+                     * Since it seems like the `castDelegate` or `srcMapper` isn't working right,
+                     * we should only expect whatever the `dstMapper` expects.
+                     */
+                    expected : mapDstResult.mappingError.expected,
+
+                    unionErrors : [
+                        alreadyDstResult.mappingError,
+                        mapDstResult.mappingError,
+                    ],
+                });
             }
         }
     )

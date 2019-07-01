@@ -24,10 +24,20 @@ export function finiteNumber () : SafeMapper<number> {
         unsafeNumber(),
         (name : string, num : number) : number => {
             if (isNaN(num)) {
-                throw new Error(`${name} must be finite; received NaN`);
+                throw makeMappingError({
+                    message : `${name} must be finite number; received NaN`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : "finite number",
+                });
             }
             if (!isFinite(num)) {
-                throw new Error(`${name} must be finite; received ${num}`);
+                throw makeMappingError({
+                    message : `${name} must be finite number; received ${num}`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : "finite number",
+                });
             }
             return num;
         }
@@ -39,7 +49,12 @@ export function integer () : SafeMapper<number> {
         finiteNumber(),
         (name : string, num : number) : number => {
             if (Math.floor(num) !== num) {
-                throw new Error(`${name} must be an integer; received double`);
+                throw makeMappingError({
+                    message : `${name} must be integer; received double`,
+                    inputName : name,
+                    actualValue : num,
+                    expected : "integer",
+                });
             }
             return num;
         }

@@ -367,6 +367,17 @@ TODO, more documentation
 A `MappingError` should give you detailed information about why a mapping failed,
 and should provide enough metadata to let you write a custom error handler.
 
+When created with `ErrorUtil.makeMappingError()`, all properties of `MappingError`
+that are not properties of `Error` are **non-enumerable**.
+
+This means that they will not show up if you use `Object.keys()` or `JSON.stringify()`.
+
+This is intentional because serializing all data about an error may be undesirable,
+especially if the error contains sensitive information.
+
+You should use `ErrorUtil.isMappingError()` to detect a `MappingError` and
+handle such errors explicitly.
+
 -----
 
 ### Default `Mapper`s

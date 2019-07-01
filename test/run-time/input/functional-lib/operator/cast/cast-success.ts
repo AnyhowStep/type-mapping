@@ -36,7 +36,7 @@ tape(__filename, t => {
     const result = tm.tryMap(f, "x", input as any);
     t.deepEqual(called, ["dst", "src", "cast", "dst"]);
     if (result.success) {
-        t.deepEqual(result.value[0], "(string(x) as Array as Array)");
+        t.deepEqual(result.value[0], "x");//"(string(x) as Array as Array)");
         t.deepEqual(result.value[1], 15);
     } else {
         t.fail("Should cast successfully");
