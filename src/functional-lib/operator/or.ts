@@ -10,7 +10,7 @@ import {
     copyRunTimeModifier,
     tryMapHandled,
 } from "../../mapper";
-import {indentErrorMessage, makeMappingError} from "../../error-util";
+import {indentErrorMessage, makeMappingError, flattenUnionErrors} from "../../error-util";
 import {MappingError} from "../../mapping-error";
 import { removeDuplicateElements } from "../../array-util";
 import { toTypeStr } from "../../type-util";
@@ -33,7 +33,7 @@ export function unsafeOr<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
     return copyRunTimeModifier(
         arr[0],
         (name : string, mixed : unknown) : OutputOf<ArrT[number]> => {
-            const unionErrors : MappingError[] = [];
+            let unionErrors : MappingError[] = [];
             for (const d of arr) {
                 const elementResult = tryMapHandled(d, name, mixed);
                 if (elementResult.success) {
@@ -42,6 +42,8 @@ export function unsafeOr<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
                     unionErrors.push(elementResult.mappingError);
                 }
             }
+
+            unionErrors = flattenUnionErrors(unionErrors);
 
             const rawExpectedArr = unionErrors
                 .map(e => e.expected)

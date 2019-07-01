@@ -71,23 +71,23 @@ function jsonDelegate (
     return result;
 }
 
-/*
-    The space required to store a JSON document is roughly
-    the same as for LONGBLOB or LONGTEXT.
-
-    In addition, MySQL imposes a limit on the size of any JSON
-    document stored in a JSON column such that it cannot be any
-    larger than the value of max_allowed_packet.
-
-    The default for max_allowed_packet is 4194304, 4MB.
-
-    The maximum is 1073741824, 1GB.
-
-    The value should be a multiple of 1024;
-    nonmultiples are rounded down to the nearest multiple.
-
-    -----
-
-    I set the default to 1MB arbitrarily.
+/**
+ * The space required to store a `JSON` document is roughly
+ * the same as for `LONGBLOB` or `LONGTEXT`.
+ *
+ * In addition, MySQL imposes a limit on the size of any `JSON`
+ * document stored in a `JSON` column such that it cannot be any
+ * larger than the value of `max_allowed_packet`.
+ *
+ * The default for `max_allowed_packet` is `4194304`, 4MB.
+ *
+ * The maximum is `1073741824`, 1GB.
+ *
+ * The value should be a multiple of `1024`;
+ * nonmultiples are rounded down to the nearest multiple.
+ *
+ * -----
+ *
+ * I set the default to 1MB arbitrarily.
 */
 export const json = jsonDelegate("JSON", 4294967295, 1048576);

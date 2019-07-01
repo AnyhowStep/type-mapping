@@ -2,10 +2,10 @@ import * as tape from "tape";
 import * as tm from "../../../../../../../dist";
 
 tape(__filename, t => {
-    const f = tm.orMaybe(tm.boolean());
+    const f = tm.notNull(tm.orNull(tm.mysql.bigIntUnsigned()));
 
     try {
-        f("x", 0);
+        f("x", true);
         t.fail("Expected to fail");
     } catch (err) {
         if (tm.ErrorUtil.isMappingError(err)) {
@@ -17,10 +17,10 @@ tape(__filename, t => {
                     expected : err.expected,
                 },
                 {
-                    message : `x must be (boolean) or (undefined) or (null); received number`,
+                    message : `x must be (bigint) or (string) or (number); received boolean`,
                     inputName : "x",
-                    actualValue : 0,
-                    expected : "(boolean) or (undefined) or (null)",
+                    actualValue : true,
+                    expected : "(bigint) or (string) or (number)",
                 }
             );
 
@@ -38,10 +38,10 @@ tape(__filename, t => {
                             expected : err.unionErrors[0].expected,
                         },
                         {
-                            message : "x must be boolean; received number",
+                            message : "x must be bigint; received boolean",
                             inputName : "x",
-                            actualValue : 0,
-                            expected : "boolean",
+                            actualValue : true,
+                            expected : "bigint",
                         }
                     );
                     t.deepEqual(
@@ -52,10 +52,10 @@ tape(__filename, t => {
                             expected : err.unionErrors[1].expected,
                         },
                         {
-                            message : "x must be undefined; received number",
+                            message : "x must be string; received boolean",
                             inputName : "x",
-                            actualValue : 0,
-                            expected : "undefined",
+                            actualValue : true,
+                            expected : "string",
                         }
                     );
                     t.deepEqual(
@@ -66,10 +66,10 @@ tape(__filename, t => {
                             expected : err.unionErrors[2].expected,
                         },
                         {
-                            message : "x must be null; received number",
+                            message : "x must be number; received boolean",
                             inputName : "x",
-                            actualValue : 0,
-                            expected : "null",
+                            actualValue : true,
+                            expected : "number",
                         }
                     );
                 }

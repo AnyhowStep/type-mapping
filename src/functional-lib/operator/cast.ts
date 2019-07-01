@@ -50,7 +50,11 @@ export function cast<
                     message : `${cannotCastPrefix} ${mapSrcResult.mappingError.message}`,
                     inputName : name,
                     actualValue : mixed,
-                    expected : mapSrcResult.mappingError.expected,
+                    expected : (
+                        mapSrcResult.mappingError.expected == alreadyDstResult.mappingError.expected ?
+                        mapSrcResult.mappingError.expected :
+                        `(${alreadyDstResult.mappingError.expected}) or (${mapSrcResult.mappingError.expected})`
+                    ),
 
                     unionErrors : [
                         alreadyDstResult.mappingError,

@@ -52,7 +52,8 @@ export type OrMaybeMapper<F extends AnySafeMapper> = (
 export function orMaybe<F extends AnySafeMapper> (f : F) : OrMaybeMapper<F> {
     return or(
         f,
-        literal(undefined, null)
+        literal(undefined),
+        literal(null)
     );
 }
 
@@ -81,7 +82,7 @@ export type NotMaybeMapper<F extends AnySafeMapper> = (
     & ExtractRunTimeModifierOrUnknown<F>
 );
 export function notMaybe<F extends AnySafeMapper> (assert : F) : NotMaybeMapper<F> {
-    return excludeLiteral(assert, null, undefined);
+    return excludeLiteral(assert, undefined, null);
 }
 
 /**

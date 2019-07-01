@@ -7,6 +7,7 @@ import {
     match,
 } from "../../fluent-lib";
 import * as DateTimeUtil from "./util";
+import { makeMappingError } from "../../error-util";
 export {DateTimeUtil};
 
 //Just a type alias since we don't support DATETIME(4/5/6)
@@ -26,7 +27,12 @@ export function dateTime (
             try {
                 return DateTimeUtil.fromSqlUtc(str, fractionalSecondPrecision);
             } catch (err) {
-                throw new Error(`${name} is invalid MySQL DATETIME(${fractionalSecondPrecision}); ${err.message}`);
+                throw makeMappingError({
+                    message : `${name} must be DATETIME(${fractionalSecondPrecision}); ${err.message}`,
+                    inputName : name,
+                    actualValue : str,
+                    expected : `DATETIME(${fractionalSecondPrecision})`,
+                });
             }
         }),
         //To work with JSON serialization
@@ -55,14 +61,24 @@ export function dateTime (
         ).pipe(
             match(
                 /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z$/,
-                name => `${name} must be in the format YYYY-MM-DDTHH:mm:ss.sssZ`
+                name => {
+                    return {
+                        message : `${name} must be in the format YYYY-MM-DDTHH:mm:ss.sssZ`,
+                        expected : `YYYY-MM-DDTHH:mm:ss.sssZ`,
+                    };
+                }
             ),
             (name : string, str : string) => {
                 try {
                     str = str.replace("T", " ").replace("Z", "");
                     return DateTimeUtil.fromSqlUtc(str, fractionalSecondPrecision);
                 } catch (err) {
-                    throw new Error(`${name} is invalid MySQL DATETIME(${fractionalSecondPrecision}); ${err.message}`);
+                    throw makeMappingError({
+                        message : `${name} must be DATETIME(${fractionalSecondPrecision}); ${err.message}`,
+                        inputName : name,
+                        actualValue : str,
+                        expected : `DATETIME(${fractionalSecondPrecision})`,
+                    });
                 }
             }
         )
