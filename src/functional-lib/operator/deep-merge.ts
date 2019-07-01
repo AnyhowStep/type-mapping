@@ -36,6 +36,9 @@ export function unsafeDeepMerge<ArrT extends AnySafeMapper[]> (
     if (arr.length == 0) {
         throw new Error(`Cannot deep merge zero mappers`);
     }
+    if (arr.length == 1) {
+        return arr[0];
+    }
     const mapper = (name : string, mixed : unknown) : any => {
         const intersectionErrors : MappingError[] = [];
 
@@ -49,21 +52,33 @@ export function unsafeDeepMerge<ArrT extends AnySafeMapper[]> (
                 intersectionErrors.push(elementResult.mappingError);
             }
         }
-        if (intersectionErrors.length > 0) {
-            const errorMessages = intersectionErrors
-                .map(e => indentErrorMessage(e.message));
-            const expectedElements = removeDuplicateElements(intersectionErrors
-                .map(e => e.expected)
-                .filter((i) : i is string => typeof i == "string")
-            ).map(str => `(${str})`);
+        if (intersectionErrors.length == 1) {
+            throw intersectionErrors[0];
+        }
+        if (intersectionErrors.length > 1) {
+            const errorMessages = removeDuplicateElements(
+                intersectionErrors
+                    .map(e => indentErrorMessage(e.message))
+            );
+            const expectedElements = removeDuplicateElements(
+                intersectionErrors
+                    .map(e => e.expected)
+                    .filter((i) : i is string => typeof i == "string")
+            );
 
             throw makeMappingError({
                 message : `${name} is invalid.\n+ ${errorMessages.join("\n+ ")}`,
                 inputName : name,
                 actualValue : mixed,
-                expected : (expectedElements.length == 0) ?
+                expected : (
+                    (expectedElements.length == 0) ?
                     undefined :
-                    expectedElements.join(" and "),
+                    (expectedElements.length == 1) ?
+                    expectedElements[0] :
+                    expectedElements
+                        .map(str => `(${str})`)
+                        .join(" and ")
+                ),
 
                 intersectionErrors,
             });
@@ -87,14 +102,14 @@ export function unsafeDeepMerge<ArrT extends AnySafeMapper[]> (
                 throw makeMappingError({
                     message : `${name} is invalid; ${deepMergeResult.message}`,
                     inputName : name,
-                    actualValue : deepMergeResult.acualValue,
+                    actualValue : deepMergeResult.actualValue,
                     expected : deepMergeResult.expected,
                 });
             } else {
                 throw makeMappingError({
                     message : `${name} is invalid; ${deepMergeResult.message}`,
                     inputName : name,
-                    actualValue : mixed,
+                    actualValue : deepMergeResult.bRoot,
                     expected : deepMergeResult.path.reduceRight(
                         (memo, part) => {
                             return `{ ${JSON.stringify(part)} : ${memo} }`;
@@ -111,7 +126,7 @@ export function unsafeDeepMerge<ArrT extends AnySafeMapper[]> (
                                 },
                                 name
                             ),
-                            actualValue : deepMergeResult.acualValue,
+                            actualValue : deepMergeResult.actualValue,
                             expected : deepMergeResult.expected,
                         }),
                     ],

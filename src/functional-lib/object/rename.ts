@@ -11,11 +11,11 @@ import {
     IsExpectedInputOptional,
     copyRunTimeModifier,
     getRunTimeRequiredFlagOrFalse,
+    tryMapHandled,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
 import {toPropertyAccess} from "../../string-util";
-import {toLiteralStr} from "../../type-util";
 import {makeMappingError} from "../../error-util";
 
 /**
@@ -103,35 +103,78 @@ export function rename<
     const result = pipe(
         instanceOfObject(),
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
+            let unsafeKey : string = "";
             let unsafeName : string = "";
             let unsafeValue : unknown = undefined;
             if (Object.prototype.hasOwnProperty.call(mixed, dstKey)) {
+                unsafeKey = dstKey;
                 unsafeName = `${name}${toPropertyAccess(dstKey)}`;
                 unsafeValue = (mixed as any)[dstKey];
             } else if (Object.prototype.hasOwnProperty.call(mixed, srcKey)) {
+                unsafeKey = srcKey;
                 unsafeName = `${name}${toPropertyAccess(srcKey)}`;
                 unsafeValue = (mixed as any)[srcKey];
             } else if (runTimeRequired) {
+                const expected = `object with explicitly set property ${JSON.stringify(dstKey)}`;
                 throw makeMappingError({
-                    message : `${name} must have property ${toLiteralStr(dstKey)} or ${toLiteralStr(srcKey)} explicitly set`,
-                    inputName : `${name}${toPropertyAccess(dstKey)}`,
-                    actualValue : undefined,
-                    expected : `explicitly set`,
+                    message : `${name} must be ${expected}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected,
+
+                    propertyErrors : [
+                        makeMappingError({
+                            message : `${name}${toPropertyAccess(dstKey)} must be explicitly set`,
+                            inputName : `${name}${toPropertyAccess(dstKey)}`,
+                            actualValue : undefined,
+                            expected : `explicitly set`,
+                        }),
+                    ],
                 });
             } else {
+                unsafeKey = dstKey;
                 unsafeName = `${name}${toPropertyAccess(dstKey)}`;
                 unsafeValue = undefined;
             }
 
-            const obj : (
-                { [dst in DstKeyT] : OutputOf<F> }
-            ) = {
-                [dstKey] : f(
-                    unsafeName,
-                    unsafeValue
-                ),
-            } as any;
-            return obj;
+            const dstResult = tryMapHandled(
+                f,
+                unsafeName,
+                unsafeValue
+            );
+            if (dstResult.success) {
+                const obj : (
+                    { [dst in DstKeyT] : OutputOf<F> }
+                ) = {
+                    [dstKey] : dstResult.value,
+                } as any;
+                return obj;
+            }
+
+            if (dstResult.mappingError.expected == undefined) {
+                throw makeMappingError({
+                    message : `${name} must be valid object. ${dstResult.mappingError.message}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : `valid object`,
+
+                    propertyErrors : [
+                        dstResult.mappingError,
+                    ],
+                });
+            } else {
+                const expected = `object with ${dstResult.mappingError.expected} property ${JSON.stringify(unsafeKey)}`;
+                throw makeMappingError({
+                    message : `${name} must be ${expected}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected,
+
+                    propertyErrors : [
+                        dstResult.mappingError,
+                    ],
+                });
+            }
         }
     );
     return copyRunTimeModifier(

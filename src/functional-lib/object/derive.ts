@@ -11,6 +11,7 @@ import {
     IsExpectedInputOptional,
     copyRunTimeModifier,
     getRunTimeRequiredFlagOrFalse,
+    tryMapHandled,
 } from "../../mapper";
 import {pipe} from "../operator";
 import {instanceOfObject} from "./instance-of-object";
@@ -104,9 +105,10 @@ export function derive<
     DeriveMapper<SrcKeyT, DstKeyT, F>
 ) {
     /**
-        TODO
+        Must property be explicitly set?
+
                         | `orUndefined` | `optional` | `runTimeRequired()`
-        compile-time    | -no-effect    | optional   | -no-effect-
+        compile-time    | -no-effect-   | optional   | required
         run-time        | optional      | optional   | required
     */
     const runTimeRequired = getRunTimeRequiredFlagOrFalse(f);
@@ -115,24 +117,63 @@ export function derive<
         (name : string, mixed : Object) : ({ [dst in DstKeyT] : OutputOf<F> }) => {
             if (!Object.prototype.hasOwnProperty.call(mixed, srcKey)) {
                 if (runTimeRequired) {
+                    const expected = `object with explicitly set property ${JSON.stringify(srcKey)}`;
                     throw makeMappingError({
-                        message : `${name}${toPropertyAccess(srcKey)} must be explicitly set`,
-                        inputName : `${name}${toPropertyAccess(srcKey)}`,
-                        actualValue : undefined,
-                        expected : `explicitly set`,
+                        message : `${name} must be ${expected}`,
+                        inputName : name,
+                        actualValue : mixed,
+                        expected,
+
+                        propertyErrors : [
+                            makeMappingError({
+                                message : `${name}${toPropertyAccess(srcKey)} must be explicitly set`,
+                                inputName : `${name}${toPropertyAccess(srcKey)}`,
+                                actualValue : undefined,
+                                expected : `explicitly set`,
+                            }),
+                        ],
                     });
                 }
             }
 
-            const obj : (
-                { [dst in DstKeyT] : OutputOf<F> }
-            ) = {
-                [dstKey] : f(
-                    `${name}${toPropertyAccess(srcKey)}`,
-                    (mixed as any)[srcKey]
-                ),
-            } as any;
-            return obj;
+            const dstResult = tryMapHandled(
+                f,
+                `${name}${toPropertyAccess(srcKey)}`,
+                (mixed as any)[srcKey]
+            );
+            if (dstResult.success) {
+                const obj : (
+                    { [dst in DstKeyT] : OutputOf<F> }
+                ) = {
+                    [dstKey] : dstResult.value,
+                } as any;
+                return obj;
+            }
+
+            if (dstResult.mappingError.expected == undefined) {
+                throw makeMappingError({
+                    message : `${name} must be valid object. ${dstResult.mappingError.message}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected : `valid object`,
+
+                    propertyErrors : [
+                        dstResult.mappingError,
+                    ],
+                });
+            } else {
+                const expected = `object with ${dstResult.mappingError.expected} property ${JSON.stringify(srcKey)}`;
+                throw makeMappingError({
+                    message : `${name} must be ${expected}`,
+                    inputName : name,
+                    actualValue : mixed,
+                    expected,
+
+                    propertyErrors : [
+                        dstResult.mappingError,
+                    ],
+                });
+            }
         }
     );
     return copyRunTimeModifier(

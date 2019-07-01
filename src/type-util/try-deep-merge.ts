@@ -2,7 +2,7 @@ import {toTypeStr} from "./to-type-str";
 import {strictEqual} from "./strict-equal";
 import {isPrimitive} from "./is-primitive";
 
-export type TryDeepMergeResult = (
+type TryDeepMergeImplResult = (
     | {
         success : true,
         value : unknown,
@@ -16,11 +16,11 @@ export type TryDeepMergeResult = (
         //The type of `aValue`
         expected : string,
         //Synonym for `bValue`
-        acualValue : unknown,
+        actualValue : unknown,
     }
 );
 
-function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeepMergeResult {
+function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeepMergeImplResult {
     if (strictEqual(a, b)) {
         return {
             success : true,
@@ -35,7 +35,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
             bValue : b,
             message : `Cannot merge ${toTypeStr(a)} and ${toTypeStr(b)}; they are not equal`,
             expected : toTypeStr(a),
-            acualValue : b,
+            actualValue : b,
         };
     }
 
@@ -49,7 +49,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
             bValue : b,
             message : `Cannot merge ${toTypeStr(a)} and ${toTypeStr(b)}; they are not equal`,
             expected : toTypeStr(a),
-            acualValue : b,
+            actualValue : b,
         };
     }
 
@@ -62,7 +62,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 bValue : b,
                 message : `Cannot merge ${toTypeStr(a)} with Date`,
                 expected : toTypeStr(a),
-                acualValue : b,
+                actualValue : b,
             };
         }
         if (!(b instanceof Date)) {
@@ -73,7 +73,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 bValue : b,
                 message : `Cannot merge Date with ${toTypeStr(b)}`,
                 expected : toTypeStr(a),
-                acualValue : b,
+                actualValue : b,
             };
         }
         if (a.getTime() === b.getTime()) {
@@ -89,7 +89,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 bValue : b,
                 message : `Cannot merge dates; they must have the same value`,
                 expected : toTypeStr(a),
-                acualValue : b,
+                actualValue : b,
             };
         }
     }
@@ -103,7 +103,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 bValue : b,
                 message : `Cannot merge ${toTypeStr(a)} with array`,
                 expected : toTypeStr(a),
-                acualValue : b,
+                actualValue : b,
             };
         }
         if (!(b instanceof Array)) {
@@ -114,7 +114,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 bValue : b,
                 message : `Cannot merge array with ${toTypeStr(b)}`,
                 expected : toTypeStr(a),
-                acualValue : b,
+                actualValue : b,
             };
         }
         if (a.length != b.length) {
@@ -125,7 +125,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 bValue : b,
                 message : `Cannot merge arrays of different lengths`,
                 expected : toTypeStr(a),
-                acualValue : b,
+                actualValue : b,
             };
         }
         const newArray : any[] = [];
@@ -198,6 +198,27 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
     };
 }
 
+export type TryDeepMergeResult = (
+    | {
+        success : true,
+        value : unknown,
+    }
+    | {
+        success : false,
+        path : readonly string[],
+        aValue : unknown,
+        bValue : unknown,
+        message : string,
+        //The type of `aValue`
+        expected : string,
+        //Synonym for `bValue`
+        actualValue : unknown,
+
+        aRoot : unknown,
+        bRoot : unknown,
+    }
+);
+
 export function tryDeepMerge (...args : unknown[]) : TryDeepMergeResult {
     if (args.length == 0) {
         throw new Error(`Cannot deep merge zero arguments`);
@@ -208,7 +229,11 @@ export function tryDeepMerge (...args : unknown[]) : TryDeepMergeResult {
         if (implResult.success) {
             result = implResult.value;
         } else {
-            return implResult;
+            return {
+                ...implResult,
+                aRoot : result,
+                bRoot : args[i],
+            };
         }
     }
     return {
