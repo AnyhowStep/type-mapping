@@ -56,9 +56,9 @@ export function stringLength (args : {
     max? : number,
 }) : SafeMapper<string> {
     return pipe(
-        length(args),
-        string()
-    );
+        string(),
+        length(args)
+    ) as any;
 }
 
 export function stringExactLength (length : number) : SafeMapper<string> {

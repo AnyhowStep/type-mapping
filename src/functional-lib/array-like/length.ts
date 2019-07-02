@@ -52,7 +52,7 @@ export function length (args : {
                     propertyErrors : [
                         lengthResult.mappingError,
                     ],
-                })
+                });
             }
         }
     );
