@@ -51,6 +51,7 @@ export {
     instanceOfDate,
     stringToJsonObject,
     jsonObject,
+    never,
     nonMaybe,
     undefinedToNull,
     emptyStringToNull,

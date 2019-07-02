@@ -8,6 +8,7 @@ export * from "./date";
 export * from "./enum";
 export * from "./json-object";
 export * from "./literal";
+export * from "./never";
 export * from "./non-maybe";
 export * from "./null";
 export * from "./number";
