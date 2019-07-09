@@ -43,3 +43,22 @@ export function arrayLikeToArray<
     ) as any;
 }
 
+export type ArrayLikeToReadOnlyArrayMapper<
+    F extends AnySafeMapper
+> = (
+    & SafeMapper<readonly OutputOf<F>[]>
+    & ExpectedInput<readonly ExpectedInputOf<F>[]>
+    & MappableInput<ArrayLike<MappableInputOf<F>>>
+    & ExtractRunTimeModifierOrUnknown<F>
+);
+
+export function arrayLikeToReadOnlyArray<
+    F extends AnySafeMapper
+> (
+    f : F
+) : (
+    ArrayLikeToReadOnlyArrayMapper<F>
+) {
+    return arrayLikeToArray<F>(f);
+}
+

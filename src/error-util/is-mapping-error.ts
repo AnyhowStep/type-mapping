@@ -25,6 +25,9 @@ export function isMappingError (x : unknown) : x is MappingError {
     if (mixed.expected != undefined && typeof mixed.expected != "string") {
         return false;
     }
+    if (mixed.expectedMeta != undefined && !(mixed.expectedMeta instanceof Object)) {
+        return false;
+    }
     if (
         mixed.propertyErrors != undefined &&
         !isMappingErrorArray(mixed.propertyErrors)

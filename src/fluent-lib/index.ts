@@ -13,6 +13,7 @@ export {
 export {
     unsafeAny,
     instanceOfArray,
+    instanceOfReadOnlyArray,
     implementsArrayLike,
     length,
     bigInt,

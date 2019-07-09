@@ -2,7 +2,8 @@ import {pipe} from "../operator";
 import {instanceOfObject} from "../object";
 import {unsignedInteger, range} from "../number";
 import {SafeMapper, tryMapHandled} from "../../mapper";
-import { makeMappingError } from "../../error-util";
+import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export function byteLength (args : {
     min? : number,
@@ -19,15 +20,15 @@ export function byteLength (args : {
         (args.min == undefined) ?
         (
             (args.max == undefined) ?
-            `value with "length" property` :
-            `value of length less than, or equal to ${args.max.toString()}`
+            `value with "byteLength" property` :
+            `value of byteLength less than, or equal to ${args.max.toString()}`
         ) :
         (
             (args.max == undefined) ?
-            `value of length greater than, or equal to ${args.min.toString()}` :
+            `value of byteLength greater than, or equal to ${args.min.toString()}` :
             (args.min == args.max) ?
-            `value of length ${args.min.toString()}` :
-            `value of length between ${args.min.toString()} and ${args.max.toString()}`
+            `value of byteLength ${args.min.toString()}` :
+            `value of byteLength between ${args.min.toString()} and ${args.max.toString()}`
         )
     );
     return pipe(
@@ -42,6 +43,11 @@ export function byteLength (args : {
                     inputName : name,
                     actualValue : mixed,
                     expected : expected,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_BYTE_LENGTH,
+                        min : args.min,
+                        max : args.max,
+                    },
 
                     propertyErrors : [
                         byteLengthResult.mappingError,

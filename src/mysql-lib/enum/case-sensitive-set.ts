@@ -5,6 +5,8 @@ import {
     notMatch,
     string,
 } from "../../fluent-lib";
+import { makeMappingError } from "../../error-util";
+import { toLiteralOrTypeStr } from "../../type-util";
 
 /**
     TODO Handle case-insensitive set collations
@@ -31,12 +33,19 @@ export function caseSenstiveSet<ElementArr extends string[]> (
         /\,/,
         name => `${name} must not have comma`
     ))("elements", elements);
+    const expected = `SET(${elements.map(e => toLiteralOrTypeStr(e)).join(",")})`;
+
     return string().pipe(
         (name : string, raw : string) : string => {
             const arr = raw.split(",");
             for (let e of arr) {
                 if (elements.indexOf(e) < 0) {
-                    throw new Error(`${name} has unknown set element; ${e}`);
+                    throw makeMappingError({
+                        message : `${name} has unknown set element; ${e}`,
+                        inputName : name,
+                        actualValue : e,
+                        expected : expected,
+                    });
                 }
             }
             return raw;

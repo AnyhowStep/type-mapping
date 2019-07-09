@@ -13,6 +13,10 @@ function nil () : SafeMapper<null> {
             inputName : name,
             actualValue : mixed,
             expected : "null",
+            expectedMeta : {
+                mappableValues : [null],
+                outputValues : [null],
+            }
         });
     };
 }

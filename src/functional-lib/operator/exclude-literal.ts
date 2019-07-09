@@ -97,6 +97,32 @@ export function excludeLiteral<
                     inputName : name,
                     actualValue : mixed,
                     expected,
+                    expectedMeta : {
+                        mappableValues : (
+                            (
+                                mapResult.mappingError.expectedMeta == undefined ||
+                                mapResult.mappingError.expectedMeta.mappableValues == undefined
+                            ) ?
+                                undefined :
+                                mapResult.mappingError.expectedMeta.mappableValues.filter(
+                                    mappableValue => !arr.some(
+                                        i => strictEqual(i, mappableValue)
+                                    )
+                                )
+                        ),
+                        outputValues : (
+                            (
+                                mapResult.mappingError.expectedMeta == undefined ||
+                                mapResult.mappingError.expectedMeta.outputValues == undefined
+                            ) ?
+                                undefined :
+                                mapResult.mappingError.expectedMeta.outputValues.filter(
+                                    outputValue => !arr.some(
+                                        i => strictEqual(i, outputValue)
+                                    )
+                                )
+                        ),
+                    },
                 });
             } else {
                 const expected = removeDuplicateElements(rawExpectedArr)
@@ -108,6 +134,32 @@ export function excludeLiteral<
                     inputName : name,
                     actualValue : mixed,
                     expected,
+                    expectedMeta : {
+                        mappableValues : (
+                            (
+                                mapResult.mappingError.expectedMeta == undefined ||
+                                mapResult.mappingError.expectedMeta.mappableValues == undefined
+                            ) ?
+                                undefined :
+                                mapResult.mappingError.expectedMeta.mappableValues.filter(
+                                    mappableValue => !arr.some(
+                                        i => strictEqual(i, mappableValue)
+                                    )
+                                )
+                        ),
+                        outputValues : (
+                            (
+                                mapResult.mappingError.expectedMeta == undefined ||
+                                mapResult.mappingError.expectedMeta.outputValues == undefined
+                            ) ?
+                                undefined :
+                                mapResult.mappingError.expectedMeta.outputValues.filter(
+                                    outputValue => !arr.some(
+                                        i => strictEqual(i, outputValue)
+                                    )
+                                )
+                        ),
+                    },
 
                     unionErrors,
                 });

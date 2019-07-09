@@ -59,3 +59,17 @@ export function array<F extends AnySafeMapper> (f : F) : (
         )
     );
 }
+export type ReadOnlyArrayMapper<
+    F extends AnySafeMapper
+> = (
+    & SafeMapper<readonly OutputOf<F>[]>
+    & ExpectedInput<readonly ExpectedInputOf<F>[]>
+    & MappableInput<readonly MappableInputOf<F>[]>
+    & ExtractRunTimeModifierOrUnknown<F>
+);
+
+export function readOnlyArray<F extends AnySafeMapper> (f : F) : (
+    ReadOnlyArrayMapper<F>
+) {
+    return array<F>(f);
+}

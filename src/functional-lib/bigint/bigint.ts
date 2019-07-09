@@ -3,6 +3,7 @@ import {toTypeStr, isBigInt, getBigIntFactoryFunctionOrError} from "../../type-u
 import {pipe} from "../operator";
 import {bigIntGtEq} from "./comparison";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export function bigInt () : SafeMapper<bigint> {
     return (name : string, mixed : unknown) : bigint => {
@@ -14,6 +15,9 @@ export function bigInt () : SafeMapper<bigint> {
             inputName : name,
             actualValue : mixed,
             expected : "bigint",
+            expectedMeta : {
+                errorCode : ErrorCode.EXPECTED_TYPE,
+            },
         });
     };
 }

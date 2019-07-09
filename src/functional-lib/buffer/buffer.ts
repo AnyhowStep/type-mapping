@@ -4,6 +4,7 @@ import {pipe} from "../operator";
 import {byteLength} from "./byte-length";
 import {isInstanceOfBuffer} from "../../type-util/buffer-ctor";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export function instanceOfBuffer () : SafeMapper<Buffer> {
     return (name : string, mixed : unknown) : Buffer => {
@@ -13,6 +14,9 @@ export function instanceOfBuffer () : SafeMapper<Buffer> {
                 inputName : name,
                 actualValue : mixed,
                 expected : "Buffer",
+                expectedMeta : {
+                    errorCode : ErrorCode.EXPECTED_TYPE,
+                },
             });
         }
         return mixed;

@@ -55,6 +55,31 @@ export function cast<
                         mapSrcResult.mappingError.expected :
                         `(${alreadyDstResult.mappingError.expected}) or (${mapSrcResult.mappingError.expected})`
                     ),
+                    expectedMeta : {
+                        mappableValues : (
+                            (
+                                alreadyDstResult.mappingError.expectedMeta == undefined ||
+                                alreadyDstResult.mappingError.expectedMeta.mappableValues == undefined ||
+                                mapSrcResult.mappingError.expectedMeta == undefined ||
+                                mapSrcResult.mappingError.expectedMeta.mappableValues == undefined
+                            ) ?
+                                undefined :
+                                [
+                                    ...alreadyDstResult.mappingError.expectedMeta.mappableValues,
+                                    ...mapSrcResult.mappingError.expectedMeta.mappableValues,
+                                ]
+                        ),
+                        outputValues : (
+                            (
+                                alreadyDstResult.mappingError.expectedMeta == undefined ||
+                                alreadyDstResult.mappingError.expectedMeta.outputValues == undefined
+                            ) ?
+                                undefined :
+                                [
+                                    ...alreadyDstResult.mappingError.expectedMeta.outputValues,
+                                ]
+                        ),
+                    },
 
                     unionErrors : [
                         alreadyDstResult.mappingError,
@@ -69,7 +94,7 @@ export function cast<
             } catch (castErr) {
                 /**
                  * In general, this should never happen.
-                 * If we're here, that means the `srcMapper` or `srcMapper` isn't working right.
+                 * If we're here, that means the `castDelegate` or `srcMapper` isn't working right.
                  */
                 throw makeMappingError({
                     message : `${cannotCastPrefix} ${castErr.message}`,

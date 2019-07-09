@@ -7,7 +7,7 @@ import {
     match,
 } from "../../fluent-lib";
 import * as DateTimeUtil from "./util";
-import { makeMappingError } from "../../error-util";
+import {makeMappingError} from "../../error-util";
 export {DateTimeUtil};
 
 //Just a type alias since we don't support DATETIME(4/5/6)

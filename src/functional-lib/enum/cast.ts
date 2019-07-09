@@ -4,9 +4,10 @@ import {ExpectedInput} from "../../mapper";
 import {MappableInput} from "../../mapper";
 import {or} from "../operator";
 import {mapper} from "../../mapper";
-import {literal} from "../literal";
+import {unsafeLiteral} from "../literal";
 import {toTypeStr, toLiteralStr, toLiteralOrTypeUnionStr} from "../../type-util";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export type ToEnumValueMapper<E extends typeof Enum> = (
     & SafeMapper<EnumValue<E>>
@@ -17,12 +18,12 @@ export function toEnumValue<E extends typeof Enum> (e : E) : (
     ToEnumValueMapper<E>
 ) {
     const entries = getEntries(e);
-    const mappableKeys = entries.map(e => toLiteralStr(e.key)).join("|");
+    const expected = entries.map(e => toLiteralStr(e.key)).join("|");
     //https://github.com/microsoft/TypeScript/issues/31602
     //Discovered string and conditional types also give problems
     return mapper<ToEnumValueMapper<E>>(
         or(
-            literal(...entries.map(e => e.value)),
+            unsafeLiteral(...entries.map(e => e.value)),
             //Not a value, so maybe a key?
             (name : string, mixed : unknown) : EnumValue<E> => {
                 for (const entry of entries) {
@@ -31,10 +32,16 @@ export function toEnumValue<E extends typeof Enum> (e : E) : (
                     }
                 }
                 throw makeMappingError({
-                    message : `${name} must be ${mappableKeys}; received ${toTypeStr(mixed)}`,
+                    message : `${name} must be ${expected}; received ${toTypeStr(mixed)}`,
                     inputName : name,
                     actualValue : mixed,
-                    expected : mappableKeys,
+                    expected,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_ENUM_KEY,
+                        mappableValues : entries.map(entry => entry.key),
+                        outputValues : entries.map(entry => entry.value),
+                        entries : [...entries],
+                    },
                 });
             }
         ) as any
@@ -50,12 +57,12 @@ export function toEnumKey<E extends typeof Enum> (e : E) : (
     ToEnumKeyMapper<E>
 ) {
     const entries = getEntries(e);
-    const mappableValues = entries.map(e => toLiteralStr(e.value)).join("|");
+    const expected = entries.map(e => toLiteralStr(e.value)).join("|");
     //https://github.com/microsoft/TypeScript/issues/31602
     //Discovered string and conditional types also give problems
     return mapper<ToEnumKeyMapper<E>>(
         or(
-            literal(...entries.map(e => e.key)),
+            unsafeLiteral(...entries.map(e => e.key)),
             //Not a key, so maybe a value?
             (name : string, mixed : unknown) : EnumKey<E> => {
                 for (const entry of entries) {
@@ -64,10 +71,16 @@ export function toEnumKey<E extends typeof Enum> (e : E) : (
                     }
                 }
                 throw makeMappingError({
-                    message : `${name} must be ${mappableValues}; received ${toTypeStr(mixed)}`,
+                    message : `${name} must be ${expected}; received ${toTypeStr(mixed)}`,
                     inputName : name,
                     actualValue : mixed,
-                    expected : mappableValues,
+                    expected,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_ENUM_VALUE,
+                        mappableValues : entries.map(entry => entry.value),
+                        outputValues : entries.map(entry => entry.key),
+                        entries : [...entries],
+                    },
                 });
             }
         ) as any
@@ -94,7 +107,7 @@ export function toOneEnumValue<E extends typeof Enum, K extends EnumKey<E>> (
             (entry.key as any) !== desiredValue
         ))
         .map(entry => entry.key);
-    const mappable = (
+    const expected = (
         toLiteralOrTypeUnionStr([
             desiredValue,
             ...validKeys,
@@ -114,10 +127,17 @@ export function toOneEnumValue<E extends typeof Enum, K extends EnumKey<E>> (
             }
 
             throw makeMappingError({
-                message : `${name} must be ${mappable}; received ${toTypeStr(mixed)}`,
+                message : `${name} must be ${expected}; received ${toTypeStr(mixed)}`,
                 inputName : name,
                 actualValue : mixed,
-                expected : mappable,
+                expected,
+                expectedMeta : {
+                    errorCode : ErrorCode.EXPECTED_ONE_ENUM_VALUE_OR_VALID_ENUM_KEY,
+                    mappableValues : [desiredValue, ...validKeys],
+                    outputValues : [desiredValue],
+                    desiredValue,
+                    validKeys : [...validKeys],
+                },
             });
         }
     );
@@ -144,7 +164,7 @@ export function toOneEnumKey<E extends typeof Enum, K extends EnumKey<E>> (
             (e.key as any) !== k
         ))
         .map(e => e.key);
-    const mappable = (
+    const expected = (
         toLiteralOrTypeUnionStr([
             k,
             ...validKeys,
@@ -169,10 +189,17 @@ export function toOneEnumKey<E extends typeof Enum, K extends EnumKey<E>> (
             }
 
             throw makeMappingError({
-                message : `${name} must be ${mappable}; received ${toTypeStr(mixed)}`,
+                message : `${name} must be ${expected}; received ${toTypeStr(mixed)}`,
                 inputName : name,
                 actualValue : mixed,
-                expected : mappable,
+                expected,
+                expectedMeta : {
+                    mappableValues : [k, ...validKeys, validValue],
+                    outputValues : [k],
+                    desiredKey : k,
+                    validKeys : [...validKeys],
+                    validValue,
+                },
             });
         }
     );

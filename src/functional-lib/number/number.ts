@@ -3,6 +3,7 @@ import {toTypeStr} from "../../type-util";
 import {pipe} from "../operator";
 import {gtEq} from "./comparison";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 //Unsafe because it allows NaN and +/-Infinity
 export function unsafeNumber () : SafeMapper<number> {
@@ -13,6 +14,9 @@ export function unsafeNumber () : SafeMapper<number> {
                 inputName : name,
                 actualValue : mixed,
                 expected : "number",
+                expectedMeta : {
+                    errorCode : ErrorCode.EXPECTED_TYPE,
+                },
             });
         }
         return mixed;
@@ -29,6 +33,9 @@ export function finiteNumber () : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : "finite number",
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_TYPE,
+                    },
                 });
             }
             if (!isFinite(num)) {
@@ -37,6 +44,9 @@ export function finiteNumber () : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : "finite number",
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_TYPE,
+                    },
                 });
             }
             return num;
@@ -54,6 +64,9 @@ export function integer () : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : "integer",
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_TYPE,
+                    },
                 });
             }
             return num;
@@ -62,7 +75,7 @@ export function integer () : SafeMapper<number> {
 }
 
 /**
-    Natural number here is defined as an integer >= 0
+    An unsigned integer is an integer >= 0
 */
 export function unsignedInteger () : SafeMapper<number> {
     return pipe(

@@ -123,6 +123,10 @@ export function derive<
                         inputName : name,
                         actualValue : mixed,
                         expected,
+                        expectedMeta : {
+                            srcKey,
+                            dstKey,
+                        },
 
                         propertyErrors : [
                             makeMappingError({
@@ -156,6 +160,10 @@ export function derive<
                     inputName : name,
                     actualValue : mixed,
                     expected : `valid object`,
+                    expectedMeta : {
+                        srcKey,
+                        dstKey,
+                    },
 
                     propertyErrors : [
                         dstResult.mappingError,
@@ -168,6 +176,10 @@ export function derive<
                     inputName : name,
                     actualValue : mixed,
                     expected,
+                    expectedMeta : {
+                        srcKey,
+                        dstKey,
+                    },
 
                     propertyErrors : [
                         dstResult.mappingError,

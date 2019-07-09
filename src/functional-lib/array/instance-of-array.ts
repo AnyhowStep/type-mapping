@@ -1,6 +1,7 @@
 import {SafeMapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export function instanceOfArray () : SafeMapper<any[]> {
     return (name : string, mixed : unknown) : any[] => {
@@ -10,8 +11,15 @@ export function instanceOfArray () : SafeMapper<any[]> {
                 inputName : name,
                 actualValue : mixed,
                 expected : "array",
+                expectedMeta : {
+                    errorCode : ErrorCode.EXPECTED_TYPE,
+                },
             });
         }
         return mixed;
     };
+}
+
+export function instanceOfReadOnlyArray () : SafeMapper<readonly any[]> {
+    return instanceOfArray();
 }

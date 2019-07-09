@@ -26,6 +26,9 @@ export function instanceOf<T> (ctor : new (...args : any[]) => T) : (
                 inputName : name,
                 actualValue : mixed,
                 expected : ctorName,
+                expectedMeta : {
+                    ctor,
+                },
             });
         }
     };

@@ -1,6 +1,6 @@
 import {SafeMapper} from "../../mapper";
 import {Enum, EnumKey, EnumValue, getKeys, getValues} from "../../enum-util";
-import {literal} from "../literal";
+import {unsafeLiteral} from "../literal";
 
 export type EnumKeyMapper<E extends typeof Enum> = (
     SafeMapper<EnumKey<E>>
@@ -8,7 +8,7 @@ export type EnumKeyMapper<E extends typeof Enum> = (
 export function enumKey<E extends typeof Enum> (e : E) : (
     EnumKeyMapper<E>
 ) {
-    return literal(...getKeys(e));
+    return unsafeLiteral(...getKeys(e));
 }
 
 export type EnumValueMapper<E extends typeof Enum> = (
@@ -17,5 +17,5 @@ export type EnumValueMapper<E extends typeof Enum> = (
 export function enumValue<E extends typeof Enum> (e : E) : (
     EnumValueMapper<E>
 ) {
-    return literal(...getValues(e)) as any;
+    return unsafeLiteral(...getValues(e)) as any;
 }

@@ -23,6 +23,10 @@ export function nullToUndefined () : (
             inputName : name,
             actualValue : mixed,
             expected : "null|undefined",
+            expectedMeta : {
+                mappableValues : [null, undefined],
+                outputValues : [undefined],
+            },
         });
     };
 }

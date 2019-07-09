@@ -12,6 +12,7 @@ import {
     addOneImpl,
 } from "../../bigint-util";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export function bigIntGt (x : bigint) : SafeMapper<bigint> {
     return pipe(
@@ -25,6 +26,10 @@ export function bigIntGt (x : bigint) : SafeMapper<bigint> {
                     inputName : name,
                     actualValue : num,
                     expected : `greater than ${toLiteralStr(x)}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_GREATER_THAN,
+                        gt : x,
+                    },
                 });
             }
         }
@@ -43,6 +48,10 @@ export function bigIntLt (x : bigint) : SafeMapper<bigint> {
                     inputName : name,
                     actualValue : num,
                     expected : `less than ${toLiteralStr(x)}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_LESS_THAN,
+                        lt : x,
+                    },
                 });
             }
         }
@@ -61,6 +70,10 @@ export function bigIntGtEq (x : bigint) : SafeMapper<bigint> {
                     inputName : name,
                     actualValue : num,
                     expected : `greater than, or equal to ${toLiteralStr(x)}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_GREATER_THAN_OR_EQUAL_TO,
+                        gtEq : x,
+                    },
                 });
             }
         }
@@ -79,6 +92,10 @@ export function bigIntLtEq (x : bigint) : SafeMapper<bigint> {
                     inputName : name,
                     actualValue : num,
                     expected : `less than, or equal to ${toLiteralStr(x)}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_LESS_THAN_OR_EQUAL_TO,
+                        ltEq : x,
+                    },
                 });
             }
         }

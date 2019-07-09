@@ -12,8 +12,38 @@ import {
 } from "../../mapper";
 import {indentErrorMessage, makeMappingError, flattenUnionErrors} from "../../error-util";
 import {MappingError} from "../../mapping-error";
-import { removeDuplicateElements } from "../../array-util";
-import { toTypeStr } from "../../type-util";
+import {removeDuplicateElements} from "../../array-util";
+import {toTypeStr} from "../../type-util";
+
+function everyElementHasMappableValues (arr : MappingError[]) : arr is (
+    (
+        & MappingError
+        & {
+            expectedMeta : {
+                mappableValues : unknown[]
+            }
+        }
+    )[]
+) {
+    return arr.every(
+        err => err.expectedMeta != undefined && err.expectedMeta.mappableValues != undefined
+    );
+}
+
+function everyElementHasOutputValues (arr : MappingError[]) : arr is (
+    (
+        & MappingError
+        & {
+            expectedMeta : {
+                outputValues : unknown[]
+            }
+        }
+    )[]
+) {
+    return arr.every(
+        err => err.expectedMeta != undefined && err.expectedMeta.outputValues != undefined
+    );
+}
 
 export type UnsafeOrMapper<ArrT extends AnySafeMapper[]> = (
     & SafeMapper<OutputOf<ArrT[number]>>
@@ -58,6 +88,30 @@ export function unsafeOr<ArrT extends AnySafeMapper[]> (...arr : ArrT) : (
                     inputName : name,
                     actualValue : mixed,
                     expected,
+                    expectedMeta : {
+                        mappableValues : (
+                            everyElementHasMappableValues(unionErrors) ?
+                            unionErrors.reduce(
+                                (memo, err) => {
+                                    memo.push(...err.expectedMeta.mappableValues);
+                                    return memo;
+                                },
+                                [] as unknown[]
+                            ) :
+                            undefined
+                        ),
+                        outputValues : (
+                            everyElementHasOutputValues(unionErrors) ?
+                            unionErrors.reduce(
+                                (memo, err) => {
+                                    memo.push(...err.expectedMeta.outputValues);
+                                    return memo;
+                                },
+                                [] as unknown[]
+                            ) :
+                            undefined
+                        ),
+                    },
 
                     unionErrors,
                 });

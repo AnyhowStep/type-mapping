@@ -13,6 +13,10 @@ function undef () : SafeMapper<undefined> {
             inputName : name,
             actualValue : mixed,
             expected : "undefined",
+            expectedMeta : {
+                mappableValues : [undefined],
+                outputValues : [undefined],
+            },
         });
     };
 }

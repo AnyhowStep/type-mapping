@@ -3,6 +3,7 @@ import {finiteNumber} from "./number";
 import {SafeMapper} from "../../mapper";
 import {literal} from "../literal";
 import {makeMappingError} from "../../error-util";
+import { ErrorCode } from "../../error-code";
 
 export function gt (x : number) : SafeMapper<number> {
     return pipe(
@@ -16,6 +17,10 @@ export function gt (x : number) : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : `greater than ${x}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_GREATER_THAN,
+                        gt : x,
+                    },
                 });
             }
         }
@@ -34,6 +39,10 @@ export function lt (x : number) : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : `less than ${x}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_LESS_THAN,
+                        lt : x,
+                    },
                 });
             }
         }
@@ -52,6 +61,10 @@ export function gtEq (x : number) : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : `greater than, or equal to ${x}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_GREATER_THAN_OR_EQUAL_TO,
+                        gtEq : x,
+                    },
                 });
             }
         }
@@ -70,6 +83,10 @@ export function ltEq (x : number) : SafeMapper<number> {
                     inputName : name,
                     actualValue : num,
                     expected : `less than, or equal to ${x}`,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_LESS_THAN_OR_EQUAL_TO,
+                        ltEq : x,
+                    },
                 });
             }
         }

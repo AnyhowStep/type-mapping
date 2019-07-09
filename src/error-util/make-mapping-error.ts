@@ -20,6 +20,12 @@ export interface MakeMappingErrorArgs {
      * In general, you should set this to be a `string`.
      */
     expected : string|undefined,
+    expectedMeta? : {
+        [k : string] : unknown,
+        errorCode? : string,
+        mappableValues? : unknown[],
+        outputValues? : unknown[],
+    },
 
     /**
      * In general, used by `object` or `array` mappers
@@ -64,6 +70,14 @@ export function makeMappingError (args : MakeMappingErrorArgs) : MappingError {
         "expected",
         {
             value : args.expected,
+            enumerable : false,
+        }
+    );
+    Object.defineProperty(
+        err,
+        "expectedMeta",
+        {
+            value : args.expectedMeta,
             enumerable : false,
         }
     );

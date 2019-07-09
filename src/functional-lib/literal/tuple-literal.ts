@@ -40,6 +40,14 @@ export function tupleLiteral<TupleT extends readonly LiteralType[]> (...tuple : 
                         inputName : `${name}${toPropertyAccess(i)}`,
                         actualValue : mixed[i],
                         expected : toLiteralStr(tuple[i]),
+                        expectedMeta : {
+                            mappableValues : [
+                                [...tuple]
+                            ],
+                            outputValues : [
+                                [...tuple]
+                            ],
+                        },
                     });
                 }
             }

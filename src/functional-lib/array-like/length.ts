@@ -6,6 +6,7 @@ import {string} from "../string";
 import {or} from "../operator";
 import {toPropertyAccess} from "../../string-util";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 export function length (args : {
     min? : number,
@@ -48,6 +49,11 @@ export function length (args : {
                     inputName : name,
                     actualValue : mixed,
                     expected : expected,
+                    expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_LENGTH,
+                        min : args.min,
+                        max : args.max,
+                    },
 
                     propertyErrors : [
                         lengthResult.mappingError,

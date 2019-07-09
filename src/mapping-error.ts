@@ -12,6 +12,17 @@ export interface MappingError extends Error {
      * A description of what kind of value is expected
      */
     expected? : string,
+    /**
+     * Metadata about the expected value.
+     *
+     * e.g. `gtEq`, `ltEq`
+     */
+    expectedMeta? : {
+        [k : string] : unknown,
+        errorCode? : string,
+        mappableValues? : unknown[],
+        outputValues? : unknown[],
+    },
 
     /**
      * In general, used by `object` or `array` mappers

@@ -1,6 +1,6 @@
 import {SafeMapper} from "../../mapper";
 import {FluentMapper} from "../../fluent-mapper";
-import {literal} from "../../fluent-lib";
+import {unsafeLiteral} from "../../fluent-lib";
 
 /**
     TODO Handle case-insensitive enum collations
@@ -17,7 +17,7 @@ import {literal} from "../../fluent-lib";
     For binary or case-sensitive collations,
     lettercase is taken into account when assigning values to the column.
 */
-export function caseSensitiveEnum<ElementArr extends string[]> (
+export function unsafeCaseSensitiveEnum<ElementArr extends string[]> (
     ...elements : ElementArr
 ) : (
     FluentMapper<SafeMapper<ElementArr[number]>>
@@ -25,5 +25,28 @@ export function caseSensitiveEnum<ElementArr extends string[]> (
     if (elements.length > 65535) {
         throw new Error(`ENUM type can only have up to 65,535 elements`);
     }
-    return literal(...elements);
+    return unsafeLiteral(...elements);
+}
+/**
+    TODO Handle case-insensitive enum collations
+
+    -----
+
+    https://dev.mysql.com/doc/refman/5.5/en/enum.html
+
+    When retrieved, values stored into an ENUM column are displayed using the lettercase
+    that was used in the column definition.
+
+    Note that ENUM columns can be assigned a character set and collation.
+
+    For binary or case-sensitive collations,
+    lettercase is taken into account when assigning values to the column.
+*/
+export function caseSensitiveEnum<Element0 extends string, ElementArr extends string[]> (
+    element0 : Element0,
+    ...elements : ElementArr
+) : (
+    FluentMapper<SafeMapper<Element0|ElementArr[number]>>
+) {
+    return unsafeCaseSensitiveEnum(element0, ...elements);
 }

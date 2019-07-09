@@ -76,6 +76,10 @@ import {
     NotOptionalMapper,
     notOptional,
     DeferredMapper,
+    ReadOnlyArrayMapper,
+    ArrayLikeToReadOnlyArrayMapper,
+    readOnlyArray,
+    arrayLikeToReadOnlyArray,
 } from "./functional-lib";
 import {LiteralType} from "./primitive";
 import {setFunctionName} from "./type-util";
@@ -140,8 +144,10 @@ export interface FluentMapper<F extends AnySafeMapper> {
     //== array ==
 
     array () : FluentMapper<ArrayMapper<F>>;
+    readOnlyArray () : FluentMapper<ReadOnlyArrayMapper<F>>;
 
     arrayLikeToArray () : FluentMapper<ArrayLikeToArrayMapper<F>>;
+    arrayLikeToReadOnlyArray () : FluentMapper<ArrayLikeToReadOnlyArrayMapper<F>>;
 
     //== array-like ==
 
@@ -352,9 +358,15 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
     result.array = () : FluentMapper<ArrayMapper<F>> => {
         return fluentMapper(array(f));
     };
+    result.readOnlyArray = () : FluentMapper<ReadOnlyArrayMapper<F>> => {
+        return fluentMapper(readOnlyArray(f));
+    };
 
     result.arrayLikeToArray = () : FluentMapper<ArrayLikeToArrayMapper<F>> => {
         return fluentMapper(arrayLikeToArray(f));
+    };
+    result.arrayLikeToReadOnlyArray = () : FluentMapper<ArrayLikeToReadOnlyArrayMapper<F>> => {
+        return fluentMapper(arrayLikeToReadOnlyArray(f));
     };
 
     //== array-like ==

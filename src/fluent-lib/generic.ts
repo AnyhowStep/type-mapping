@@ -17,10 +17,20 @@ export function arrayLikeToArray<F extends AnySafeMapper> (f : F) : (
 ) {
     return fluentMapper(m.arrayLikeToArray<F>(f));
 }
+export function arrayLikeToReadOnlyArray<F extends AnySafeMapper> (f : F) : (
+    FluentMapper<m.ArrayLikeToReadOnlyArrayMapper<F>>
+) {
+    return fluentMapper(m.arrayLikeToReadOnlyArray<F>(f));
+}
 export function array<F extends AnySafeMapper> (f : F) : (
     FluentMapper<m.ArrayMapper<F>>
 ) {
     return fluentMapper(m.array<F>(f));
+}
+export function readOnlyArray<F extends AnySafeMapper> (f : F) : (
+    FluentMapper<m.ReadOnlyArrayMapper<F>>
+) {
+    return fluentMapper(m.readOnlyArray<F>(f));
 }
 
 export type FluentCastEnumFlyweight<E extends typeof Enum> = (
@@ -90,10 +100,15 @@ export function enumValue<E extends typeof Enum> (e : E) : (
     return fluentMapper(m.enumValue<E>(e));
 }
 
-export function literal<ArrT extends LiteralType[]> (...arr : ArrT) : (
-    FluentMapper<m.LiteralMapper<ArrT>>
+export function unsafeLiteral<ArrT extends LiteralType[]> (...arr : ArrT) : (
+    FluentMapper<m.UnsafeLiteralMapper<ArrT>>
 ) {
-    return fluentMapper(m.literal<ArrT>(...arr));
+    return fluentMapper(m.unsafeLiteral<ArrT>(...arr));
+}
+export function literal<Arg0 extends LiteralType, ArrT extends LiteralType[]> (arg0 : Arg0, ...arr : ArrT) : (
+    FluentMapper<m.LiteralMapper<Arg0, ArrT>>
+) {
+    return fluentMapper(m.literal<Arg0, ArrT>(arg0, ...arr));
 }
 export function tupleLiteral<TupleT extends readonly LiteralType[]> (...tuple : TupleT) : (
     FluentMapper<m.TupleLiteralMapper<TupleT>>

@@ -2,6 +2,7 @@ import {SafeMapper} from "../../mapper";
 import {toTypeStr} from "../../type-util";
 import {finiteNumber} from "../number";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 /**
  * Must be a valid date.
@@ -17,6 +18,9 @@ export function instanceOfDate () : SafeMapper<Date> {
                 inputName : name,
                 actualValue : mixed,
                 expected : "Date",
+                expectedMeta : {
+                    errorCode : ErrorCode.EXPECTED_TYPE,
+                },
             });
         }
         const unixTimestampMs = mixed.getTime();

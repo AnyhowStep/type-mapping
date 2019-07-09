@@ -33,3 +33,22 @@ tape(__filename, t => {
 
     t.end();
 });
+
+tape(__filename, t => {
+    const f = tm.nullToUndefined();
+
+    const result = tm.tryMapHandled(f, "x", 1);
+    if (result.success) {
+        t.fail("Expected to fail");
+    } else {
+        t.deepEqual(
+            result.mappingError.expectedMeta,
+            {
+                mappableValues : [null, undefined],
+                outputValues : [undefined],
+            }
+        );
+    }
+
+    t.end();
+});

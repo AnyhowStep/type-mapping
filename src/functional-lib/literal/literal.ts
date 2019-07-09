@@ -3,7 +3,7 @@ import {toTypeStr, toLiteralUnionStr, strictEqual} from "../../type-util";
 import {LiteralType} from "../../primitive";
 import {makeMappingError} from "../../error-util";
 
-export type LiteralMapper<ArrT extends LiteralType[]> = (
+export type UnsafeLiteralMapper<ArrT extends LiteralType[]> = (
     SafeMapper<ArrT[number]>
 );
 /**
@@ -12,12 +12,10 @@ export type LiteralMapper<ArrT extends LiteralType[]> = (
  * This function throws an error if `arr.length == 0`
  *
  * @param arr
- * @todo Rename this to `unsafeLiteral()`
- * @todo Implement proper `literal()` that requires at least one argument
  *  @see {@link LiteralType}
  */
-export function literal<ArrT extends LiteralType[]> (...arr : ArrT) : (
-    LiteralMapper<ArrT>
+export function unsafeLiteral<ArrT extends LiteralType[]> (...arr : ArrT) : (
+    UnsafeLiteralMapper<ArrT>
 ) {
     if (arr.length == 0) {
         throw new Error(`Cannot map zero literals`);
@@ -34,6 +32,26 @@ export function literal<ArrT extends LiteralType[]> (...arr : ArrT) : (
             inputName : name,
             actualValue : mixed,
             expected,
+            expectedMeta : {
+                mappableValues : [...arr],
+                outputValues : [...arr],
+            },
         });
     };
+}
+
+export type LiteralMapper<Arg0 extends LiteralType, ArrT extends LiteralType[]> = (
+    SafeMapper<Arg0|ArrT[number]>
+);
+/**
+ * Returns a mapper that validates if the input is one of the arguments
+ *
+ * @param arg0
+ * @param arr
+ *  @see {@link LiteralType}
+ */
+export function literal<Arg0 extends LiteralType, ArrT extends LiteralType[]> (arg0 : Arg0, ...arr : ArrT) : (
+    LiteralMapper<Arg0, ArrT>
+) {
+    return unsafeLiteral(arg0, ...arr);
 }
