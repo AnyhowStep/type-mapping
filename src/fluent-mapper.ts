@@ -251,6 +251,38 @@ export interface FluentMapper<F extends AnySafeMapper> {
     ) : (
         FluentMapper<PipeMapper<F, F4>>
     );
+    pipe<
+        F1 extends AnyMapper,
+        F2 extends AnyMapper,
+        F3 extends AnyMapper,
+        F4 extends AnyMapper,
+        F5 extends AnyMapper
+    > (
+        f1 : AssertPipeable<F, F1>,
+        f2 : AssertPipeable<F1, F2>,
+        f3 : AssertPipeable<F2, F3>,
+        f4 : AssertPipeable<F3, F4>,
+        f5 : AssertPipeable<F4, F5>
+    ) : (
+        FluentMapper<PipeMapper<F, F5>>
+    );
+    pipe<
+        F1 extends AnyMapper,
+        F2 extends AnyMapper,
+        F3 extends AnyMapper,
+        F4 extends AnyMapper,
+        F5 extends AnyMapper,
+        F6 extends AnyMapper
+    > (
+        f1 : AssertPipeable<F, F1>,
+        f2 : AssertPipeable<F1, F2>,
+        f3 : AssertPipeable<F2, F3>,
+        f4 : AssertPipeable<F3, F4>,
+        f5 : AssertPipeable<F4, F5>,
+        f6 : AssertPipeable<F5, F6>
+    ) : (
+        FluentMapper<PipeMapper<F, F6>>
+    );
 
     unsafePipe<ArrT extends AnyMapper[]> (...arr : ArrT) : FluentMapper<UnsafePipeMapper<F>>;
 

@@ -102,6 +102,42 @@ export function pipe<
 ) : (
     PipeMapper<F0, F4>
 );
+export function pipe<
+    F0 extends AnySafeMapper,
+    F1 extends AnyMapper,
+    F2 extends AnyMapper,
+    F3 extends AnyMapper,
+    F4 extends AnyMapper,
+    F5 extends AnyMapper
+> (
+    f0 : F0,
+    f1 : AssertPipeable<F0, F1>,
+    f2 : AssertPipeable<F1, F2>,
+    f3 : AssertPipeable<F2, F3>,
+    f4 : AssertPipeable<F3, F4>,
+    f5 : AssertPipeable<F4, F5>
+) : (
+    PipeMapper<F0, F5>
+);
+export function pipe<
+    F0 extends AnySafeMapper,
+    F1 extends AnyMapper,
+    F2 extends AnyMapper,
+    F3 extends AnyMapper,
+    F4 extends AnyMapper,
+    F5 extends AnyMapper,
+    F6 extends AnyMapper
+> (
+    f0 : F0,
+    f1 : AssertPipeable<F0, F1>,
+    f2 : AssertPipeable<F1, F2>,
+    f3 : AssertPipeable<F2, F3>,
+    f4 : AssertPipeable<F3, F4>,
+    f5 : AssertPipeable<F4, F5>,
+    f6 : AssertPipeable<F5, F6>
+) : (
+    PipeMapper<F0, F6>
+);
 //Not the best...
 //export function pipe<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown>;
 export function pipe<ArrT extends AnyMapper[]> (...arr : ArrT) : SafeMapper<unknown> {
