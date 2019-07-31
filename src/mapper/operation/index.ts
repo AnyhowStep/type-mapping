@@ -9,4 +9,5 @@ export * from "./extract-run-time-required-or-unknown";
 export * from "./map";
 export * from "./try-map";
 export * from "./with-expected-input";
+export * from "./with-mapper";
 export * from "./with-name";

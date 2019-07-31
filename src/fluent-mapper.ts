@@ -31,6 +31,8 @@ import {
     tryMapHandled,
     ExpectMappableInput,
     expectMappableInput,
+    WithMapper,
+    withMapper,
 } from "./mapper";
 import {
     OrUndefinedMapper,
@@ -135,11 +137,17 @@ export interface FluentMapper<F extends AnySafeMapper> {
         >
     );
 
+    withMapper<NewMapperT extends AnySafeMapper>(
+        newMapper : NewMapperT
+    ) : (
+        FluentMapper<WithMapper<F, NewMapperT>>
+    );
+
     withName<NameT extends string>(
         name : NameT
     ) : (
         FluentMapper<WithName<F, NameT>>
-    )
+    );
 
     //== array ==
 
@@ -373,6 +381,16 @@ export function fluentMapper<F extends AnySafeMapper> (f : F) : FluentMapper<F> 
         >
     ) => {
         return fluentMapper(withExpectedInput(f)<AcceptT>());
+    };
+
+    result.withMapper = <
+        NewMapperT extends AnySafeMapper
+    > (
+        newMapper : NewMapperT
+    ) : (
+        FluentMapper<WithMapper<F, NewMapperT>>
+    ) => {
+        return fluentMapper(withMapper(f, newMapper));
     };
 
     result.withName = <
