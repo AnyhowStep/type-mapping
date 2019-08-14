@@ -1015,8 +1015,58 @@ Instead, a `Mapper` is a `Field` when it also extends the `Name<>` interface.
 Apart from those breaking changes, you may use the mappers here with
 the mappers from `schema-decorator`.
 
-The route declaration feature has also been removed and will
-be part of another package. (TODO, create replacement package.)
+The route declaration feature has also been removed and has been split into,
++ https://github.com/anyhowstep/route-declaration
++ https://github.com/anyhowstep/route-client
+
+-----
+
+### Other packages using `typed-orm`
+
++ https://github.com/anyhowstep/route-declaration
+
+  `route-declaration` is used to declare HTTP routes
+
++ https://github.com/anyhowstep/route-client
+
+  Uses `route-declaration` to provide compile-time and run-time type-safe API calls.
+
+  Uses `axios` to send requests by default.
+  May be extended to use other request senders.
+
++ https://github.com/anyhowstep/route-express
+
+  Uses `route-declaration` to provide compile-time and run-time type-safe API servers.
+
+  Is a thin wrapper over `express`.
+
+  Provides compile-time type-safe `res.locals` manipulation.
+
+-----
+
++ https://github.com/anyhowstep/typed-orm
+
+  Experimental MySQL 5.7 query builder and ORM.
+
+  Wraps https://github.com/mysqljs/mysql and provides compile-time and run-time type-safe
+  SQL expression composition, and query building.
+
+  Supports connection pooling and transactions.
+
++ https://github.com/AnyhowStep/tsql
+
+  Work-in-progress rewrite of `typed-orm`.
+
+  Improved version of the experimental `typed-orm`.
+
+  Intended to act as a database-agnostic base package to support multiple databases.
+  (PostgreSQL, MariaDB, SQLite3, MySQL, etc.)
+
++ https://github.com/anyhowstep/tsql-mysql-5.7
+
+  Work-in-progress rewrite of `typed-orm`.
+
+  Uses `tsql` to implement MySQL 5.7-specific operators, functions, and syntax.
 
 -----
 
