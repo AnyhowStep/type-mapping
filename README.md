@@ -235,82 +235,82 @@ import * as tm from "type-mapping/fluent";
 //MappableInput : string|number
 //ExpectedInput : number
 //Output        : number
-const a_or_b = tm.stringToFiniteNumber();
+const strToNum = tm.stringToFiniteNumber();
 
 //== Calling `Mapper` directly ==
 
 //Compile-time: OK
 //Run-time    : OK; 1
-a_or_b("x", "1");
+strToNum("x", "1");
 //Compile-time: OK
 //Run-time    : OK; 1
-a_or_b("x", 1);
+strToNum("x", 1);
 //Compile-time: OK
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b("x", "hello");
+strToNum("x", "hello");
 //Compile-time: OK
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b("x", true);
+strToNum("x", true);
 
 //== Calling `map()/mapExpected()` ==
 
 //Compile-time: Error; string not assignable to number
 //Run-time    : OK; 1
-a_or_b.map("x", "1");
+strToNum.map("x", "1");
 //Compile-time: OK
 //Run-time    : OK; 1
-a_or_b.map("x", 1);
+strToNum.map("x", 1);
 //Compile-time: Error; string not assignable to number
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b.map("x", "hello");
+strToNum.map("x", "hello");
 //Compile-time: Error; boolean not assignable to number
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b.map("x", true);
+strToNum.map("x", true);
 
 //== Calling `tryMap()/tryMapExpected()` ==
 
 //Compile-time: Error; string not assignable to number
 //Run-time    : { success : true, value : 1 }
-a_or_b.tryMap("x", "1");
+strToNum.tryMap("x", "1");
 //Compile-time: OK
 //Run-time    : { success : true, value : 1 }
-a_or_b.tryMap("x", 1);
+strToNum.tryMap("x", 1);
 //Compile-time: Error; string not assignable to number
 //Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
-a_or_b.tryMap("x", "hello");
+strToNum.tryMap("x", "hello");
 //Compile-time: Error; boolean not assignable to number
 //Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
-a_or_b.tryMap("x", true);
+strToNum.tryMap("x", true);
 
 //== Calling `mapMappable()` ==
 
 //Compile-time: OK
 //Run-time    : OK; 1
-a_or_b.mapMappable("x", "1");
+strToNum.mapMappable("x", "1");
 //Compile-time: OK
 //Run-time    : OK; 1
-a_or_b.mapMappable("x", 1);
+strToNum.mapMappable("x", 1);
 //Compile-time: OK
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b.mapMappable("x", "hello");
+strToNum.mapMappable("x", "hello");
 //Compile-time: Error; boolean not assignable to string|number
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b.mapMappable("x", true);
+strToNum.mapMappable("x", true);
 
 //== Calling `tryMapMappable()` ==
 
 //Compile-time: OK
 //Run-time    : { success : true, value : 1 }
-a_or_b.tryMapMappable("x", "1");
+strToNum.tryMapMappable("x", "1");
 //Compile-time: OK
 //Run-time    : { success : true, value : 1 }
-a_or_b.tryMapMappable("x", 1);
+strToNum.tryMapMappable("x", 1);
 //Compile-time: OK
 //Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
-a_or_b.tryMapMappable("x", "hello");
+strToNum.tryMapMappable("x", "hello");
 //Compile-time: Error; boolean not assignable to string|number
 //Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
-a_or_b.tryMapMappable("x", true);
+strToNum.tryMapMappable("x", true);
 ```
 
 With the functional API,
@@ -322,32 +322,32 @@ import * as tm from "type-mapping";
 //MappableInput : string|number
 //ExpectedInput : number
 //Output        : number
-const a_or_b = tm.stringToFiniteNumber();
+const strToNum = tm.stringToFiniteNumber();
 
 //Calling `Mapper` directly
 //Compile-time: OK
 //Run-time    : Error; x must be finite number, or finite number string
-a_or_b("c", true);
+strToNum("c", true);
 
 //Calling `map()`
 //Compile-time: Error; boolean not assignable to number
 //Run-time    : Error; x must be finite number, or finite number string
-tm.map(a_or_b, "c", true);
+tm.map(strToNum, "c", true);
 
 //Calling `tryMap()`
 //Compile-time: Error; boolean not assignable to number
 //Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
-tm.tryMap(a_or_b, "c", true);
+tm.tryMap(strToNum, "c", true);
 
 //Calling `mapMappable()`
 //Compile-time: Error; boolean not assignable to string|number
 //Run-time    : Error; x must be finite number, or finite number string
-tm.mapMappable(a_or_b, "c", true);
+tm.mapMappable(strToNum, "c", true);
 
 //Calling `tryMapMappable()`
 //Compile-time: Error; boolean not assignable to string|number
 //Run-time    : Error; { success : false, err : Error("x must be finite number, or finite number string") }
-tm.tryMapMappable(a_or_b, "c", true);
+tm.tryMapMappable(strToNum, "c", true);
 ```
 
 When building a package that uses this package for type-safety,
