@@ -13,13 +13,22 @@ export type CacheMapper<
     CachedT,
     F extends ExtendedMapper<any, any, [CachedT]>
 > = (
+    /**
+     * This type,
+     * ```ts
+     * Extract<F, (name: string, mixed: any, ...args: any[]) => any>
+     * ```
+     *
+     * is necessary because of this bug,
+     * https://github.com/microsoft/TypeScript/pull/32924#issuecomment-521826091
+     */
     & Mapper<
-        HandledInputOf<F>,
-        OutputOf<F>
+        HandledInputOf<Extract<F, (name: string, mixed: any, ...args: any[]) => any>>,
+        OutputOf<Extract<F, (name: string, mixed: any, ...args: any[]) => any>>
     >
-    & ExtractExpectedInputOrUnknown<F>
-    & ExtractMappableInputOrUnknown<F>
-    & ExtractRunTimeModifierOrUnknown<F>
+    & ExtractExpectedInputOrUnknown<Extract<F, (name: string, mixed: any, ...args: any[]) => any>>
+    & ExtractMappableInputOrUnknown<Extract<F, (name: string, mixed: any, ...args: any[]) => any>>
+    & ExtractRunTimeModifierOrUnknown<Extract<F, (name: string, mixed: any, ...args: any[]) => any>>
 );
 
 export function cache<
@@ -32,8 +41,8 @@ export function cache<
     CacheMapper<CachedT, F>
 ) {
     const result = copyRunTimeModifier(
-        f,
-        (name : string, mixed : HandledInputOf<F>) : OutputOf<F> => {
+        f as Extract<F, (name: string, mixed: any, ...args: any[]) => any>,
+        (name : string, mixed : HandledInputOf<Extract<F, (name: string, mixed: any, ...args: any[]) => any>>) : OutputOf<Extract<F, (name: string, mixed: any, ...args: any[]) => any>> => {
             return f(name, mixed, cached);
         }
     )
