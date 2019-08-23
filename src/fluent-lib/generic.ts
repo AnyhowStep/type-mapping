@@ -258,6 +258,30 @@ export function deepMerge<F extends AnySafeMapper, ArrT extends AnySafeMapper[]>
 ) {
     return fluentMapper(m.deepMerge<F, ArrT>(f, ...arr));
 }
+export function unsafeDiscriminatedUnion<
+    DiscriminantK extends string,
+    ArrT extends readonly SafeMapper<{ [k in DiscriminantK] : unknown }>[]
+> (
+    discriminantK : DiscriminantK,
+    ...arr : ArrT
+) : (
+    FluentMapper<m.UnsafeDiscriminatedUnionMapper<DiscriminantK, ArrT>>
+) {
+    return fluentMapper(m.unsafeDiscriminatedUnion<DiscriminantK, ArrT>(discriminantK, ...arr));
+}
+export function discriminatedUnion<
+    DiscriminantK extends string,
+    F extends SafeMapper<{ [k in DiscriminantK] : unknown }>,
+    ArrT extends readonly SafeMapper<{ [k in DiscriminantK] : unknown }>[]
+> (
+    discriminantK : DiscriminantK,
+    f : F,
+    ...arr : ArrT
+) : (
+    FluentMapper<m.DiscriminatedUnionMapper<DiscriminantK, F, ArrT>>
+) {
+    return fluentMapper(m.discriminatedUnion<DiscriminantK, F, ArrT>(discriminantK, f, ...arr));
+}
 export function excludeLiteral<
     F extends AnySafeMapper,
     ArrT extends LiteralType[]

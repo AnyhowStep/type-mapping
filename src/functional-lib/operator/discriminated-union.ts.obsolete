@@ -1,0 +1,193 @@
+import {
+    SafeMapper,
+    OutputOf,
+    ExpectedInputOf,
+    MappableInputOf,
+    ExpectedInput,
+    MappableInput,
+    tryMapHandled,
+} from "../../mapper";
+import {MappingError} from "../../fluent-lib";
+import {makeNormalizedUnionError} from "../../error-util";
+import {objectFromMap} from "./object-from-map";
+import {deepMerge} from "../operator";
+
+export type DiscriminatedUnionMapperOutputOf<
+    DiscriminantK extends string,
+    ElementT extends [SafeMapper<unknown>, SafeMapper<unknown>]
+> = (
+    ElementT extends [SafeMapper<unknown>, SafeMapper<unknown>] ?
+    (
+        & {
+            [k in DiscriminantK] : OutputOf<ElementT[0]>
+        }
+        & OutputOf<ElementT[1]>
+    ) :
+    never
+);
+export type DiscriminatedUnionMapperExpectedInputOf<
+    DiscriminantK extends string,
+    ElementT extends [SafeMapper<unknown>, SafeMapper<unknown>]
+> = (
+    ElementT extends [SafeMapper<unknown>, SafeMapper<unknown>] ?
+    (
+        & {
+            [k in DiscriminantK] : ExpectedInputOf<ElementT[0]>
+        }
+        & ExpectedInputOf<ElementT[1]>
+    ) :
+    never
+);
+export type DiscriminatedUnionMapperMappableInputOf<
+    DiscriminantK extends string,
+    ElementT extends [SafeMapper<unknown>, SafeMapper<unknown>]
+> = (
+    ElementT extends [SafeMapper<unknown>, SafeMapper<unknown>] ?
+    (
+        & {
+            [k in DiscriminantK] : MappableInputOf<ElementT[0]>
+        }
+        & MappableInputOf<ElementT[1]>
+    ) :
+    never
+);
+export type UnsafeDiscriminatedUnionMapper<
+    DiscriminantK extends string,
+    ArrT extends readonly [SafeMapper<unknown>, SafeMapper<unknown>][]
+> = (
+    & SafeMapper<
+        DiscriminatedUnionMapperOutputOf<DiscriminantK, ArrT[number]>
+    >
+    & ExpectedInput<
+        DiscriminatedUnionMapperExpectedInputOf<DiscriminantK, ArrT[number]>
+    >
+    & MappableInput<
+        DiscriminatedUnionMapperMappableInputOf<DiscriminantK, ArrT[number]>
+    >
+);
+export function unsafeDiscriminatedUnion<
+    DiscriminantK extends string,
+    ArrT extends readonly [SafeMapper<unknown>, SafeMapper<unknown>][]
+> (
+    discriminantK : DiscriminantK,
+    ...arr : ArrT
+) : (
+    UnsafeDiscriminatedUnionMapper<DiscriminantK, ArrT>
+) {
+    if (arr.length == 0) {
+        throw new Error(`Cannot call unsafeDiscriminatedUnion() on zero mappers`);
+    }
+    /**
+     * @todo Rename
+     * @todo Better type annotation
+     */
+    const arr2 : (
+        [
+            SafeMapper<unknown>,
+            SafeMapper<unknown>
+        ][]
+    ) = arr.map(([discriminantValueMapper, elementMapper]) => {
+        const discriminantObjectMapper = objectFromMap({
+            [discriminantK] : discriminantValueMapper,
+        });
+        return [
+            discriminantObjectMapper,
+            deepMerge(
+                discriminantObjectMapper,
+                elementMapper
+            ),
+        ];
+    })
+    const result : UnsafeDiscriminatedUnionMapper<DiscriminantK, ArrT> = (
+        name : string,
+        mixed : unknown
+    ) : DiscriminatedUnionMapperOutputOf<DiscriminantK, ArrT[number]> => {
+        /**
+         * Find valid element mappers
+         */
+        const discriminantErrors : MappingError[] = [];
+        const validElementMappers = arr2
+            .filter(([discriminantObjectMapper, /*elementMapper*/]) => {
+                const discriminantResult = tryMapHandled(
+                    discriminantObjectMapper,
+                    name,
+                    mixed
+                );
+                if (discriminantResult.success) {
+                    return true;
+                } else {
+                    discriminantErrors.push(discriminantResult.mappingError);
+                    return false;
+                }
+            })
+            .map(([/*discriminantObjectMapper*/, elementMapper]) => {
+                return elementMapper;
+            });
+        if (validElementMappers.length == 0) {
+            throw makeNormalizedUnionError(
+                name,
+                mixed,
+                discriminantErrors
+            );
+        }
+
+        const unionErrors : MappingError[] = [];
+        /**
+         * Apply the valid element mappers
+         *
+         * https://github.com/microsoft/TypeScript/issues/33054#issuecomment-524401132
+         */
+        for (const elementMapper of validElementMappers) {
+            const elementResult = tryMapHandled(
+                elementMapper,
+                name,
+                mixed
+            );
+            if (elementResult.success) {
+                return elementResult.value as DiscriminatedUnionMapperOutputOf<DiscriminantK, ArrT[number]>;
+            } else {
+                unionErrors.push(elementResult.mappingError);
+            }
+        }
+
+        throw makeNormalizedUnionError(
+            name,
+            mixed,
+            discriminantErrors
+        );
+    };
+    return result;
+}
+
+export type DiscriminatedUnionMapper<
+    DiscriminantK extends string,
+    F extends [SafeMapper<unknown>, SafeMapper<unknown>],
+    ArrT extends readonly [SafeMapper<unknown>, SafeMapper<unknown>][]
+> = (
+    & SafeMapper<
+        DiscriminatedUnionMapperOutputOf<DiscriminantK, F|ArrT[number]>
+    >
+    & ExpectedInput<
+        DiscriminatedUnionMapperExpectedInputOf<DiscriminantK, F|ArrT[number]>
+    >
+    & MappableInput<
+        DiscriminatedUnionMapperMappableInputOf<DiscriminantK, F|ArrT[number]>
+    >
+);
+export function discriminatedUnion<
+    DiscriminantK extends string,
+    F extends [SafeMapper<unknown>, SafeMapper<unknown>],
+    ArrT extends readonly [SafeMapper<unknown>, SafeMapper<unknown>][]
+> (
+    discriminantK : DiscriminantK,
+    f : F,
+    ...arr : ArrT
+) : (
+    DiscriminatedUnionMapper<DiscriminantK, F, ArrT>
+) {
+    return unsafeDiscriminatedUnion<DiscriminantK, readonly (F|ArrT[number])[]>(
+        discriminantK,
+        f,
+        ...arr
+    );
+}
