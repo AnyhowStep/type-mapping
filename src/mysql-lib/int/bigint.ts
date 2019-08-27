@@ -40,7 +40,7 @@ export function bigIntSigned () : (
 }
 /**
     Only allows,
-    [0, 18,446,744,073,709,551,616]
+    [0, 18,446,744,073,709,551,615]
 */
 export function bigIntUnsigned () : (
     FluentMapper<
@@ -53,7 +53,7 @@ export function bigIntUnsigned () : (
     return unsafeBigInt().pipe(
         fLib.bigIntRange({
             gtEq : bigIntFactory("0"),
-            ltEq : bigIntFactory("18446744073709551616"),
+            ltEq : bigIntFactory("18446744073709551615"),
         })
     );
 }
