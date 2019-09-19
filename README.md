@@ -1090,3 +1090,9 @@ The examples here use the fluent API.
   + `runTimeRequired()` added
   + `runTimeRequired()` makes a field compile-time required.
   + `runTimeRequired()` makes a field run-time required.
+
++ 1.20.0 -> 1.21.0
+
+  + `mysql.decimal()` now returns the `Decimal` interface and not `string`.
+    This breaking change was introduced because not much code should break
+    and this increases type safety overall.
