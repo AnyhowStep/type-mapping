@@ -29,7 +29,7 @@ export function compare (a : bigint|number, b : bigint|number) : number {
         if (typeof b == "number") {
             return a - b;
         } else {
-            const cmp = JSBI.__compareToDouble(
+            const cmp = JSBI.__compareToNumber(
                 JSBI.BigInt(b.toString()),
                 a
             );
@@ -37,7 +37,7 @@ export function compare (a : bigint|number, b : bigint|number) : number {
         }
     } else {
         if (typeof b == "number") {
-            const cmp = JSBI.__compareToDouble(
+            const cmp = JSBI.__compareToNumber(
                 JSBI.BigInt(a.toString()),
                 b
             );
