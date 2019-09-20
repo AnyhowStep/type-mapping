@@ -112,6 +112,9 @@ Object.appendChain = function(oChain : any, oProto : any) {
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * https://github.com/GoogleChromeLabs/jsbi
+ */
 export class JSBI extends Array<number> {
     private static readonly __kMaxLength = 1 << 25;
     private static readonly __kMaxLengthBits = JSBI.__kMaxLength << 5;
