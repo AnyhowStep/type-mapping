@@ -33,7 +33,7 @@ export function compare (a : bigint|number, b : bigint|number) : number {
                 JSBI.BigInt(b.toString()),
                 a
             );
-            return cmp;
+            return -cmp;
         }
     } else {
         if (typeof b == "number") {
