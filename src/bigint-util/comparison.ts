@@ -1,4 +1,5 @@
 import {isBigIntNativelySupported} from "../type-util";
+import {JSBI} from "./jsbi";
 
 /**
     Assumes BigInt.toString() is implemented correctly.
@@ -10,85 +11,60 @@ import {isBigIntNativelySupported} from "../type-util";
     + "123.123"
 */
 
-export function lessThan (a : bigint|number, b : bigint|number) {
+export function compare (a : bigint|number, b : bigint|number) : number {
     if (isBigIntNativelySupported()) {
-        return a < b;
+        return (
+            (typeof a == "number" && isNaN(a)) ?
+            NaN :
+            (typeof b == "number" && isNaN(b)) ?
+            NaN :
+            a < b ?
+            -1 :
+            a > b ?
+            1 :
+            0
+        );
     }
-    const aStr = a.toString();
-    const bStr = b.toString();
-    if (aStr == bStr) {
-        return false;
-    }
-    const aNeg = (aStr[0] == "-");
-    const bNeg = (bStr[0] == "-");
-    if (aNeg) {
-        if (bNeg) {
-            //Both negative
-            if (aStr.length > bStr.length) {
-                //Eg. a = -100, b = -99
-                return true;
-            } else if (aStr.length < bStr.length) {
-                //Eg. a = -99, b = -100
-                return false;
-            } else {
-                return aStr.localeCompare(bStr) > 0;
-            }
+    if (typeof a == "number") {
+        if (typeof b == "number") {
+            return a - b;
         } else {
-            //Eg. a = -5, b = 100
-            return true;
+            const cmp = JSBI.__compareToDouble(
+                JSBI.BigInt(b.toString()),
+                a
+            );
+            return cmp;
         }
     } else {
-        if (bNeg) {
-            //Eg. a = 100, b = -5
-            return false;
+        if (typeof b == "number") {
+            const cmp = JSBI.__compareToDouble(
+                JSBI.BigInt(a.toString()),
+                b
+            );
+            return cmp;
         } else {
-            //Both positive
-            if (aStr.length < bStr.length) {
-                //Eg. a = 99, b = 100
-                return true;
-            } else if (aStr.length > bStr.length) {
-                //Eg. a = 100, b = 99
-                return false;
-            } else {
-                return aStr.localeCompare(bStr) < 0;
-            }
+            return JSBI.__compareToBigInt(
+                JSBI.BigInt(a.toString()),
+                JSBI.BigInt(b.toString())
+            );
         }
     }
 }
-export function greaterThan (a : bigint|number, b : bigint|number) {
-    if (isBigIntNativelySupported()) {
-        return a > b;
-    }
-    const aStr = a.toString();
-    const bStr = b.toString();
-    if (aStr == bStr) {
-        return false;
-    }
-    return lessThan(b, a);
+
+export function lessThan (a : bigint|number, b : bigint|number) : boolean {
+    return compare(a, b) < 0;
 }
-export function equal (a : bigint|number, b : bigint|number) {
-    if (isBigIntNativelySupported()) {
-        return a == b;
-    }
-    return a.toString() == b.toString();
+export function greaterThan (a : bigint|number, b : bigint|number) : boolean {
+    return compare(a, b) > 0;
 }
-export function lessThanOrEqual (a : bigint|number, b : bigint|number) {
-    if (isBigIntNativelySupported()) {
-        return a <= b;
-    }
-    return (
-        equal(a, b) ||
-        lessThan(a, b)
-    );
+export function equal (a : bigint|number, b : bigint|number) : boolean {
+    return compare(a, b) == 0;
 }
-export function greaterThanOrEqual (a : bigint|number, b : bigint|number) {
-    if (isBigIntNativelySupported()) {
-        return a >= b;
-    }
-    return (
-        equal(a, b) ||
-        greaterThan(a, b)
-    );
+export function lessThanOrEqual (a : bigint|number, b : bigint|number) : boolean {
+    return compare(a, b) <= 0;
+}
+export function greaterThanOrEqual (a : bigint|number, b : bigint|number) : boolean {
+    return compare(a, b) >= 0;
 }
 export function subOneImpl (str : string) : string {
     if (str[0] == "-") {
@@ -125,6 +101,7 @@ export function subOneImpl (str : string) : string {
     }
 }
 export function addOneImpl (str : string) : string {
+    JSBI.__absoluteAddOne
     if (str[0] == "-") {
         const result = subOneImpl(str.substr(1));
         if (result == "0") {
