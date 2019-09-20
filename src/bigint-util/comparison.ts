@@ -10,7 +10,7 @@ import {isBigIntNativelySupported} from "../type-util";
     + "123.123"
 */
 
-export function lessThan (a : bigint, b : bigint) {
+export function lessThan (a : bigint|number, b : bigint|number) {
     if (isBigIntNativelySupported()) {
         return a < b;
     }
@@ -55,7 +55,7 @@ export function lessThan (a : bigint, b : bigint) {
         }
     }
 }
-export function greaterThan (a : bigint, b : bigint) {
+export function greaterThan (a : bigint|number, b : bigint|number) {
     if (isBigIntNativelySupported()) {
         return a > b;
     }
@@ -66,13 +66,13 @@ export function greaterThan (a : bigint, b : bigint) {
     }
     return lessThan(b, a);
 }
-export function equal (a : bigint, b : bigint) {
+export function equal (a : bigint|number, b : bigint|number) {
     if (isBigIntNativelySupported()) {
         return a == b;
     }
     return a.toString() == b.toString();
 }
-export function lessThanOrEqual (a : bigint, b : bigint) {
+export function lessThanOrEqual (a : bigint|number, b : bigint|number) {
     if (isBigIntNativelySupported()) {
         return a <= b;
     }
@@ -81,7 +81,7 @@ export function lessThanOrEqual (a : bigint, b : bigint) {
         lessThan(a, b)
     );
 }
-export function greaterThanOrEqual (a : bigint, b : bigint) {
+export function greaterThanOrEqual (a : bigint|number, b : bigint|number) {
     if (isBigIntNativelySupported()) {
         return a >= b;
     }
