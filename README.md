@@ -1096,3 +1096,9 @@ The examples here use the fluent API.
   + `mysql.decimal()` now returns the `Decimal` interface and not `string`.
     This breaking change was introduced because not much code should break
     and this increases type safety overall.
+
++ 1.24.0 -> 1.25.0
+
+  + `mysql.xxxIntXxx()` functions now return `bigint` and not `number`.
+    This breaking change was introduced because this increases type safety overall.
+    This also follows the general direction the `tsql` project wants to follow.

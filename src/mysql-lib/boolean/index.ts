@@ -5,6 +5,7 @@ import {
 } from "../../mapper";
 import {FluentMapper} from "../../fluent-mapper";
 import * as fLib from "../../fluent-lib";
+import * as TypeUtil from "../../type-util";
 
 /**
     Converts some values to `boolean`.
@@ -20,13 +21,14 @@ export function boolean () : (
     FluentMapper<
         & SafeMapper<boolean>
         & ExpectedInput<boolean>
-        & MappableInput<boolean | 0 | 1 | "0" | "1" | "false" | "true">
+        & MappableInput<boolean | 0 | 1 | "0" | "1" | "false" | "true" | 0n | 1n>
     >
 ) {
+    const BigInt = TypeUtil.getBigIntFactoryFunctionOrError();
     return fLib.or(
         fLib.boolean(),
-        fLib.literal("0", "1", 0, 1, "false", "true").pipe(
-            (name : string, v : "0"|"1"|0|1|"false"|"true") : boolean => {
+        fLib.literal("0", "1", 0, 1, "false", "true", BigInt(0) as 0n, BigInt(1) as 1n).pipe(
+            (name : string, v : "0"|"1"|0|1|"false"|"true"|0n|1n) : boolean => {
                 switch (v) {
                     case "0": return false;
                     case "1": return true;
@@ -35,8 +37,14 @@ export function boolean () : (
                     case "false": return false;
                     case "true": return true;
                     default : {
+                        const str = String(v);
+                        if (str == "0") {
+                            return false;
+                        } else if (str == "1") {
+                            return true;
+                        }
                         //Shouldn't happen
-                        throw new Error(`Expected ${name} to be one of '0'|'1'|0|1|'false'|'true'`);
+                        throw new Error(`Expected ${name} to be one of '0'|'1'|0|1|'false'|'true'|'0n'|'1n'`);
                     }
                 }
             }
@@ -58,18 +66,23 @@ function toTrue () : (
     FluentMapper<
         & SafeMapper<true>
         & ExpectedInput<true>
-        & MappableInput<true | 1 | "1" | "true">
+        & MappableInput<true | 1 | "1" | "true" | 1n>
     >
 ) {
+    const BigInt = TypeUtil.getBigIntFactoryFunctionOrError();
     return fLib.or(
         fLib.literal(true),
-        fLib.literal("1", 1, "true").pipe(
-            (name : string, v : "1"|1|"true") : true => {
+        fLib.literal("1", 1, "true", BigInt(1) as 1n).pipe(
+            (name : string, v : "1"|1|"true"|1n) : true => {
                 switch (v) {
                     case "1": return true;
                     case 1: return true;
                     case "true": return true;
                     default : {
+                        const str = String(v);
+                        if (str == "1") {
+                            return true;
+                        }
                         //Shouldn't happen
                         throw new Error(`Expected ${name} to be one of '1'|1|'true'`);
                     }
@@ -93,18 +106,23 @@ function toFalse () : (
     FluentMapper<
         & SafeMapper<false>
         & ExpectedInput<false>
-        & MappableInput<false | 0 | "0" | "false">
+        & MappableInput<false | 0 | "0" | "false" | 0n>
     >
 ) {
+    const BigInt = TypeUtil.getBigIntFactoryFunctionOrError();
     return fLib.or(
         fLib.literal(false),
-        fLib.literal("0", 0, "false").pipe(
-            (name : string, v : "0"|0|"false") : false => {
+        fLib.literal("0", 0, "false", BigInt(0) as 0n).pipe(
+            (name : string, v : "0"|0|"false"|0n) : false => {
                 switch (v) {
                     case "0": return false;
                     case 0: return false;
                     case "false": return false;
                     default : {
+                        const str = String(v);
+                        if (str == "0") {
+                            return false;
+                        }
                         //Shouldn't happen
                         throw new Error(`Expected ${name} to be one of '0'|0|'false'`);
                     }

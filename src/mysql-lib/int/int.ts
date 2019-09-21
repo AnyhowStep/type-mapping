@@ -5,27 +5,28 @@ import {
 } from "../../mapper";
 import {FluentMapper} from "../../fluent-mapper";
 import * as fLib from "../../fluent-lib";
-import {range} from "../../functional-lib";
+import {bigIntRange} from "../../functional-lib";
+import {getBigIntFactoryFunctionOrError} from "../../type-util";
 
 /**
-    May result in loss in precision if passing in
-    `string|bigint`
+    Uses `integerFormatString()` and `BigInt()` internally.
 */
 export function unsafeInt () : (
     FluentMapper<
-        & SafeMapper<number>
-        & ExpectedInput<number>
+        & SafeMapper<bigint>
+        & ExpectedInput<bigint>
         & MappableInput<string | number | bigint>
     >
 ) {
-    return fLib.toInteger();
+    return fLib.toBigInt();
 }
 
 function intDelegate (min : number, max : number) {
+    const bigIntFactory = getBigIntFactoryFunctionOrError();
     return unsafeInt().pipe(
-        range({
-            gtEq : min,
-            ltEq : max,
+        bigIntRange({
+            gtEq : bigIntFactory(min),
+            ltEq : bigIntFactory(max),
         })
     );
 }
