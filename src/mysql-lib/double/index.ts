@@ -1,6 +1,6 @@
 import {SafeMapper, ExpectedInput, MappableInput} from "../../mapper";
 import {FluentMapper} from "../../fluent-mapper";
-import {stringToFiniteNumber} from "../../fluent-lib";
+import {toFiniteNumber} from "../../fluent-lib";
 
 /**
     TS `number` type is actually a `double` type
@@ -9,10 +9,10 @@ export function double () : (
     FluentMapper<
         & SafeMapper<number>
         & ExpectedInput<number>
-        & MappableInput<string | number>
+        & MappableInput<string | number | bigint>
     >
 ) {
-    return stringToFiniteNumber();
+    return toFiniteNumber();
 }
 
 /**
