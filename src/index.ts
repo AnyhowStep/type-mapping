@@ -19,3 +19,12 @@ export {TypeUtil};
 export * from "./fluent-mapper";
 export * from "./mapping-error";
 export * from "./primitive";
+
+/**
+ * Convenience function.
+ * Will create a native `bigint` (if natively supported),
+ * or create a polyfilled `bigint` (if polyfilled).
+ */
+export function BigInt (x : number|string|bigint) : bigint {
+    return TypeUtil.getBigIntFactoryFunctionOrError()(x);
+}
