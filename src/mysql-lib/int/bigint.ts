@@ -10,7 +10,7 @@ import * as fLib from "../../fluent-lib";
 /**
     Does not restrict the min and max value
 */
-function unsafeBigInt () : (
+export function unsafeBigInt () : (
     FluentMapper<
         & SafeMapper<bigint>
         & ExpectedInput<bigint>
