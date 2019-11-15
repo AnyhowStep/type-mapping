@@ -3,6 +3,17 @@ import {getBigIntFactoryFunctionOrError} from "../type-util";
 import * as BigIntUtil from "../bigint-util";
 import {stringRepeat} from "../string-util";
 
+function lazyInit<T> (initDelegate : () => T) : () => T {
+    let initialized = false;
+    let value : T|undefined = undefined;
+    return () : T => {
+        if (!initialized) {
+            value = initDelegate();
+            initialized = true;
+        }
+        return value!;
+    };
+}
 export interface ParseResult {
     isInteger : boolean,
     isNegative: boolean,
@@ -31,6 +42,9 @@ export interface ParseResult {
     getFixedPointFractionalPartString: () => string,
     getFixedPointString: () => string,
 }
+/**
+ * @todo Make `getXxx()` functions cache results
+ */
 export function tryParse (str : string) : undefined|ParseResult {
     const parsed = FloatingPointUtil.tryParse(str);
     if (parsed == undefined) {
@@ -56,7 +70,7 @@ export function tryParse (str : string) : undefined|ParseResult {
         );
         const getFixedPointIntegerPartString = () => "0";
         const getFixedPointFractionalPartString = () => "0";
-        const getFixedPointString = () => {
+        const getFixedPointString = lazyInit(() => {
             const sign = isNegative ? "-" : "";
             return (
                 sign +
@@ -64,7 +78,7 @@ export function tryParse (str : string) : undefined|ParseResult {
                 "." +
                 getFixedPointFractionalPartString()
             );
-        }
+        });
         return {
             isInteger : true,
             isNegative,
@@ -87,11 +101,11 @@ export function tryParse (str : string) : undefined|ParseResult {
             BigInt(1),
             fixedPointFractionalPartLength
         );
-        const getFixedPointIntegerPartString = () => (
+        const getFixedPointIntegerPartString = lazyInit(() => (
             integerPart + stringRepeat("0", BigIntUtil.toNumber(exponentValue))
-        );
+        ));
         const getFixedPointFractionalPartString = () => "0";
-        const getFixedPointString = () => {
+        const getFixedPointString = lazyInit(() => {
             const sign = isNegative ? "-" : "";
             return (
                 sign +
@@ -99,7 +113,7 @@ export function tryParse (str : string) : undefined|ParseResult {
                 "." +
                 getFixedPointFractionalPartString()
             );
-        }
+        });
         return {
             isInteger : true,
             isNegative,
@@ -136,7 +150,7 @@ export function tryParse (str : string) : undefined|ParseResult {
             );
             const getFixedPointIntegerPartString = () => newIntegerPart;
             const getFixedPointFractionalPartString = () => newFractionalPart;
-            const getFixedPointString = () => {
+            const getFixedPointString = lazyInit(() => {
                 const sign = isNegative ? "-" : "";
                 return (
                     sign +
@@ -144,7 +158,7 @@ export function tryParse (str : string) : undefined|ParseResult {
                     "." +
                     getFixedPointFractionalPartString()
                 );
-            }
+            });
             return {
                 isInteger : (newFractionalPart == "0"),
                 isNegative,
@@ -174,7 +188,7 @@ export function tryParse (str : string) : undefined|ParseResult {
                 "0"
             );
             const getFixedPointFractionalPartString = () => newFractionalPart;
-            const getFixedPointString = () => {
+            const getFixedPointString = lazyInit(() => {
                 const sign = isNegative ? "-" : "";
                 return (
                     sign +
@@ -182,7 +196,7 @@ export function tryParse (str : string) : undefined|ParseResult {
                     "." +
                     getFixedPointFractionalPartString()
                 );
-            }
+            });
             return {
                 isInteger : (newFractionalPart == "0"),
                 isNegative,
@@ -213,11 +227,11 @@ export function tryParse (str : string) : undefined|ParseResult {
             const getFixedPointIntegerPartString = () => (
                 "0"
             );
-            const getFixedPointFractionalPartString = () => (
+            const getFixedPointFractionalPartString = lazyInit(() => (
                 stringRepeat("0", BigIntUtil.toNumber(leadingZeroCount)) +
                 newFractionalPart
-            );
-            const getFixedPointString = () => {
+            ));
+            const getFixedPointString = lazyInit(() => {
                 const sign = isNegative ? "-" : "";
                 return (
                     sign +
@@ -225,7 +239,7 @@ export function tryParse (str : string) : undefined|ParseResult {
                     "." +
                     getFixedPointFractionalPartString()
                 );
-            }
+            });
             return {
                 isInteger : (newFractionalPart == "0"),
                 isNegative,
