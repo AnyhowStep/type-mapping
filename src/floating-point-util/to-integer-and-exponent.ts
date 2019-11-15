@@ -19,6 +19,8 @@ export function toIntegerAndExponent (
         BigInt(arg.fractionalPart.length)
     );
     const integerPart = (
+        arg.integerPart == "0" ?
+        arg.fractionalPart.replace(/^(0+)/, "") :
         arg.integerPart + arg.fractionalPart
     );
     return {

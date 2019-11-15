@@ -1,4 +1,5 @@
 import {ParseResult} from "./try-parse";
+import * as BigIntUtil from "../bigint-util";
 
 export enum ZeroEqualityAlgorithm {
     NEGATIVE_AND_POSITIVE_ZERO_ARE_EQUAL = "NEGATIVE_AND_POSITIVE_ZERO_ARE_EQUAL",
@@ -26,13 +27,13 @@ export function isEqual (
     if (a.isZero != b.isZero) {
         return false;
     }
-    if (a.fixedPointIntegerPartLength != b.fixedPointIntegerPartLength) {
+    if (!BigIntUtil.equal(a.fixedPointIntegerPartLength, b.fixedPointIntegerPartLength)) {
         return false;
     }
-    if (a.fixedPointFractionalPartLength != b.fixedPointFractionalPartLength) {
+    if (!BigIntUtil.equal(a.fixedPointFractionalPartLength, b.fixedPointFractionalPartLength)) {
         return false;
     }
-    if (a.fixedPointLength != b.fixedPointLength) {
+    if (!BigIntUtil.equal(a.fixedPointLength, b.fixedPointLength)) {
         return false;
     }
     return (

@@ -1,7 +1,7 @@
 import {getBigIntFactoryFunctionOrError} from "../type-util";
 import * as BigIntUtil from "../bigint-util";
 
-export const floatingPointRegex = /^([-+])?([0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
+export const floatingPointRegex = /^([-+])?([0-9]+\.?[0-9]*|[0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
 
 export interface ParseResult {
     /**
