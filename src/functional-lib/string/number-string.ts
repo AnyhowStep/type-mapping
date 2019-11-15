@@ -3,8 +3,9 @@ import {pipe} from "../operator";
 import {finiteNumber, integer, unsignedInteger} from "../number";
 import {toTrimmed, match} from "./string";
 import { makeMappingError } from "../../error-util";
+import * as FixedPointUtil from "../../fixed-point-util";
+import * as FloatingPointUtil from "../../floating-point-util";
 
-const floatingPointRegex = /^([-+])?([0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
 /**
     Just because a string is in floating point format does not mean
     it is a finite number.
@@ -23,46 +24,13 @@ const floatingPointRegex = /^([-+])?([0-9]*\.?[0-9]+)([eE]([-+])?([0-9]+))?$/;
 export function floatingPointFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
-        match(floatingPointRegex, name => {
+        match(FloatingPointUtil.floatingPointRegex, name => {
             return {
                 message : `${name} must be valid floating point format string`,
                 expected : `valid floating point format string`,
             };
         })
     );
-}
-function parseFloatingPointString (str : string) {
-    const m = floatingPointRegex.exec(str);
-    if (m == undefined) {
-        return undefined;
-    }
-    const rawCoefficientSign : string|undefined = m[1];
-    const rawCoefficientValue : string = m[2];
-    const rawExponentSign : string|undefined = m[4];
-    const rawExponentValue : string|undefined = m[5];
-
-    const decimalPlaceIndex = rawCoefficientValue.indexOf(".");
-    const fractionalLength = (decimalPlaceIndex < 0) ?
-        0 :
-        rawCoefficientValue.length - decimalPlaceIndex - 1;
-
-    const exponentValue = (rawExponentValue == undefined) ?
-        0 :
-        parseInt(rawExponentValue) * ((rawExponentSign === "-") ? -1 : 1);
-
-    const normalizedFractionalLength = (fractionalLength - exponentValue);
-    const isInteger = (normalizedFractionalLength <= 0) ?
-        true :
-        /^0+$/.test(rawCoefficientValue.substring(
-            rawCoefficientValue.length-normalizedFractionalLength,
-            rawCoefficientValue.length
-        ));
-    const isNeg = (rawCoefficientSign === "-");
-
-    return {
-        isInteger,
-        isNeg,
-    };
 }
 /**
     Just because a string is in integer format does not mean
@@ -84,7 +52,7 @@ export function integerFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
         (name : string, str) : string => {
-            const parsed = parseFloatingPointString(str);
+            const parsed = FixedPointUtil.tryParse(str);
             if (parsed == undefined || !parsed.isInteger) {
                 throw makeMappingError({
                     message : `${name} must be a valid integer format string`,
@@ -117,8 +85,8 @@ export function unsignedIntegerFormatString () : SafeMapper<string> {
     return pipe(
         toTrimmed(),
         (name : string, str) : string => {
-            const parsed = parseFloatingPointString(str);
-            if (parsed == undefined || !parsed.isInteger || parsed.isNeg) {
+            const parsed = FixedPointUtil.tryParse(str);
+            if (parsed == undefined || !parsed.isInteger || parsed.isNegative) {
                 throw makeMappingError({
                     message : `${name} must be a valid unsigned integer format string`,
                     inputName : name,

@@ -25,6 +25,14 @@ export function add (a : bigint|number, b : bigint|number) : bigint {
     return BigInt(result.toString());
 }
 
+export function addMany (a : bigint|number, b : bigint|number, ...rest : (bigint|number)[]) : bigint {
+    let result = add(a, b);
+    for (const ele of rest) {
+        result = add(result, ele);
+    }
+    return result;
+}
+
 export function sub (a : bigint|number, b : bigint|number) : bigint {
     const BigInt = getBigIntFactoryFunctionOrError();
     if (isBigIntNativelySupported()) {
