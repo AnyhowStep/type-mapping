@@ -17,6 +17,7 @@ import {getBigIntFactoryFunctionOrError} from "../../type-util";
 import * as FixedPointUtil from "../../fixed-point-util";
 import * as BigIntUtil from "../../bigint-util";
 import {makeMappingError} from "../../error-util";
+import {ErrorCode} from "../../error-code";
 
 /**
  * This interface represents a SQL `DECIMAL` type.
@@ -186,14 +187,12 @@ export function decimal (precision? : number|bigint, scale? : number|bigint) : (
             );
             if (BigIntUtil.greaterThan(curPrecision, maxPrecision)) {
                 throw makeMappingError({
-                    message : `${name} must have precision less than ${maxPrecision}`,
+                    message : `${name} must have precision less than, or equal to ${maxPrecision}`,
                     inputName : name,
                     actualValue : parsed.getFixedPointString(),
                     expected,
-                    /**
-                     * @todo An `errorCode`
-                     */
                     expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_DECIMAL_PRECISION_LESS_THAN_OR_EQUAL_TO,
                         maxPrecision,
                         maxScale,
                         curPrecision,
@@ -203,14 +202,12 @@ export function decimal (precision? : number|bigint, scale? : number|bigint) : (
             }
             if (BigIntUtil.greaterThan(curScale, maxScale)) {
                 throw makeMappingError({
-                    message : `${name} must have scale less than ${maxScale}`,
+                    message : `${name} must have scale less than, or equal to ${maxScale}`,
                     inputName : name,
                     actualValue : parsed.getFixedPointString(),
                     expected,
-                    /**
-                     * @todo An `errorCode`
-                     */
                     expectedMeta : {
+                        errorCode : ErrorCode.EXPECTED_DECIMAL_SCALE_LESS_THAN_OR_EQUAL_TO,
                         maxPrecision,
                         maxScale,
                         curPrecision,

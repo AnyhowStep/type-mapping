@@ -68,5 +68,20 @@ export const ErrorCode = toKeyEnum(
      * + `expectedMeta.desiredValue`
      * + `expectedMeta.validKeys`
      */
-    "EXPECTED_ONE_ENUM_VALUE_OR_VALID_ENUM_KEY"
+    "EXPECTED_ONE_ENUM_VALUE_OR_VALID_ENUM_KEY",
+
+    /**
+     * + `expectedMeta.maxPrecision`
+     * + `expectedMeta.maxScale`
+     * + `expectedMeta.curPrecision`
+     * + `expectedMeta.curScale`
+     */
+    "EXPECTED_DECIMAL_PRECISION_LESS_THAN_OR_EQUAL_TO",
+    /**
+     * + `expectedMeta.maxPrecision`
+     * + `expectedMeta.maxScale`
+     * + `expectedMeta.curPrecision`
+     * + `expectedMeta.curScale`
+     */
+    "EXPECTED_DECIMAL_SCALE_LESS_THAN_OR_EQUAL_TO",
 );
