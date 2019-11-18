@@ -12,6 +12,9 @@ function dataViewsAreEqual (a : DataView, b : DataView) : boolean {
     return true;
 }
 
-export function equals (a : ArrayBufferLike, b : ArrayBufferLike) : boolean {
-    return dataViewsAreEqual(new DataView(a), new DataView(b));
+export function equals (a : ArrayBufferLike|Buffer, b : ArrayBufferLike|Buffer) : boolean {
+    return dataViewsAreEqual(
+        new DataView(a as ArrayBufferLike),
+        new DataView(b as ArrayBufferLike)
+    );
 }

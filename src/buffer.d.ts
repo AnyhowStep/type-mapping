@@ -1,4 +1,4 @@
 //This declaration lets us avoid using @types/node
-interface Buffer extends ArrayBuffer {
+interface Buffer {
     ___doesNotExist? : any;
 }
