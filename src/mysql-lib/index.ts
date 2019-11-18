@@ -7,3 +7,4 @@ export * from "./double";
 export * from "./enum";
 export * from "./int";
 export * from "./json";
+export * from "./uint-8-array-binary";

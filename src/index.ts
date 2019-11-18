@@ -1,4 +1,6 @@
 /// <reference path="buffer.d.ts" />
+import * as ArrayBufferUtil from "./array-buffer-util";
+export {ArrayBufferUtil};
 import * as EnumUtil from "./enum-util";
 export {EnumUtil};
 import * as BigIntUtil from "./bigint-util";
@@ -20,6 +22,7 @@ import * as mysql from "./mysql-lib";
 export {mysql};
 import * as TypeUtil from "./type-util";
 export {TypeUtil};
+export * from "./error-code";
 export * from "./fluent-mapper";
 export * from "./mapping-error";
 export * from "./primitive";

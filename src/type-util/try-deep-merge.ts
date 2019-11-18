@@ -1,6 +1,8 @@
 import {toTypeStr} from "./to-type-str";
 import {strictEqual} from "./strict-equal";
 import {isPrimitive} from "./is-primitive";
+import * as ArrayBufferUtil from "../array-buffer-util";
+import {isInstanceOfBuffer} from "./buffer-ctor";
 
 type TryDeepMergeImplResult = (
     | {
@@ -92,6 +94,86 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 actualValue : b,
             };
         }
+    }
+
+    if (isInstanceOfBuffer(a) || isInstanceOfBuffer(b)) {
+        if (!isInstanceOfBuffer(a)) {
+            return {
+                success : false,
+                path,
+                aValue : a,
+                bValue : b,
+                message : `Cannot merge ${toTypeStr(a)} with Buffer`,
+                expected : toTypeStr(a),
+                actualValue : b,
+            };
+        }
+        if (!isInstanceOfBuffer(b)) {
+            return {
+                success : false,
+                path,
+                aValue : a,
+                bValue : b,
+                message : `Cannot merge Buffer with ${toTypeStr(b)}`,
+                expected : toTypeStr(a),
+                actualValue : b,
+            };
+        }
+        if (!ArrayBufferUtil.equals(a, b)) {
+            return {
+                success : false,
+                path,
+                aValue : a,
+                bValue : b,
+                message : `Cannot merge Buffer; they are not equal`,
+                expected : toTypeStr(a),
+                actualValue : b,
+            };
+        }
+        return {
+            success : true,
+            value : a,
+        };
+    }
+
+    if ((a instanceof Uint8Array) || (b instanceof Uint8Array)) {
+        if (!(a instanceof Uint8Array)) {
+            return {
+                success : false,
+                path,
+                aValue : a,
+                bValue : b,
+                message : `Cannot merge ${toTypeStr(a)} with Uint8Array`,
+                expected : toTypeStr(a),
+                actualValue : b,
+            };
+        }
+        if (!(b instanceof Uint8Array)) {
+            return {
+                success : false,
+                path,
+                aValue : a,
+                bValue : b,
+                message : `Cannot merge Uint8Array with ${toTypeStr(b)}`,
+                expected : toTypeStr(a),
+                actualValue : b,
+            };
+        }
+        if (!ArrayBufferUtil.equals(a, b)) {
+            return {
+                success : false,
+                path,
+                aValue : a,
+                bValue : b,
+                message : `Cannot merge Uint8Array; they are not equal`,
+                expected : toTypeStr(a),
+                actualValue : b,
+            };
+        }
+        return {
+            success : true,
+            value : a,
+        };
     }
 
     if ((a instanceof Array) || (b instanceof Array)) {
