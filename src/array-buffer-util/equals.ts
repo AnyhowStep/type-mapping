@@ -12,9 +12,19 @@ function dataViewsAreEqual (a : DataView, b : DataView) : boolean {
     return true;
 }
 
-export function equals (a : ArrayBufferLike|Buffer, b : ArrayBufferLike|Buffer) : boolean {
+/**
+ * Allows you to compare,
+ * + `Buffer` to `Buffer`
+ * + `Uint8Array` to `Uint8Array`
+ * + `Buffer` to `Uint8Array`
+ * + `Uint8Array` to `Buffer`
+ */
+export function equals (
+    a : { buffer : ArrayBufferLike, byteOffset : number, byteLength : number },
+    b : { buffer : ArrayBufferLike, byteOffset : number, byteLength : number }
+) : boolean {
     return dataViewsAreEqual(
-        new DataView(a as ArrayBufferLike),
-        new DataView(b as ArrayBufferLike)
+        new DataView(a.buffer, a.byteOffset, a.byteLength),
+        new DataView(b.buffer, b.byteOffset, b.byteLength)
     );
 }

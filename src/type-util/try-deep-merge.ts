@@ -119,7 +119,7 @@ function tryDeepMergeImpl (path : readonly string[], a : any, b : any) : TryDeep
                 actualValue : b,
             };
         }
-        if (!ArrayBufferUtil.equals(a, b)) {
+        if (!ArrayBufferUtil.equals(a as any, b as any)) {
             return {
                 success : false,
                 path,
