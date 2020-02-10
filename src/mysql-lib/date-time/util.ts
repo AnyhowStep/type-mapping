@@ -166,7 +166,7 @@ export function fromSqlUtc (sql : string, fractionalSecondPrecision : 0|1|2|3/*|
     }
     //END TEMPORARY NON-SUPPORT FOR MICROSECOND
 
-    const utcMillisecondTimestamp =  Date.UTC(
+    const utcMillisecondTimestamp = Date.UTC(
         year,
         //Date.UTC() expects [0, 11]
         month-1,
@@ -176,5 +176,13 @@ export function fromSqlUtc (sql : string, fractionalSecondPrecision : 0|1|2|3/*|
         second,
         millisecond
     );
-    return new Date(utcMillisecondTimestamp);
+    const result = new Date(utcMillisecondTimestamp);
+    /**
+     * `year` might be [0, 99].
+     * This causes the year to be [1900, 1999]. Not what we want.
+     *
+     * So, we use `.setUTCFullYear()` below, to set the proper year.
+     */
+    result.setUTCFullYear(year);
+    return result;
 }
