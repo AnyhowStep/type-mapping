@@ -59,7 +59,14 @@ export function toSqlUtc (d : Date, fractionalSecondPrecision : 0|1|2|3/*|4|5|6*
 //Month is zero-based
 //Day is one-based
 function isValidDate (year : number, month : number, day : number) {
+    /**
+     * `year` might be [0, 99].
+     * This causes the year to be [1900, 1999]. Not what we want.
+     *
+     * So, we use `.setFullYear()` below, to set the proper year.
+     */
     var d = new Date(year, month, day);
+    d.setFullYear(year);
     if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
         return true;
     }
