@@ -1,6 +1,6 @@
 import {floatingPointFormatString, integerFormatString, unsignedIntegerFormatString} from "../string";
 import {cast, or, pipe} from "../operator";
-import {finiteNumber, integer, unsignedInteger} from "./number";
+import {finiteNumber, integer, unsignedInteger, unsafeNumber} from "./number";
 import {bigInt} from "../bigint/bigint";
 
 /**
@@ -84,6 +84,39 @@ export function toFiniteNumber () {
         ),
         parseFloat,
         finiteNumber()
+    );
+}
+
+/**
+    Uses `floatingPointFormatString()` and `parseFloat()` internally.
+
+    ```ts
+    const s = "999999999999999999999999999"
+    //Output is "1e+27" due to loss in precision
+    toUnsafeNumber("", s).toString()
+    ```
+
+    -----
+
+    ```ts
+    const b = BigInt("999999999999999999999999999")
+    //Output is "1e+27" due to loss in precision
+    toUnsafeNumber("", b).toString()
+    ```
+*/
+export function toUnsafeNumber () {
+    return cast(
+        or(
+            floatingPointFormatString(),
+            pipe(
+                bigInt(),
+                (_name : string, b : bigint) => {
+                    return b.toString();
+                }
+            )
+        ),
+        parseFloat,
+        unsafeNumber()
     );
 }
 
